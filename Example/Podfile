@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'IceCream_Example' do
+  pod 'IceCream', :path => '../'
+
+  target 'IceCream_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
