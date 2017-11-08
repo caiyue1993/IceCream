@@ -10,6 +10,11 @@ import Foundation
 import RealmSwift
 
 class Dog: Object {
+    @objc dynamic var id = NSUUID().uuidString
     @objc dynamic var name = ""
     @objc dynamic var age = 0
+    
+    override class func primaryKey() -> String? {
+        return "id"
+    }
 }
