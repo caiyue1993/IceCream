@@ -8,10 +8,14 @@
 
 import UIKit
 import RealmSwift
+import IceCream
+import RxRealm
+import RxSwift
 
 class ViewController: UIViewController {
     
     var dogs: [Dog] = []
+    let bag = DisposeBag()
     
     lazy var addBarItem: UIBarButtonItem = {
         let b = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.add, target: self, action: #selector(add))
@@ -31,6 +35,8 @@ class ViewController: UIViewController {
         
         view.addSubview(tableView)
         navigationItem.rightBarButtonItem = addBarItem
+        
+        bind()
     }
     
     override func viewWillLayoutSubviews() {
@@ -38,10 +44,20 @@ class ViewController: UIViewController {
         tableView.frame = view.frame
     }
     
+    func bind() {
+        let realm = try! Realm()
+        let dogs = realm.objects(Dog.self)
+        Observable.array(from: dogs).subscribe(onNext: { (dogs) in
+            self.dogs = dogs
+            self.tableView.reloadData()
+        }).disposed(by: bag)
+    }
+    
     @objc func add() {
         let dog = Dog()
         dog.name = "Rex"
         dog.age = 1
+        try! Cream.shared.insertOrUpdate(object: dog)
     }
 }
 

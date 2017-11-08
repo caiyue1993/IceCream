@@ -7,7 +7,7 @@ import RealmSwift
 public final class Cream {
     
     /// The original realm that Cream dances with.
-    private let realm: Realm
+    let realm: Realm
     
     // MARK: - Singleton
     public static let shared = Cream()
