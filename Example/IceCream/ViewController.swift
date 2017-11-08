@@ -57,7 +57,9 @@ class ViewController: UIViewController {
         let dog = Dog()
         dog.name = "Rex"
         dog.age = 1
-        try! Cream.shared.insertOrUpdate(object: dog)
+        
+        let c = Cream<Dog>()
+        try! c.insertOrUpdate(object: dog)
     }
 }
 

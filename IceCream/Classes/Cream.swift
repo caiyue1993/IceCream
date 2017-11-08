@@ -4,16 +4,13 @@ import RealmSwift
 /// Cream is the Alfred of Realm.
 /// You do insert/update/delete with Cream instead of manipulating Realm itself.
 
-public final class Cream {
+public final class Cream<T: Object> {
     
     /// The original realm that Cream dances with.
     let realm: Realm
     
-    // MARK: - Singleton
-    public static let shared = Cream()
-    
     // MARK: - Initializer
-    init(realm: Realm? = nil) {
+    public init(realm: Realm? = nil) {
         if let r = realm {
             self.realm = r
         } else {
@@ -26,7 +23,7 @@ public final class Cream {
 public extension Cream {
     
     // MARK: - Insert or Update
-    func insertOrUpdate<T: Object>(object: T) throws {
+    func insertOrUpdate(object: T) throws {
         guard let primaryKey = T.primaryKey() else { fatalError("Can not execute insertOrUpdate when no primaryKey in \(T.description())") }
         guard let primaryKeyValue = object.value(forKey: primaryKey) else { fatalError("Can not find the given primaryKey value of \(T.description())") }
         
