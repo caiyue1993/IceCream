@@ -7,6 +7,7 @@
 
 import Foundation
 import RealmSwift
+import CloudKit
 
 public final class SyncEngine<T: Object> {
     
