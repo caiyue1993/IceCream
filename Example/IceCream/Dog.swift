@@ -22,6 +22,8 @@ class Dog: Object {
 }
 
 extension Dog: CKRecordConvertible {
+    /// recordName : this is the unique identifier for the record, used to locate records on the database. We can create our own ID or leave it to CloudKit to generate a random UUID.
+    /// For more: https://medium.com/@guilhermerambo/synchronizing-data-with-cloudkit-94c6246a3fda
     var recordID: CKRecordID {
         return CKRecordID(recordName: id)
     }

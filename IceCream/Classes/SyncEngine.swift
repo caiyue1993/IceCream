@@ -22,6 +22,10 @@ public final class SyncEngine<T: Object & CKRecordConvertible> {
         registerLocalDatabase()
     }
     
+    
+    /// When you commit a write transaction to a Realm, all other instances of that Realm will be notified, and be updated automatically.
+    /// For more: https://realm.io/docs/swift/latest/#writes
+
     private func registerLocalDatabase() {
         let objects = Cream().realm.objects(T.self)
         notificationToken = objects.observe({ [weak self](changes) in
@@ -37,7 +41,7 @@ public final class SyncEngine<T: Object & CKRecordConvertible> {
                 print("insertions:" + "\(insertions)")
                 print("modifications:" + "\(modifications)")
                 
-                let objectsToStore = insertions.map { collection[$0] }
+                let objectsToStore = (insertions + modifications).map { collection[$0] }
                 let objectsToDelete = deletions.map { collection[$0] }
                 
                 `self`.syncObjectsToCloudKit(objectsToStore: objectsToStore, objectsToDelete: objectsToDelete)

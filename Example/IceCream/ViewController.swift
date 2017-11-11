@@ -17,6 +17,8 @@ class ViewController: UIViewController {
     var dogs: [Dog] = []
     let bag = DisposeBag()
     
+    let dogCream = Cream<Dog>()
+    
     lazy var addBarItem: UIBarButtonItem = {
         let b = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.add, target: self, action: #selector(add))
         return b
@@ -55,16 +57,37 @@ class ViewController: UIViewController {
     
     @objc func add() {
         let dog = Dog()
-        dog.name = "Rex"
-        dog.age = 1
+        dog.name = "Dog Number " + "\(dogs.count)"
+        dog.age = dogs.count + 1
         
-        let c = Cream<Dog>()
-        try! c.insertOrUpdate(object: dog)
+        try! dogCream.insertOrUpdate(object: dog)
     }
 }
 
 extension ViewController: UITableViewDelegate {
-    
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        let deleteAction = UITableViewRowAction(style: .destructive, title: "Delete") { (_, ip) in
+            let alert = UIAlertController(title: NSLocalizedString("caution", comment: "caution"), message: NSLocalizedString("sure_to_delete", comment: "sure_to_delete"), preferredStyle: .alert)
+            let deleteAction = UIAlertAction(title: NSLocalizedString("delete", comment: "delete"), style: .destructive, handler: { (action) in
+                
+            })
+            let defaultAction = UIAlertAction(title: NSLocalizedString("cancel", comment: "cancel"), style: .default, handler: nil)
+            alert.addAction(defaultAction)
+            alert.addAction(deleteAction)
+            self.present(alert, animated: true, completion: nil)
+        }
+        
+        let archiveAction = UITableViewRowAction(style: .normal, title: "Plus") { [weak self](_, ip) in
+            guard let `self` = self else { return }
+            guard ip.row < `self`.dogs.count else { return }
+            let dog = `self`.dogs[ip.row]
+            let r = try! Realm()
+            try! r.write {
+                dog.age += 1
+            }
+        }
+        return [deleteAction, archiveAction]
+    }
 }
 
 extension ViewController: UITableViewDataSource {
@@ -74,8 +97,7 @@ extension ViewController: UITableViewDataSource {
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell")
-        cell?.textLabel?.text = dogs[indexPath.row].name
-        cell?.detailTextLabel?.text = "\(dogs[indexPath.row].age)"
+        cell?.textLabel?.text = dogs[indexPath.row].name + "Age: \(dogs[indexPath.row].age)"
         return cell ?? UITableViewCell()
     }
 
