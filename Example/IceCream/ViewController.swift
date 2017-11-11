@@ -17,7 +17,7 @@ class ViewController: UIViewController {
     var dogs: [Dog] = []
     let bag = DisposeBag()
     
-    let dogCream = Cream<Dog>()
+    let realm = try! Realm()
     
     lazy var addBarItem: UIBarButtonItem = {
         let b = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.add, target: self, action: #selector(add))
@@ -60,7 +60,9 @@ class ViewController: UIViewController {
         dog.name = "Dog Number " + "\(dogs.count)"
         dog.age = dogs.count + 1
         
-        try! dogCream.insertOrUpdate(object: dog)
+        try! realm.write {
+            realm.add(dog)
+        }
     }
 }
 
@@ -81,8 +83,7 @@ extension ViewController: UITableViewDelegate {
             guard let `self` = self else { return }
             guard ip.row < `self`.dogs.count else { return }
             let dog = `self`.dogs[ip.row]
-            let r = try! Realm()
-            try! r.write {
+            try! `self`.realm.write {
                 dog.age += 1
             }
         }
