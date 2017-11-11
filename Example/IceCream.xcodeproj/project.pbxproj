@@ -16,7 +16,6 @@
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
 		67C9BC0B1F9DEDA50005D0E7 /* Dog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C9BC0A1F9DEDA50005D0E7 /* Dog.swift */; };
 		67E8D08F1FB4AB7C00AED560 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67E8D08E1FB4AB7C00AED560 /* CloudKit.framework */; };
-		67E8D0911FB6910100AED560 /* Dog+CKRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E8D0901FB6910100AED560 /* Dog+CKRecord.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,7 +45,6 @@
 		67C9BC0A1F9DEDA50005D0E7 /* Dog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dog.swift; sourceTree = "<group>"; };
 		67E8D08D1FB4AB0100AED560 /* IceCream_Example.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = IceCream_Example.entitlements; sourceTree = "<group>"; };
 		67E8D08E1FB4AB7C00AED560 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
-		67E8D0901FB6910100AED560 /* Dog+CKRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dog+CKRecord.swift"; sourceTree = "<group>"; };
 		B535236D2AB829FA8291A918 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		D04DBAD47D63C2543E62A5F8 /* IceCream.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = IceCream.podspec; path = ../IceCream.podspec; sourceTree = "<group>"; };
 		D0EE1F0ECCDE99345660F8A1 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
@@ -102,7 +100,6 @@
 			children = (
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
-				67E8D0901FB6910100AED560 /* Dog+CKRecord.swift */,
 				67C9BC0A1F9DEDA50005D0E7 /* Dog.swift */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
@@ -237,6 +234,7 @@
 					};
 					607FACE41AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
+						DevelopmentTeam = RCMHACTPLY;
 						LastSwiftMigration = 0900;
 						TestTargetID = 607FACCF1AFB9204008FA782;
 					};
@@ -398,7 +396,6 @@
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 				67C9BC0B1F9DEDA50005D0E7 /* Dog.swift in Sources */,
-				67E8D0911FB6910100AED560 /* Dog+CKRecord.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -569,6 +566,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = ED27E186EC8B88BB712EE3A3 /* Pods-IceCream_Tests.debug.xcconfig */;
 			buildSettings = {
+				DEVELOPMENT_TEAM = RCMHACTPLY;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -590,6 +588,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4B3B9ECE1862990A247EE9CF /* Pods-IceCream_Tests.release.xcconfig */;
 			buildSettings = {
+				DEVELOPMENT_TEAM = RCMHACTPLY;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
