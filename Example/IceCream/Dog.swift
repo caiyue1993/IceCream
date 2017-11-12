@@ -29,12 +29,15 @@ extension Dog: CKRecordConvertible {
     }
     
     var record: CKRecord {
-        let r = CKRecord(recordType: "Dog", recordID: recordID)
-//        let l = CKRecord(recordType: <#T##String#>, zoneID: <#T##CKRecordZoneID#>)
+        let r = CKRecord(recordType: Dog.recordType, recordID: recordID)
         r[.id] = id as CKRecordValue
         r[.age] = age as CKRecordValue
         r[.name] = name as CKRecordValue
         return r
+    }
+    
+    static var recordType: String {
+        return "Dog"
     }
 }
 

@@ -9,9 +9,19 @@ import Foundation
 import RealmSwift
 import CloudKit
 
-struct Constants {
-   // static let databaseChangesToken = "DatabaseChangesToken"
+public extension Notification.Name {
+    public static let databaseDidChangeRemotely = Notification.Name(rawValue: "databaseDidChangeRemotely")
+}
+
+public struct Constants {
+    /*
     static let databaseChangesTokenKey = "database_changes_token"
+    */
+    static let subscriptionIsLocallyCachedKey = "subscription_is_locally_cached"
+    
+    static let cloudRecordChangesToken = "cloud_record_changes_token"
+    
+    public static let cloudSubscriptionID = "private_changes"
     
     static let customZoneName = "custom_zone_name"
 }
@@ -24,7 +34,6 @@ public final class SyncEngine<T: Object & CKRecordConvertible> {
     
     /// Indicates the private database in default container
     let privateDatabase = CKContainer.default().privateCloudDatabase
-    
     
     let customZoneID = CKRecordZoneID(zoneName: Constants.customZoneName, ownerName: CKCurrentUserDefaultName)
     
@@ -40,15 +49,15 @@ public final class SyncEngine<T: Object & CKRecordConvertible> {
 //                    print("Fetch changes successfully!")
 //                }
                 
-                
-                /// 2. Subscribe to future changes
-                
-                
-                
-                /// 3. Register to local database
+                /// 2. Register to local database
                 DispatchQueue.main.async {
                     `self`.registerLocalDatabase()
                 }
+                
+                /// 3. Subscribe to future changes
+                if (`self`.subscriptionIsLocallyCached) { return }
+                `self`.createDatabaseSubscription()
+                
             } else {
                 /// Handle when user account is not available
             }
@@ -120,6 +129,7 @@ extension SyncEngine {
     }
     */
     
+    /*
     var databaseChangesToken: CKServerChangeToken? {
         get {
             /// For the very first time when launching, the token will be nil and the server will be giving everything on the Cloud to client
@@ -136,7 +146,19 @@ extension SyncEngine {
             UserDefaults.standard.set(data, forKey: Constants.databaseChangesTokenKey)
         }
     }
+    */
     
+    var subscriptionIsLocallyCached: Bool {
+        get {
+            guard let flag = UserDefaults.standard.object(forKey: Constants.subscriptionIsLocallyCachedKey) as? Bool  else { return false }
+            return flag
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: Constants.subscriptionIsLocallyCachedKey)
+        }
+    }
+    
+    /*
     /// Only update the changeToken when fetch process completes
     private func fetchChangesInDatabase(_ callback: () -> Void) {
         
@@ -162,7 +184,7 @@ extension SyncEngine {
         }
         privateDatabase.add(changesOperation)
     }
- 
+    */
     
     
     /*
@@ -218,6 +240,36 @@ extension SyncEngine {
         privateDatabase.add(checkZoneOp)
     }
  */
+    
+    fileprivate func createDatabaseSubscription() {
+//        let subscription = CKDatabaseSubscription(subscriptionID: Constants.cloudSubscriptionID)
+//
+//        let notificationInfo = CKNotificationInfo()
+//        notificationInfo.shouldSendContentAvailable = true // Silent Push
+//
+//        subscription.notificationInfo = notificationInfo
+//
+//        let createOp = CKModifySubscriptionsOperation(subscriptionsToSave: [subscription], subscriptionIDsToDelete: [])
+//        createOp.modifySubscriptionsCompletionBlock = { _, _, error in
+//            guard error == nil else { return }
+//            self.subscriptionIsLocallyCached = true
+//        }
+//        createOp.qualityOfService = .utility
+//        privateDatabase.add(createOp)
+        
+        let subscription = CKQuerySubscription(recordType: T.recordType, predicate: NSPredicate(value: true), subscriptionID: Constants.cloudSubscriptionID, options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion])
+        let notificationInfo = CKNotificationInfo()
+        notificationInfo.shouldSendContentAvailable = true // Silent Push
+        subscription.notificationInfo = notificationInfo
+        
+        privateDatabase.save(subscription) { (_, error) in
+            guard error == nil else { return }
+            print("Register remote successfully!")
+            self.subscriptionIsLocallyCached = true
+            return
+        }
+        
+    }
     
     /// Sync local data to CloudKit
     /// For more about the savePolicy: https://developer.apple.com/documentation/cloudkit/ckrecordsavepolicy

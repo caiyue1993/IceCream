@@ -11,5 +11,6 @@ import CloudKit
 public protocol CKRecordConvertible {
     var recordID: CKRecordID { get }
     var record: CKRecord { get }
+    static var recordType: String { get }
 }
 
