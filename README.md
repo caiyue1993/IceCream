@@ -5,6 +5,12 @@
 [![License](https://img.shields.io/cocoapods/l/IceCream.svg?style=flat)](http://cocoapods.org/pods/IceCream)
 [![Platform](https://img.shields.io/cocoapods/p/IceCream.svg?style=flat)](http://cocoapods.org/pods/IceCream)
 
+## Remainings
+- [ ] Error Handling
+- [ ] Deletions 
+- [ ] Reachability(When cannot connect to Cloud server, do local cache) 
+- [ ] Complete Tests 
+
 ## Example
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
@@ -19,10 +25,6 @@ it, simply add the following line to your Podfile:
 ```ruby
 pod 'IceCream'
 ```
-
-## Author
-
-278060043@qq.com, 278060043@qq.com
 
 ## License
 
