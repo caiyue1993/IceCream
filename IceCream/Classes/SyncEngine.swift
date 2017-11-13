@@ -331,3 +331,15 @@ extension SyncEngine {
         privateDatabase.add(modifyOpe)
     }
 }
+
+/// Error Handling
+extension SyncEngine {
+    fileprivate func retryOperationIfPossible(with error: Error?, block: () -> ()) {
+        guard let e = error as? CKError else {
+            print("WTF is the CloudKit? Dial 911 to seek more help")
+            return
+        }
+        let errorCode = e.errorCode
+        
+    }
+}
