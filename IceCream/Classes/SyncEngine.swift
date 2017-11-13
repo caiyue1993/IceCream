@@ -16,15 +16,11 @@ public extension Notification.Name {
 public struct Constants {
     
     static let databaseChangesTokenKey = "database_changes_token"
-    
     static let zoneChangesTokenKey = "zone_changes_token"
-    
     static let subscriptionIsLocallyCachedKey = "subscription_is_locally_cached"
-    
-    public static let cloudSubscriptionID = "private_changes"
-    
     static let customZoneName = "DogsZone"
     
+    public static let cloudSubscriptionID = "private_changes"
     public static let customZoneID = CKRecordZoneID(zoneName: Constants.customZoneName, ownerName: CKCurrentUserDefaultName)
 }
 
