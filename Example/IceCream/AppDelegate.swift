@@ -35,6 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if (notification.subscriptionID == Constants.cloudSubscriptionID) {
              NotificationCenter.default.post(name: .databaseDidChangeRemotely, object: nil, userInfo: userInfo)
         }
+        completionHandler(.newData)
         
     }
     

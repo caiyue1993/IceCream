@@ -225,13 +225,16 @@ extension SyncEngine {
             /// The Cloud will return the modified record since the last zoneChangesToken, we need to do local cache here.
             /// Handle the record:
             guard let `self` = self else { return }
-            print(record)
             guard let object = T.objectFrom(record: record) else { return }
             DispatchQueue.main.async {
                 /// If your model class includes a primary key, you can have Realm intelligently update or add objects based off of their primary key values using Realm().add(_:update:).
                 /// https://realm.io/docs/swift/latest/#objects-with-primary-keys
-                try! `self`.realm.write {
-                    `self`.realm.add(object, update: true)
+                `self`.realm.beginWrite()
+                `self`.realm.add(object, update: true)
+                if let token = `self`.notificationToken {
+                    try! `self`.realm.commitWrite(withoutNotifying: [token])
+                } else {
+                    try! `self`.realm.commitWrite()
                 }
             }
         }
@@ -334,12 +337,23 @@ extension SyncEngine {
 
 /// Error Handling
 extension SyncEngine {
-    fileprivate func retryOperationIfPossible(with error: Error?, block: () -> ()) {
+    fileprivate func retryOperationIfPossible(with error: Error?, block: @escaping () -> ()) {
         guard let e = error as? CKError else {
             print("WTF is the CloudKit? Dial 911 to seek more help")
             return
         }
-        let errorCode = e.errorCode
-        
+        switch e.code {
+        case .internalError, .serverRejectedRequest, .invalidArguments, .permissionFailure:
+            print("These errors are unrecoverable and should not be retried")
+        case .zoneBusy, .serviceUnavailable, .requestRateLimited:
+            if let retryAfter = e.userInfo[CKErrorRetryAfterKey] as? Double {
+                let delayTime = DispatchTime.now() + retryAfter
+                DispatchQueue.main.asyncAfter(deadline: delayTime, execute: {
+                    block()
+                })
+            }
+        default:
+            print("Error: " + e.localizedDescription)
+        }
     }
 }

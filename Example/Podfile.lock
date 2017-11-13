@@ -1,7 +1,9 @@
 PODS:
   - IceCream (0.1.0):
+    - ReachabilitySwift
     - RealmSwift
     - RxRealm
+  - ReachabilitySwift (4.1.0)
   - Realm (3.0.1):
     - Realm/Headers (= 3.0.1)
   - Realm/Headers (3.0.1)
@@ -20,7 +22,8 @@ EXTERNAL SOURCES:
     :path: ../
 
 SPEC CHECKSUMS:
-  IceCream: 43a2e90dd586dc962e77926bc5fedd8b0b0c9c1f
+  IceCream: 06b937637e22e48e4352d360973f1d83e44ba40c
+  ReachabilitySwift: 6849231cd4e06559f3b9ef4a97a0a0f96d41e09f
   Realm: ba6144c74f835f7497791f6599d63a7755377b83
   RealmSwift: 7d13b1ac4b6022a13f841e3143e7789c9e40ad0d
   RxRealm: 9e203070a6adadd8f2592b58bbc9c8cc40aa35ec

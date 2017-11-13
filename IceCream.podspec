@@ -30,4 +30,5 @@ TODO: Add long description of the pod here.
   # s.frameworks = 'UIKit', 'MapKit'
   s.dependency 'RealmSwift'
   s.dependency 'RxRealm'
+  s.dependency 'ReachabilitySwift'
 end
