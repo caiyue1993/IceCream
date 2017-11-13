@@ -19,12 +19,13 @@ public struct Constants {
     static let zoneChangesTokenKey = "zone_changes_token"
     static let subscriptionIsLocallyCachedKey = "subscription_is_locally_cached"
     static let customZoneName = "DogsZone"
+    static let isVeryFirstLaunchKey = "is_very_first_launch"
     
     public static let cloudSubscriptionID = "private_changes"
     public static let customZoneID = CKRecordZoneID(zoneName: Constants.customZoneName, ownerName: CKCurrentUserDefaultName)
 }
 
-public final class SyncEngine<T: Object & CKRecordConvertible> {
+public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecoverable> {
     
     /// Notifications are delivered as long as a reference is held to the returned notification token. You should keep a strong reference to this token on the class registering for updates, as notifications are automatically unregistered when the notification token is deallocated.
     /// For more, reference is here: https://realm.io/docs/swift/latest/#notifications
@@ -38,6 +39,8 @@ public final class SyncEngine<T: Object & CKRecordConvertible> {
     /// Indicates the private database in default container
     let privateDatabase = CKContainer.default().privateCloudDatabase
     
+    let realm = try! Realm()
+    
     /// We recommand process the initialization when app launches
     public init() {
         /// Check iCloud status so that we can go on
@@ -46,9 +49,12 @@ public final class SyncEngine<T: Object & CKRecordConvertible> {
             if status == CKAccountStatus.available {
                 
                 /// 1. Fetch changes in the Cloud
-//                `self`.fetchChangesInZone {
-//                    print("Fetch changes successfully!")
-//                }
+                if (`self`.isVeryFirstLaunch) {
+                    `self`.fetchChangesInDatabase({
+                        print("First sync done!")
+                        `self`.isVeryFirstLaunch = false
+                    })
+                }
                 
                 `self`.createCustomZone()
                 
@@ -160,6 +166,15 @@ extension SyncEngine {
         }
     }
     
+    var isVeryFirstLaunch: Bool {
+        get {
+            guard let flag = UserDefaults.standard.object(forKey: Constants.isVeryFirstLaunchKey) as? Bool else { return true }
+            return flag
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: Constants.isVeryFirstLaunchKey)
+        }
+    }
     
     /// Only update the changeToken when fetch process completes
     private func fetchChangesInDatabase(_ callback: (() -> Void)? = nil) {
@@ -206,10 +221,19 @@ extension SyncEngine {
         changesOp.recordZoneChangeTokensUpdatedBlock = { _, token, _ in
             self.zoneChangesToken = token
         }
-        changesOp.recordChangedBlock = { record in
+        changesOp.recordChangedBlock = { [weak self]record in
             /// The Cloud will return the modified record since the last zoneChangesToken, we need to do local cache here.
             /// Handle the record:
+            guard let `self` = self else { return }
             print(record)
+            guard let object = T.objectFrom(record: record) else { return }
+            DispatchQueue.main.async {
+                /// If your model class includes a primary key, you can have Realm intelligently update or add objects based off of their primary key values using Realm().add(_:update:).
+                /// https://realm.io/docs/swift/latest/#objects-with-primary-keys
+                try! `self`.realm.write {
+                    `self`.realm.add(object, update: true)
+                }
+            }
         }
         changesOp.recordWithIDWasDeletedBlock = { recordId, _ in
             
@@ -257,7 +281,7 @@ extension SyncEngine {
 
         let notificationInfo = CKNotificationInfo()
         notificationInfo.shouldSendContentAvailable = true // Silent Push
-
+         
         subscription.notificationInfo = notificationInfo
 
         let createOp = CKModifySubscriptionsOperation(subscriptionsToSave: [subscription], subscriptionIDsToDelete: [])

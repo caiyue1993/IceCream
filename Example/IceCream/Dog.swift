@@ -42,6 +42,22 @@ extension Dog: CKRecordConvertible {
     }
 }
 
+extension Dog: CKRecordRecoverable {
+    static func objectFrom(record: CKRecord) -> Object? {
+        guard let id = record[.id] as? String,
+            let age = record[.age] as? Int,
+            let name = record[.name] as? String
+            else { return nil }
+        
+        let dog = Dog()
+        dog.id = id
+        dog.age = age
+        dog.name = name
+        
+        return dog
+    }
+}
+
 enum DogKey: String {
     case id
     case name
