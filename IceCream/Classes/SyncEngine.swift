@@ -54,6 +54,8 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
                     })
                 }
                 
+                `self`.resumeLongLivedOperation()
+                
                 `self`.createCustomZone()
                 
                 `self`.beginObservingRemoteChanges()
@@ -348,6 +350,16 @@ extension SyncEngine {
     /// For more about the savePolicy: https://developer.apple.com/documentation/cloudkit/ckrecordsavepolicy
     fileprivate func syncRecordsToCloudKit(recordsToStore: [CKRecord], recordIDsToDelete: [CKRecordID], completion: ((Error?) -> ())? = nil) {
         let modifyOpe = CKModifyRecordsOperation(recordsToSave: recordsToStore, recordIDsToDelete: recordIDsToDelete)
+        
+        if #available(iOS 11.0, *) {
+            let config = CKOperationConfiguration()
+            config.isLongLived = true
+            modifyOpe.configuration = config
+        } else {
+            // Fallback on earlier versions
+            modifyOpe.isLongLived = true
+        }
+
         modifyOpe.savePolicy = .allKeys
         modifyOpe.modifyRecordsCompletionBlock = { [weak self](_, _, error) in
             guard error == nil else {
@@ -383,6 +395,34 @@ extension SyncEngine {
             }
         default:
             print("Error: " + e.localizedDescription)
+        }
+    }
+}
+
+/// Long-lived Manipulation
+extension SyncEngine {
+    /// The CloudKit Best Practice is out of date, now use this:
+    /// https://developer.apple.com/documentation/cloudkit/ckoperation
+    /// Which problem does this func solve? E.g.:
+    /// 1.(Offline) You make a local change, involve a operation
+    /// 2. App exits or ejected by user
+    /// 3. Back to app again
+    /// The operation resumes! All works like a magic!
+    fileprivate func resumeLongLivedOperation () {
+        CKContainer.default().fetchAllLongLivedOperationIDs { ( opeIDs, error) in
+            guard error == nil else { return }
+            guard let ids = opeIDs else { return }
+            for id in ids {
+                CKContainer.default().fetchLongLivedOperation(withID: id, completionHandler: { (ope, error) in
+                    guard error == nil else { return }
+                    if let modifyOp = ope as? CKModifyRecordsOperation {
+                        modifyOp.modifyRecordsCompletionBlock = { (_,_,_) in
+                            print("Resume modify records success!")
+                        }
+                        CKContainer.default().add(modifyOp)
+                    }
+                })
+            }
         }
     }
 }
