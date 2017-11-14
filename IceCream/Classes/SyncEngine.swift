@@ -23,6 +23,7 @@ public struct Constants {
     
     public static let cloudSubscriptionID = "private_changes"
     public static let customZoneID = CKRecordZoneID(zoneName: Constants.customZoneName, ownerName: CKCurrentUserDefaultName)
+    
 }
 
 public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecoverable> {
@@ -236,8 +237,21 @@ extension SyncEngine {
                 }
             }
         }
-        changesOp.recordWithIDWasDeletedBlock = { recordId, _ in
-            
+        changesOp.recordWithIDWasDeletedBlock = { [weak self]recordId, _ in
+            guard let `self` = self else { return }
+            DispatchQueue.main.async {
+                guard let object = `self`.realm.object(ofType: T.self, forPrimaryKey: recordId.recordName) else {
+                    // Not found in local
+                    return
+                }
+                `self`.realm.beginWrite()
+                `self`.realm.delete(object)
+                if let token = `self`.notificationToken {
+                    try! `self`.realm.commitWrite(withoutNotifying: [token])
+                } else {
+                    try! `self`.realm.commitWrite()
+                }
+            }
         }
         changesOp.recordZoneFetchCompletionBlock = { [weak self](_,token, _, _, error) in
             guard error == nil else {
