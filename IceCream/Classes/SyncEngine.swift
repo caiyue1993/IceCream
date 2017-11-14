@@ -31,9 +31,6 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
     /// For more, reference is here: https://realm.io/docs/swift/latest/#notifications
     private var notificationToken: NotificationToken?
     
-    ///
-    private var changesObserver: NSObjectProtocol?
-    
 //    fileprivate var changedRecordZoneID: CKRecordZoneID?
     
     /// Indicates the private database in default container
@@ -196,14 +193,14 @@ extension SyncEngine {
             `self`.changedRecordZoneID = zoneID
         }
         */
-        
         changesOperation.fetchDatabaseChangesCompletionBlock = { [weak self] newToken, _, error in
             guard error == nil else {
-                // Handle when error occurs
+                self?.retryOperationIfPossible(with: error, block: {
+                    self?.fetchChangesInDatabase(callback)
+                })
                 return
             }
             self?.databaseChangeToken = newToken
-            
             // Fetch the changes in zone level
             self?.fetchChangesInZone(callback)
         }
@@ -241,9 +238,14 @@ extension SyncEngine {
         changesOp.recordWithIDWasDeletedBlock = { recordId, _ in
             
         }
-        changesOp.recordZoneFetchCompletionBlock = { _,token, _, _, error in
-            guard error == nil else { return }
-            self.zoneChangesToken = token
+        changesOp.recordZoneFetchCompletionBlock = { [weak self](_,token, _, _, error) in
+            guard error == nil else {
+                self?.retryOperationIfPossible(with: error, block: {
+                    self?.fetchChangesInZone(callback)
+                })
+                return
+            }
+            self?.zoneChangesToken = token
             print("Sync successfully!")
         }
         privateDatabase.add(changesOp)
@@ -255,8 +257,13 @@ extension SyncEngine {
     fileprivate func createCustomZone(_ completion: ((Error?) -> ())? = nil) {
         let newCustomZone = CKRecordZone(zoneID: Constants.customZoneID)
         let modifyOp = CKModifyRecordZonesOperation(recordZonesToSave: [newCustomZone], recordZoneIDsToDelete: nil)
-        modifyOp.modifyRecordZonesCompletionBlock = { _, _, error in
-            guard error == nil else { return }
+        modifyOp.modifyRecordZonesCompletionBlock = { [weak self](_, _, error) in
+            guard error == nil else {
+                self?.retryOperationIfPossible(with: error, block: {
+                    self?.createCustomZone(completion)
+                })
+                return
+            }
             DispatchQueue.main.async {
                 completion?(nil)
             }
@@ -302,16 +309,21 @@ extension SyncEngine {
         notificationInfo.shouldSendContentAvailable = true // Silent Push
         subscription.notificationInfo = notificationInfo
         
-        privateDatabase.save(subscription) { (_, error) in
-            guard error == nil else { return }
+        privateDatabase.save(subscription) { [weak self](_, error) in
+            guard error == nil else {
+                self?.retryOperationIfPossible(with: error, block: {
+                    self?.createDatabaseSubscription()
+                })
+                return
+            }
             print("Register remote successfully!")
-            self.subscriptionIsLocallyCached = true
+            self?.subscriptionIsLocallyCached = true
             return
         }
     }
     
     fileprivate func beginObservingRemoteChanges() {
-        changesObserver = NotificationCenter.default.addObserver(forName: .databaseDidChangeRemotely, object: nil, queue: OperationQueue.main, using: { [weak self](_) in
+        NotificationCenter.default.addObserver(forName: .databaseDidChangeRemotely, object: nil, queue: OperationQueue.main, using: { [weak self](_) in
             guard let `self` = self else { return }
             `self`.fetchChangesInDatabase()
         })
@@ -322,9 +334,11 @@ extension SyncEngine {
     fileprivate func syncRecordsToCloudKit(recordsToStore: [CKRecord], recordIDsToDelete: [CKRecordID], completion: ((Error?) -> ())? = nil) {
         let modifyOpe = CKModifyRecordsOperation(recordsToSave: recordsToStore, recordIDsToDelete: recordIDsToDelete)
         modifyOpe.savePolicy = .allKeys
-        modifyOpe.modifyRecordsCompletionBlock = { _, _, error in
+        modifyOpe.modifyRecordsCompletionBlock = { [weak self](_, _, error) in
             guard error == nil else {
-                // Handle when error occurs
+                self?.retryOperationIfPossible(with: error, block: {
+                    self?.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete, completion: completion)
+                })
                 return
             }
             DispatchQueue.main.async {

@@ -6,7 +6,7 @@
 [![Platform](https://img.shields.io/cocoapods/p/IceCream.svg?style=flat)](http://cocoapods.org/pods/IceCream)
 
 ## Remainings
-- [ ] Error Handling
+- [x] Error Handling
 - [ ] Deletions 
 - [ ] Reachability(When cannot connect to Cloud server, do local cache) 
 - [ ] Complete Tests 
