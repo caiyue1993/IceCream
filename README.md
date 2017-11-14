@@ -7,8 +7,8 @@
 
 ## Remainings
 - [x] Error Handling
-- [ ] Deletions 
-- [ ] Reachability(When cannot connect to Cloud server, do local cache) 
+- [x] Deletions 
+- [x] Reachability(When cannot connect to Cloud server, do local cache) 
 - [ ] Complete Tests 
 
 ## Example
