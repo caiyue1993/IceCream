@@ -19,7 +19,6 @@ public struct Constants {
     static let zoneChangesTokenKey = "zone_changes_token"
     static let subscriptionIsLocallyCachedKey = "subscription_is_locally_cached"
     static let customZoneName = "DogsZone"
-    static let isVeryFirstLaunchKey = "is_very_first_launch"
     static let isCustomZoneCreatedKey = "is_custom_zone_created"
     
     public static let cloudSubscriptionID = "private_changes"
@@ -48,12 +47,12 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
             if status == CKAccountStatus.available {
                 
                 /// 1. Fetch changes in the Cloud
-                if (`self`.isVeryFirstLaunch) {
-                    `self`.fetchChangesInDatabase({
-                        print("First sync done!")
-                        `self`.isVeryFirstLaunch = false
-                    })
-                }
+                /// Apple suggests that we should fetch changes in database, *especially* the very first launch.
+                /// But actually, there **might** be some rare unknown and weird reason that the data is not synced between muilty devices.
+                /// So I suggests fetch changes in database everytime app launches.
+                `self`.fetchChangesInDatabase({
+                    print("First sync done!")
+                })
                 
                 `self`.resumeLongLivedOperationIfPossible()
                 
@@ -167,6 +166,7 @@ extension SyncEngine {
         }
     }
     
+    /*
     var isVeryFirstLaunch: Bool {
         get {
             guard let flag = UserDefaults.standard.object(forKey: Constants.isVeryFirstLaunchKey) as? Bool else { return true }
@@ -176,6 +176,7 @@ extension SyncEngine {
             UserDefaults.standard.set(newValue, forKey: Constants.isVeryFirstLaunchKey)
         }
     }
+    */
     
     var isCustomZoneCreated: Bool {
         get {
@@ -276,6 +277,7 @@ extension SyncEngine {
                 return
             }
             self?.zoneChangesToken = token
+            callback?()
             print("Sync successfully!")
         }
         privateDatabase.add(changesOp)
