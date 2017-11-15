@@ -20,6 +20,7 @@ public struct Constants {
     static let subscriptionIsLocallyCachedKey = "subscription_is_locally_cached"
     static let customZoneName = "DogsZone"
     static let isVeryFirstLaunchKey = "is_very_first_launch"
+    static let isCustomZoneCreatedKey = "is_custom_zone_created"
     
     public static let cloudSubscriptionID = "private_changes"
     public static let customZoneID = CKRecordZoneID(zoneName: Constants.customZoneName, ownerName: CKCurrentUserDefaultName)
@@ -54,11 +55,13 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
                     })
                 }
                 
-                `self`.resumeLongLivedOperation()
+                `self`.resumeLongLivedOperationIfPossible()
                 
-                `self`.createCustomZone()
+                if (!`self`.isCustomZoneCreated) {
+                    `self`.createCustomZone()
+                }
                 
-                `self`.beginObservingRemoteChanges()
+                `self`.startObservingRemoteChanges()
                 
                 /// 2. Register to local database
                 DispatchQueue.main.async {
@@ -171,6 +174,16 @@ extension SyncEngine {
         }
         set {
             UserDefaults.standard.set(newValue, forKey: Constants.isVeryFirstLaunchKey)
+        }
+    }
+    
+    var isCustomZoneCreated: Bool {
+        get {
+            guard let flag = UserDefaults.standard.object(forKey: Constants.isCustomZoneCreatedKey) as? Bool else { return false }
+            return flag
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: Constants.isCustomZoneCreatedKey)
         }
     }
     
@@ -339,7 +352,7 @@ extension SyncEngine {
         }
     }
     
-    fileprivate func beginObservingRemoteChanges() {
+    fileprivate func startObservingRemoteChanges() {
         NotificationCenter.default.addObserver(forName: .databaseDidChangeRemotely, object: nil, queue: OperationQueue.main, using: { [weak self](_) in
             guard let `self` = self else { return }
             `self`.fetchChangesInDatabase()
@@ -408,7 +421,7 @@ extension SyncEngine {
     /// 2. App exits or ejected by user
     /// 3. Back to app again
     /// The operation resumes! All works like a magic!
-    fileprivate func resumeLongLivedOperation () {
+    fileprivate func resumeLongLivedOperationIfPossible () {
         CKContainer.default().fetchAllLongLivedOperationIDs { ( opeIDs, error) in
             guard error == nil else { return }
             guard let ids = opeIDs else { return }
