@@ -1,15 +1,18 @@
 # IceCream
 
-[![CI Status](http://img.shields.io/travis/278060043@qq.com/IceCream.svg?style=flat)](https://travis-ci.org/278060043@qq.com/IceCream)
+[![CI Status](http://img.shields.io/travis/caiyue1993/IceCream.svg?style=flat)](https://travis-ci.org/caiyue1993/IceCream)
 [![Version](https://img.shields.io/cocoapods/v/IceCream.svg?style=flat)](http://cocoapods.org/pods/IceCream)
 [![License](https://img.shields.io/cocoapods/l/IceCream.svg?style=flat)](http://cocoapods.org/pods/IceCream)
 [![Platform](https://img.shields.io/cocoapods/p/IceCream.svg?style=flat)](http://cocoapods.org/pods/IceCream)
 
-## Remainings
+
+
+## Features
 - [x] Error Handling
 - [x] Deletions 
 - [x] Reachability(When cannot connect to Cloud server, do local cache) 
-- [ ] Complete Tests 
+- [x] Complete Tests 
+
 
 ## Example
 

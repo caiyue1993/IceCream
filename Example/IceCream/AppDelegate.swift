@@ -2,8 +2,8 @@
 //  AppDelegate.swift
 //  IceCream
 //
-//  Created by 278060043@qq.com on 10/17/2017.
-//  Copyright (c) 2017 278060043@qq.com. All rights reserved.
+//  Created by 蔡越 on 10/17/2017.
+//  Copyright (c) 2017 Nanjing University. All rights reserved.
 //
 
 import UIKit
