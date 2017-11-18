@@ -1,4 +1,4 @@
-![IceCream](https://i.loli.net/2017/11/18/5a1040fbcf532.png)
+![IceCream](https://i.loli.net/2017/11/18/5a104e5acfea5.png)
 
 [![CI Status](http://img.shields.io/travis/caiyue1993/IceCream.svg?style=flat)](https://travis-ci.org/caiyue1993/IceCream)
 [![Version](https://img.shields.io/cocoapods/v/IceCream.svg?style=flat)](http://cocoapods.org/pods/IceCream)
