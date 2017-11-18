@@ -374,8 +374,11 @@ extension SyncEngine {
             // Fallback on earlier versions
             modifyOpe.isLongLived = true
         }
-
-        modifyOpe.savePolicy = .allKeys
+        
+        // We use .changedKeys savePolicy to do unlocked changes here cause my app is contentious and off-line first
+        // Apple suggests using .ifServerRecordUnchanged save policy
+        // For more, see Advanced CloudKit(https://developer.apple.com/videos/play/wwdc2014/231/)
+        modifyOpe.savePolicy = .changedKeys
         modifyOpe.modifyRecordsCompletionBlock = { [weak self](_, _, error) in
             guard error == nil else {
                 self?.retryOperationIfPossible(with: error, block: {
