@@ -25,7 +25,7 @@ extension Dog: CKRecordConvertible {
     /// recordName : this is the unique identifier for the record, used to locate records on the database. We can create our own ID or leave it to CloudKit to generate a random UUID.
     /// For more: https://medium.com/@guilhermerambo/synchronizing-data-with-cloudkit-94c6246a3fda
     var recordID: CKRecordID {
-        return CKRecordID(recordName: id, zoneID: Constants.customZoneID)
+        return CKRecordID(recordName: id, zoneID: Dog.customZoneID)
     }
     
     var record: CKRecord {
@@ -35,6 +35,10 @@ extension Dog: CKRecordConvertible {
         r[.age] = age as CKRecordValue
         r[.name] = name as CKRecordValue
         return r
+    }
+    
+    static var customZoneID: CKRecordZoneID {
+        return CKRecordZoneID(zoneName: Dog.recordType + "s" + "Zone", ownerName: CKCurrentUserDefaultName)
     }
     
     static var recordType: String {

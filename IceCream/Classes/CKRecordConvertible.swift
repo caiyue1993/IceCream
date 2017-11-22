@@ -12,7 +12,7 @@ import RealmSwift
 public protocol CKRecordConvertible {
     
     static var recordType: String { get }
-    static var customZoneName: String { get }
+    static var customZoneID: CKRecordZoneID { get }
     
     var recordID: CKRecordID { get }
     var record: CKRecord { get }

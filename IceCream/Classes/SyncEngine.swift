@@ -223,7 +223,7 @@ extension SyncEngine {
         let zoneChangesOptions = CKFetchRecordZoneChangesOptions()
         zoneChangesOptions.previousServerChangeToken = zoneChangesToken
         
-        let changesOp = CKFetchRecordZoneChangesOperation(recordZoneIDs: [customZoneID], optionsByRecordZoneID: [customZoneID: zoneChangesOptions])
+        let changesOp = CKFetchRecordZoneChangesOperation(recordZoneIDs: [T.customZoneID], optionsByRecordZoneID: [T.customZoneID: zoneChangesOptions])
         changesOp.fetchAllChanges = true
         
         changesOp.recordZoneChangeTokensUpdatedBlock = { _, token, _ in
@@ -283,7 +283,7 @@ extension SyncEngine {
     /// Create new custom zones
     /// You can(but you shouldn't) invoke this method more times, but the CloudKit is smart and will handle that for you
     fileprivate func createCustomZone(_ completion: ((Error?) -> ())? = nil) {
-        let newCustomZone = CKRecordZone(zoneID: customZoneID)
+        let newCustomZone = CKRecordZone(zoneID: T.customZoneID)
         let modifyOp = CKModifyRecordZonesOperation(recordZonesToSave: [newCustomZone], recordZoneIDsToDelete: nil)
         modifyOp.modifyRecordZonesCompletionBlock = { [weak self](_, _, error) in
             guard error == nil else {
