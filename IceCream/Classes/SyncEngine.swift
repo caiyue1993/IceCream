@@ -14,16 +14,12 @@ public extension Notification.Name {
 }
 
 public struct IceCreamConstants {
-    
     static let databaseChangesTokenKey = "database_changes_token"
     static let zoneChangesTokenKey = "zone_changes_token"
     static let subscriptionIsLocallyCachedKey = "subscription_is_locally_cached"
-    static let customZoneName = "DogsZone"
     static let isCustomZoneCreatedKey = "is_custom_zone_created"
     
     public static let cloudSubscriptionID = "private_changes"
-    public static let customZoneID = CKRecordZoneID(zoneName: IceCreamConstants.customZoneName, ownerName: CKCurrentUserDefaultName)
-    
 }
 
 public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecoverable> {
@@ -227,7 +223,7 @@ extension SyncEngine {
         let zoneChangesOptions = CKFetchRecordZoneChangesOptions()
         zoneChangesOptions.previousServerChangeToken = zoneChangesToken
         
-        let changesOp = CKFetchRecordZoneChangesOperation(recordZoneIDs: [IceCreamConstants.customZoneID], optionsByRecordZoneID: [IceCreamConstants.customZoneID: zoneChangesOptions])
+        let changesOp = CKFetchRecordZoneChangesOperation(recordZoneIDs: [customZoneID], optionsByRecordZoneID: [customZoneID: zoneChangesOptions])
         changesOp.fetchAllChanges = true
         
         changesOp.recordZoneChangeTokensUpdatedBlock = { _, token, _ in
@@ -287,7 +283,7 @@ extension SyncEngine {
     /// Create new custom zones
     /// You can(but you shouldn't) invoke this method more times, but the CloudKit is smart and will handle that for you
     fileprivate func createCustomZone(_ completion: ((Error?) -> ())? = nil) {
-        let newCustomZone = CKRecordZone(zoneID: IceCreamConstants.customZoneID)
+        let newCustomZone = CKRecordZone(zoneID: customZoneID)
         let modifyOp = CKModifyRecordZonesOperation(recordZonesToSave: [newCustomZone], recordZoneIDsToDelete: nil)
         modifyOp.modifyRecordZonesCompletionBlock = { [weak self](_, _, error) in
             guard error == nil else {

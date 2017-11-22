@@ -10,11 +10,13 @@ import CloudKit
 import RealmSwift
 
 public protocol CKRecordConvertible {
-
+    
+    static var recordType: String { get }
+    static var customZoneName: String { get }
+    
     var recordID: CKRecordID { get }
     var record: CKRecord { get }
-    static var recordType: String { get }
-
+    
 }
 
 public protocol CKRecordRecoverable {
