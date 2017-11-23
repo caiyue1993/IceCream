@@ -33,8 +33,6 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
     /// Indicates the private database in default container
     let privateDatabase = CKContainer.default().privateCloudDatabase
     
-    let realm = try! Realm()
-    
     /// We recommand process the initialization when app launches
     public init() {
         /// Check iCloud status so that we can go on
@@ -237,31 +235,36 @@ extension SyncEngine {
                 print("There is something wrong with the converson from cloud record to local object")
                 return
             }
+            
             DispatchQueue.main.async {
+                let realm = try! Realm()
+                
                 /// If your model class includes a primary key, you can have Realm intelligently update or add objects based off of their primary key values using Realm().add(_:update:).
                 /// https://realm.io/docs/swift/latest/#objects-with-primary-keys
-                `self`.realm.beginWrite()
-                `self`.realm.add(object, update: true)
+                realm.beginWrite()
+                realm.add(object, update: true)
                 if let token = `self`.notificationToken {
-                    try! `self`.realm.commitWrite(withoutNotifying: [token])
+                    try! realm.commitWrite(withoutNotifying: [token])
                 } else {
-                    try! `self`.realm.commitWrite()
+                    try! realm.commitWrite()
                 }
             }
         }
         changesOp.recordWithIDWasDeletedBlock = { [weak self]recordId, _ in
             guard let `self` = self else { return }
+            
             DispatchQueue.main.async {
-                guard let object = `self`.realm.object(ofType: T.self, forPrimaryKey: recordId.recordName) else {
+                let realm = try! Realm()
+                guard let object = realm.object(ofType: T.self, forPrimaryKey: recordId.recordName) else {
                     // Not found in local
                     return
                 }
-                `self`.realm.beginWrite()
-                `self`.realm.delete(object)
+                realm.beginWrite()
+                realm.delete(object)
                 if let token = `self`.notificationToken {
-                    try! `self`.realm.commitWrite(withoutNotifying: [token])
+                    try! realm.commitWrite(withoutNotifying: [token])
                 } else {
-                    try! `self`.realm.commitWrite()
+                    try! realm.commitWrite()
                 }
             }
         }
