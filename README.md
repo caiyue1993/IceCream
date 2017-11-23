@@ -11,6 +11,7 @@ IceCream helps you sync Realm Database with CloudKit.
 
 - Realm Database
     - [x] Off-line First
+    - [x] Thread Safety
     - [x] Reactive Programming
 
 - Apple CloudKit
