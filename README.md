@@ -19,9 +19,9 @@ IceCream helps you sync Realm Database with CloudKit.
 
 - [x] Reachability(Support Long-lived Operation) 
 - [x] Error Handling
-- [ ] Expose fetch zone method in order to apply in enter foreground
-- [ ] Add hint when user not logged in
-- [ ] Add a protocol used for UIViewController when realm updating
+- [x] Sync Automatically
+- [x] Manually Synchronization is also supported
+- [x] User account status
 - [ ] Complete Documentation 
 
 ## Prerequisite
