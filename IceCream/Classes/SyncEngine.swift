@@ -182,6 +182,10 @@ extension SyncEngine {
         }
     }
     
+    public func sync(_ callback: (() -> Void)? = nil) {
+        fetchChangesInDatabase(callback)
+    }
+    
     /// Only update the changeToken when fetch process completes
     private func fetchChangesInDatabase(_ callback: (() -> Void)? = nil) {
         
