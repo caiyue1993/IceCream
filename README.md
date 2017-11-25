@@ -40,7 +40,8 @@ class Dog: Object {
     @objc dynamic var id = NSUUID().uuidString
     @objc dynamic var name = ""
     @objc dynamic var age = 0
-    
+    @objc dynamic var isDeleted = false
+
     override class func primaryKey() -> String? {
         return "id"
     }
@@ -62,9 +63,14 @@ extension Dog: CKRecordConvertible {
         r[.id] = id as CKRecordValue
         r[.age] = age as CKRecordValue
         r[.name] = name as CKRecordValue
+        r[.isDeleted] = isDeleted as CKRecordValue
         return r
     }
     
+    static var customZoneID: CKRecordZoneID {
+        return CKRecordZoneID(zoneName: "DogsZone", ownerName: CKCurrentUserDefaultName)
+    }
+
     static var recordType: String {
         return "Dog"
     }
@@ -74,7 +80,8 @@ extension Dog: CKRecordRecoverable {
     static func objectFrom(record: CKRecord) -> Object? {
         guard let id = record[.id] as? String,
             let age = record[.age] as? Int,
-            let name = record[.name] as? String
+            let name = record[.name] as? String,
+            let isDeleted = record[.isDeleted] as? Bool
             else { return nil }
         
         let dog = Dog()
@@ -100,15 +107,26 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 
 For more, clone the example project and run it yourself.
 
-### Deletions
-Talk about deletions.
+### About Object Deletions
+
+Now, we highly recommend you use **Soft Deletions**. That means, you can add a `isDeleted` property to your model to distinguish between them.
+
+*IceCream tightly depends on [Collection Notification](https://realm.io/docs/swift/latest/#collection-notifications) and now it only supports soft deletion. If you have a better understanding with Realm, you can check the `func registerLocalDatabase()` function in SyncEngine.swift file. And pull a request to us. This video may helps: [https://academy.realm.io/posts/meetup-jp-simard-mastering-realm-notifications/](https://academy.realm.io/posts/meetup-jp-simard-mastering-realm-notifications/)*
 
 ## Requirements
 
 - iOS 10.0+
 - Swift 4
 
-## Suggestions
+## Debug Suggestions
+
+It's true that debugging CloudKit is hard and tedious. But I have some tips for you guys when facing puzzles.
+
+- You should know how Realm and CloudKit works. 
+- Using GUI tools, like [Realm Browser](https://itunes.apple.com/us/app/realm-browser/id1007457278?mt=12) and [CloudKit Dashboard](https://icloud.developer.apple.com/dashboard).
+- When you are lost and don't remember where you are, I suggest starting all over again. In CloudKit Dashboard, "Reset..." button is provided. You can also
+clear local database by re-install apps.
+- Keep calm and carry on!
 
 ## Example
 
@@ -129,7 +147,9 @@ pod 'IceCream'
 3. Feel free to submit a pull request
 
 ## Live Demo
-To be added.
+My app [小目标](https://itunes.apple.com/cn/app/%E5%B0%8F%E7%9B%AE%E6%A0%87-%E9%87%8F%E5%8C%96%E4%BD%A0%E7%9A%84%E8%BF%9B%E6%AD%A5/id1215312957?mt=8&at=1000lvyQ) is using IceCream. You can download it and try it on your muiltiple devices. As I said before, it just works like magic!
+
+If your app has adopted IceCream, you can pull a request to add to Live Demo list.
 
 ## Donation
 Crypto currency donation is the best. Even 0.01 BTC helps😄.
