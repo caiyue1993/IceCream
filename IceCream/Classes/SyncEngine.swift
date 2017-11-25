@@ -67,11 +67,7 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
                 
             } else {
                 /// Handle when user account is not available
-                #if DEBUG
-                    fatalError("Easy, my boy. You haven't logged into iCloud account on your device/simulator yet.")
-                #else
-                    /// Normarlly we need to inform user of this issue.That is: account not available.
-                #endif
+                print("Easy, my boy. You haven't logged into iCloud account on your device/simulator yet.")
             }
         }
     }
@@ -108,17 +104,37 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
 
 /// Public Methods
 extension SyncEngine {
-    public func syncObjectsToCloudKit(objectsToStore: [T], objectsToDelete: [T] = []) {
-        guard objectsToStore.count > 0 || objectsToDelete.count > 0 else { return }
-        
-        let recordsToStore = objectsToStore.map{ $0.record }
-        let recordIDsToDelete = objectsToDelete.map{ $0.recordID }
-        
-        syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete)
+    
+    // Manually sync data with CloudKit
+    public func sync() {
+        CKContainer.default().accountStatus { (status, error) in
+            if status == CKAccountStatus.available {
+                self.fetchChangesInDatabase()
+            } else {
+                /// Handle when user account is not available
+                print("Easy, my boy. You haven't logged into iCloud account on your device/simulator yet.")
+            }
+        }
     }
     
-    public func sync() {
-        fetchChangesInDatabase()
+    // This method is commonly used when you want to push your datas to CloudKit manually
+    // In most cases, you don't need this
+    public func syncObjectsToCloudKit(objectsToStore: [T], objectsToDelete: [T] = []) {
+        
+        CKContainer.default().accountStatus { (status, error) in
+            if status == CKAccountStatus.available {
+                guard objectsToStore.count > 0 || objectsToDelete.count > 0 else { return }
+                
+                let recordsToStore = objectsToStore.map{ $0.record }
+                let recordIDsToDelete = objectsToDelete.map{ $0.recordID }
+                
+                self.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete)
+            } else {
+                /// Handle when user account is not available
+                print("Easy, my boy. You haven't logged into iCloud account on your device/simulator yet.")
+            }
+        }
+        
     }
 }
 
