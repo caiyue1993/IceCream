@@ -107,34 +107,18 @@ extension SyncEngine {
     
     // Manually sync data with CloudKit
     public func sync() {
-        CKContainer.default().accountStatus { (status, error) in
-            if status == CKAccountStatus.available {
-                self.fetchChangesInDatabase()
-            } else {
-                /// Handle when user account is not available
-                print("Easy, my boy. You haven't logged into iCloud account on your device/simulator yet.")
-            }
-        }
+        self.fetchChangesInDatabase()
     }
     
     // This method is commonly used when you want to push your datas to CloudKit manually
     // In most cases, you don't need this
     public func syncObjectsToCloudKit(objectsToStore: [T], objectsToDelete: [T] = []) {
+        guard objectsToStore.count > 0 || objectsToDelete.count > 0 else { return }
         
-        CKContainer.default().accountStatus { (status, error) in
-            if status == CKAccountStatus.available {
-                guard objectsToStore.count > 0 || objectsToDelete.count > 0 else { return }
-                
-                let recordsToStore = objectsToStore.map{ $0.record }
-                let recordIDsToDelete = objectsToDelete.map{ $0.recordID }
-                
-                self.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete)
-            } else {
-                /// Handle when user account is not available
-                print("Easy, my boy. You haven't logged into iCloud account on your device/simulator yet.")
-            }
-        }
+        let recordsToStore = objectsToStore.map{ $0.record }
+        let recordIDsToDelete = objectsToDelete.map{ $0.recordID }
         
+        self.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete)
     }
 }
 
