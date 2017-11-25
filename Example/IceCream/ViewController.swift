@@ -56,7 +56,7 @@ class ViewController: UIViewController {
         Observable.array(from: dogs).subscribe(onNext: { (dogs) in
             /// When dogs data changes in Realm, the following code will be executed
             /// It works like magic.
-            self.dogs = dogs
+            self.dogs = dogs.filter{ !$0.isDeleted }
             self.tableView.reloadData()
         }).disposed(by: bag)
     }
@@ -77,7 +77,11 @@ extension ViewController: UITableViewDelegate {
         let deleteAction = UITableViewRowAction(style: .destructive, title: "Delete") { (_, ip) in
             let alert = UIAlertController(title: NSLocalizedString("caution", comment: "caution"), message: NSLocalizedString("sure_to_delete", comment: "sure_to_delete"), preferredStyle: .alert)
             let deleteAction = UIAlertAction(title: NSLocalizedString("delete", comment: "delete"), style: .destructive, handler: { (action) in
-                
+                guard ip.row < self.dogs.count else { return }
+                let dog = self.dogs[ip.row]
+                try! self.realm.write {
+                    dog.isDeleted = true
+                }
             })
             let defaultAction = UIAlertAction(title: NSLocalizedString("cancel", comment: "cancel"), style: .default, handler: nil)
             alert.addAction(defaultAction)

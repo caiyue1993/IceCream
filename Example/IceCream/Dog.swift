@@ -15,6 +15,7 @@ class Dog: Object {
     @objc dynamic var id = NSUUID().uuidString
     @objc dynamic var name = ""
     @objc dynamic var age = 0
+    @objc dynamic var isDeleted = false
     
     override class func primaryKey() -> String? {
         return "id"
@@ -34,11 +35,12 @@ extension Dog: CKRecordConvertible {
         r[.id] = id as CKRecordValue
         r[.age] = age as CKRecordValue
         r[.name] = name as CKRecordValue
+        r[.isDeleted] = isDeleted as CKRecordValue
         return r
     }
     
     static var customZoneID: CKRecordZoneID {
-        return CKRecordZoneID(zoneName: Dog.recordType + "s" + "Zone", ownerName: CKCurrentUserDefaultName)
+        return CKRecordZoneID(zoneName: "DogsZone", ownerName: CKCurrentUserDefaultName)
     }
     
     static var recordType: String {
@@ -50,13 +52,15 @@ extension Dog: CKRecordRecoverable {
     static func objectFrom(record: CKRecord) -> Object? {
         guard let id = record[.id] as? String,
             let age = record[.age] as? Int,
-            let name = record[.name] as? String
+            let name = record[.name] as? String,
+            let isDeleted = record[.isDeleted] as? Bool
             else { return nil }
         
         let dog = Dog()
         dog.id = id
         dog.age = age
         dog.name = name
+        dog.isDeleted = isDeleted
         
         return dog
     }
@@ -66,6 +70,7 @@ enum DogKey: String {
     case id
     case name
     case age
+    case isDeleted
 }
 
 extension CKRecord {

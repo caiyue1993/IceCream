@@ -90,8 +90,8 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
                 print("insertions:" + "\(insertions)")
                 print("modifications:" + "\(modifications)")
                 
-                let objectsToStore = (insertions + modifications).map { collection[$0] }
-                let objectsToDelete = deletions.map { collection[$0] }
+                let objectsToStore = (insertions + modifications).filter { $0 < collection.count }.map { collection[$0] }
+                let objectsToDelete = deletions.filter { $0 < collection.count }.map{ collection[$0] }
                 
                 `self`.syncObjectsToCloudKit(objectsToStore: objectsToStore, objectsToDelete: objectsToDelete)
                 
