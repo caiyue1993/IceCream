@@ -104,8 +104,11 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
             }
         })
     }
-    
-    private func syncObjectsToCloudKit(objectsToStore: [T], objectsToDelete: [T]) {
+}
+
+/// Public Methods
+extension SyncEngine {
+    public func syncObjectsToCloudKit(objectsToStore: [T], objectsToDelete: [T] = []) {
         guard objectsToStore.count > 0 || objectsToDelete.count > 0 else { return }
         
         let recordsToStore = objectsToStore.map{ $0.record }
@@ -114,6 +117,9 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
         syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete)
     }
     
+    public func sync() {
+        fetchChangesInDatabase()
+    }
 }
 
 /// Chat to the CloudKit API directly
@@ -185,10 +191,6 @@ extension SyncEngine {
         set {
             UserDefaults.standard.set(newValue, forKey: IceCreamConstants.isCustomZoneCreatedKey)
         }
-    }
-    
-    public func sync() {
-        fetchChangesInDatabase()
     }
     
     /// Only update the changeToken when fetch process completes
