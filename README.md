@@ -7,6 +7,8 @@
 
 IceCream helps you sync Realm Database with CloudKit.
 
+It works like magic!🚀
+
 ## Features
 
 - Realm Database
@@ -34,6 +36,8 @@ IceCream helps you sync Realm Database with CloudKit.
 4. Turn on Background Modes and check `Background fetch` and `Remote notification` 
 
 ## Usage
+
+### Basics
 1. Prepare your Realm Object
 ```swift
 class Dog: Object {
