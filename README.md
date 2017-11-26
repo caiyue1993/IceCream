@@ -7,7 +7,7 @@
 
 IceCream helps you sync Realm Database with CloudKit.
 
-It works like magic!🚀
+"It works like magic!"
 
 ## Features
 
@@ -18,6 +18,7 @@ It works like magic!🚀
 
 - Apple CloudKit
     - [x] Automatical Authentication
+    - [x] Silent Push
 
 - [x] Reachability(Support Long-lived Operation) 
 - [x] Error Handling
@@ -113,14 +114,19 @@ For more, clone the example project and run it yourself.
 
 ### About Object Deletions
 
-Now, we highly recommend you use **Soft Deletions**. That means, you can add a `isDeleted` property to your model to distinguish between them.
+Yep, we highly recommend you use **Soft Deletions**. That's why we add a `isDeleted` property to CKRecordConvertible protocol. 
 
-*IceCream tightly depends on [Collection Notification](https://realm.io/docs/swift/latest/#collection-notifications) and now it only supports soft deletion. If you have a better understanding with Realm, you can check the `func registerLocalDatabase()` function in SyncEngine.swift file. And pull a request to us. This video may helps: [https://academy.realm.io/posts/meetup-jp-simard-mastering-realm-notifications/](https://academy.realm.io/posts/meetup-jp-simard-mastering-realm-notifications/)*
+When you want to delete a object, you just need to set its isDeleted property to true. And the rest of things are already taken care of.
+
+*You also don't need to worry about the clean-up things. It has also been considered.*
+
+Example project is provided to see the detailed usage.
 
 ## Requirements
 
 - iOS 10.0+
 - Swift 4
+- Realm Swift ~> 3.0
 
 ## Debug Suggestions
 
@@ -151,9 +157,9 @@ pod 'IceCream'
 3. Feel free to submit a pull request
 
 ## Live Demo
-My app [小目标](https://itunes.apple.com/cn/app/%E5%B0%8F%E7%9B%AE%E6%A0%87-%E9%87%8F%E5%8C%96%E4%BD%A0%E7%9A%84%E8%BF%9B%E6%AD%A5/id1215312957?mt=8&at=1000lvyQ) is using IceCream. You can download it and try it on your muiltiple devices. As I said before, it just works like magic!
+My app [小目标 - 量化你的进步](https://itunes.apple.com/cn/app/%E5%B0%8F%E7%9B%AE%E6%A0%87-%E9%87%8F%E5%8C%96%E4%BD%A0%E7%9A%84%E8%BF%9B%E6%AD%A5/id1215312957?mt=8&at=1000lvyQ) is using IceCream. You can download it and try it on your muiltiple devices to see this magic.
 
-If your app has adopted IceCream, you can pull a request to add to Live Demo list.
+If your app has adopted IceCream, raising a PR to add to this Live Demo Section is welcomed.
 
 ## Donation
 Crypto currency donation is the best. Even 0.01 BTC helps😄.
@@ -171,6 +177,7 @@ Lisk Deposit Address: 10081270051711082114L
 ## Reference
 - [CloudKit Best Practices](https://developer.apple.com/videos/play/wwdc2016/231/)
 - [Synchronizing data with CloudKit](https://medium.com/@guilhermerambo/synchronizing-data-with-cloudkit-94c6246a3fda)
+- [Mastering Realm Notifications](https://academy.realm.io/posts/meetup-jp-simard-mastering-realm-notifications/)
 
 ## License
 IceCream is available under the MIT license. See the LICENSE file for more info.
