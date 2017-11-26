@@ -61,6 +61,8 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
                     `self`.registerLocalDatabase()
                 }
                 
+                NotificationCenter.default.addObserver(self, selector: #selector(self.cleanUp), name: .UIApplicationWillTerminate, object: nil)
+                
                 /// 3. Subscribe to future changes
                 if (`self`.subscriptionIsLocallyCached) { return }
                 `self`.createDatabaseSubscription()
@@ -76,7 +78,7 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
     /// For more: https://realm.io/docs/swift/latest/#writes
 
     private func registerLocalDatabase() {
-        let objects = Cream().realm.objects(T.self)
+        let objects = Cream<T>().realm.objects(T.self)
         notificationToken = objects.observe({ [weak self](changes) in
             guard let `self` = self else { return }
             
@@ -100,6 +102,15 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
             }
         })
     }
+    
+    @objc func cleanUp() {
+        let cream = Cream<T>()
+        do {
+            try cream.deletePreviousSoftDeleteObjects(notNotifying: notificationToken)
+        } catch {
+            // Error handles here
+        }
+    }
 }
 
 /// Public Methods
@@ -120,6 +131,7 @@ extension SyncEngine {
         
         self.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete)
     }
+
 }
 
 /// Chat to the CloudKit API directly
