@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.version          = '0.1.0'
   s.summary          = 'Sync Realm with CloudKit'
   s.description      = <<-DESC
-  Sync Realm Database with CloudKit, written in Swift 4. By adding just a few lines in your project, it works like magic.
+  Sync Realm Database with CloudKit, written in Swift. It works just like magic.
                        DESC
   s.homepage         = 'https://github.com/caiyue1993/IceCream'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
@@ -24,5 +24,4 @@ Pod::Spec.new do |s|
 
   s.dependency 'RealmSwift'
   s.dependency 'RxRealm'
-  s.dependency 'ReachabilitySwift'
 end
