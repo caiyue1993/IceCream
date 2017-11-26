@@ -17,6 +17,7 @@ public protocol CKRecordConvertible {
     var recordID: CKRecordID { get }
     var record: CKRecord { get }
     
+    var isDeleted: Bool { get }
 }
 
 public protocol CKRecordRecoverable {
@@ -24,3 +25,4 @@ public protocol CKRecordRecoverable {
     static func objectFrom(record: CKRecord) -> Object?
     
 }
+
