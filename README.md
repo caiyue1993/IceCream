@@ -24,17 +24,15 @@ IceCream helps you sync Realm Database with CloudKit.
 - [x] Error Handling
 - [x] Sync Automatically
 - [x] Manually Synchronization is also supported
-- [x] User account status
+- [x] User Account Status Check
 - [ ] Complete Documentation 
 
 ## Prerequisite
-1. Be sure to enroll in Apple Developer Program
+1. Be sure to have enrolled in Apple Developer Program
 
-2. Navigate to project settings
+2. Turn on your iCloud in Capabilities and choose `CloudKit`
 
-3. Turn on your iCloud in Capabilities and choose `CloudKit`
-
-4. Turn on Background Modes and check `Background fetch` and `Remote notification` 
+3. Turn on Background Modes and check `Background fetch` and `Remote notification` 
 
 ## Usage
 
