@@ -7,6 +7,7 @@ language: swift
 env:
   - BUILD="pod update && set -o pipefail && xcodebuild -workspace IceCream.xcworkspace -scheme IceCream-Example -configuration Release -destination 'platform=iOS Simulator,name=iPhone 8' build | xcpretty"
 
+podfile: Example/Podfile
 script: eval "${BUILD}"
 
 after_success:
