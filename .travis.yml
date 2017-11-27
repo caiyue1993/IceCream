@@ -15,6 +15,6 @@ env:
 podfile: Example/Podfile
 before_script:
   - swift --version
+  - pod update
 script:
-  - rm Example/Podfile.lock
   - set -o pipefail && xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -sdk "$SDK" -destination "$DESTINATION" -configuration Debug ONLY_ACTIVE_ARCH=NO build | xcpretty -c
