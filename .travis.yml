@@ -3,13 +3,16 @@
 # * https://github.com/supermarin/xcpretty#usage
 
 osx_image: xcode9.1
+
 language: swift
+
 sudo: required
+
 env:
   global:
     - WORKSPACE=Example/IceCream.xcworkspace
     - SCHEME=IceCream-Example
-    - SDK=iphonesimulator11.0
+    - SDK=iphonesimulator11.1
   matrix:
     - DESTINATION="platform=iOS Simulator,name=iPhone 8,OS=11.0"
 podfile: Example/Podfile
