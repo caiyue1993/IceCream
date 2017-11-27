@@ -4,7 +4,6 @@
 
 osx_image: xcode9
 language: swift
-sudo: required
 env:
   global:
     - WORKSPACE=Example/IceCream.xcworkspace
@@ -12,8 +11,5 @@ env:
     - SDK=iphonesimulator11.0
   matrix:
     - DESTINATION="platform=iOS Simulator,name=iPhone 8,OS=11.0"
-podfile: Example/Podfile
-before_script:
-  - swift --version
 script:
-  - set -o pipefail && xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -sdk "$SDK" -destination "$DESTINATION" -configuration Debug ONLY_ACTIVE_ARCH=NO build | xcpretty -c
+  - xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -sdk "$SDK" -destination "$DESTINATION"
