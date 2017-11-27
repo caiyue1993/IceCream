@@ -14,7 +14,7 @@ env:
     - DESTINATION="platform=iOS Simulator,name=iPhone 8,OS=11.0"
 podfile: Example/Podfile
 before_script:
-  - rm Example/Podfile.lock
   - swift --version
 script:
+  - rm Example/Podfile.lock
   - set -o pipefail && xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -sdk "$SDK" -destination "$DESTINATION" -configuration Debug ONLY_ACTIVE_ARCH=NO build | xcpretty -c
