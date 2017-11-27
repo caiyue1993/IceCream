@@ -5,11 +5,6 @@
 osx_image: xcode9
 language: swift
 env:
-  global:
-    - WORKSPACE=Example/IceCream.xcworkspace
-    - SCHEME=IceCream-Example
-    - SDK=iphonesimulator11.0
-  matrix:
-    - DESTINATION="platform=iOS Simulator,name=iPhone 8,OS=11.0"
+  - BUILD="pod update && set -o pipefail && xcodebuild -workspace IceCream.xcworkspace -scheme IceCream-Example -configuration Release -destination 'platform=iOS Simulator,name=iPhone 8' build | xcpretty"
 script:
-  - xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -sdk "$SDK" -destination "$DESTINATION"
+  - sleep 5
