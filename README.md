@@ -108,7 +108,9 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 }
 ```
 
-For more, clone the example project and run it yourself.
+That's all you need to do! Everytime you write to Realm, the SyncEngine will get notified and handle sync stuffs!
+
+For more details, clone the project to see the source code.
 
 ### About Object Deletions
 
