@@ -164,6 +164,10 @@ pod 'IceCream'
 ## Live Demo
 My app [小目标 - 量化你的进步](https://itunes.apple.com/cn/app/%E5%B0%8F%E7%9B%AE%E6%A0%87-%E9%87%8F%E5%8C%96%E4%BD%A0%E7%9A%84%E8%BF%9B%E6%AD%A5/id1215312957?mt=8&at=1000lvyQ) is using IceCream. You can download it and try it on your muiltiple devices to see this magic.
 
+<a href="https://itunes.apple.com/cn/app/%E5%B0%8F%E7%9B%AE%E6%A0%87-%E9%87%8F%E5%8C%96%E4%BD%A0%E7%9A%84%E8%BF%9B%E6%AD%A5/id1215312957?mt=8&at=1000lvyQ">
+  <img src="https://github.com/caiyue1993/Tiptoes/blob/master/images/appstore.png">
+</a>
+
 If your app has adopted IceCream, raising a PR to add to this Live Demo Section is welcomed.
 
 ## Donation
