@@ -141,7 +141,7 @@ clear local database by re-install apps.
 *Warning: If you're going to launch your app onto App Store, don't forget to deploy your environment settings to production. You can do it easily in the CloudKit Dashboard. Write & Read permissions are also need to be considered.*
 
 ### One More Tip
-How to debug CloudKit when your app already launchs on the App Store? See this [post](https://stackoverflow.com/questions/30182521/use-production-cloudkit-during-development).
+How to debug CloudKit in production mode? See this [post](https://stackoverflow.com/questions/30182521/use-production-cloudkit-during-development).
 
 ## Example
 
