@@ -138,6 +138,11 @@ It's true that debugging CloudKit is hard and tedious. But I have some tips for 
 clear local database by re-install apps.
 - Keep calm and carry on!
 
+*Warning: If you're going to launch your app onto App Store, don't forget to deploy your environment settings to production. You can do it easily in the CloudKit Dashboard. Write & Read permissions are also need to be considered.*
+
+### One More Tip
+How to debug CloudKit when your app already launchs on the App Store? See this [post](https://stackoverflow.com/questions/30182521/use-production-cloudkit-during-development).
+
 ## Example
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
