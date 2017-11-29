@@ -118,7 +118,7 @@ For more details, clone the project to see the source code.
 
 Yep, we highly recommend you use **Soft Deletions**. That's why we add a `isDeleted` property to CKRecordConvertible protocol. 
 
-When you want to delete a object, you just need to set its isDeleted property to true. And the rest of things are already taken care of.
+When you want to delete a object, you just need to set its `isDeleted` property to true. And the rest of things are already taken care of.
 
 *You also don't need to worry about the clean-up things. It has also been considered.*
 
