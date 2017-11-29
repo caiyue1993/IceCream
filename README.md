@@ -158,6 +158,12 @@ it, simply add the following line to your Podfile:
 pod 'IceCream'
 ```
 
+## To-Do List
+
+- [ ] CKReference & Realm's LinkingObjects
+- [ ] CloudKit Shared Database 
+- [ ] Supports Other platforms, like macOS, tvOS and watchOS
+
 ## Make it better
 1. Fork this project
 2. Do your changes
