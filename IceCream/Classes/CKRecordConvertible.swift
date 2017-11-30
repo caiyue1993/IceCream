@@ -29,14 +29,32 @@ public protocol CKRecordRecoverable {
 
 extension CKRecordConvertible where Self: Object {
     
-    public static func parseSchema() {
-        if let sharedSchema = Self.sharedSchema() {
-            print(sharedSchema)
-        }
+    public static var recordType: String {
+        return className()
     }
     
-    public static var recordType: String {
-        return Self.className()
+    public static var customZoneID: CKRecordZoneID {
+        return CKRecordZoneID(zoneName: "\(recordType)sZone", ownerName: CKCurrentUserDefaultName)
+    }
+    
+    /// recordName : this is the unique identifier for the record, used to locate records on the database. We can create our own ID or leave it to CloudKit to generate a random UUID.
+    /// For more: https://medium.com/@guilhermerambo/synchronizing-data-with-cloudkit-94c6246a3fda
+    public var recordID: CKRecordID {
+        guard let sharedSchema = Self.sharedSchema() else { return CKRecordID(recordName: "") }
+        guard let primaryKeyProperty = sharedSchema.primaryKeyProperty else { return CKRecordID(recordName: "")}
+        
+        if let primaryKeyValue = self[primaryKeyProperty.name] as? String {
+            return CKRecordID(recordName: primaryKeyValue, zoneID: Self.customZoneID)
+        }
+        return CKRecordID(recordName: "")
+    }
+    
+    public var record: CKRecord {
+        let r = CKRecord(recordType: Self.recordType, recordID: recordID)
+        guard let sharedSchema = Self.sharedSchema() else { return r }
+        let properties = sharedSchema.properties
+        
+        return CKRecord(recordType: "")
     }
     
 }

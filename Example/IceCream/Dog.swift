@@ -23,11 +23,6 @@ class Dog: Object, Codable {
 }
 
 extension Dog: CKRecordConvertible {
-    /// recordName : this is the unique identifier for the record, used to locate records on the database. We can create our own ID or leave it to CloudKit to generate a random UUID.
-    /// For more: https://medium.com/@guilhermerambo/synchronizing-data-with-cloudkit-94c6246a3fda
-    var recordID: CKRecordID {
-        return CKRecordID(recordName: id, zoneID: Dog.customZoneID)
-    }
     
     var record: CKRecord {
         // Simultaneously init CKRecord with zoneID and recordID, thanks to this guy: https://stackoverflow.com/questions/45429133/how-to-initialize-ckrecord-with-both-zoneid-and-recordid
@@ -37,10 +32,6 @@ extension Dog: CKRecordConvertible {
         r[.name] = name as CKRecordValue
         r[.isDeleted] = isDeleted as CKRecordValue
         return r
-    }
-    
-    static var customZoneID: CKRecordZoneID {
-        return CKRecordZoneID(zoneName: "DogsZone", ownerName: CKCurrentUserDefaultName)
     }
     
 }
