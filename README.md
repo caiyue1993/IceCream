@@ -39,7 +39,7 @@ IceCream helps you sync Realm Database with CloudKit.
 ## Usage
 
 ### Basics
-1. Prepare your Realm Object
+1. Prepare your Realm Object(e.g. Dog)
 ```swift
 class Dog: Object {
     @objc dynamic var id = NSUUID().uuidString
@@ -53,53 +53,17 @@ class Dog: Object {
 }
 ```
 
-2. Make your Realm Object conform to CKRecordConvertible and CKRecordRecoverable 
+2. Do stuffs like that
 ```swift
 extension Dog: CKRecordConvertible {
-    /// recordName : this is the unique identifier for the record, used to locate records on the database. We can create our own ID or leave it to CloudKit to generate a random UUID.
-    /// For more: https://medium.com/@guilhermerambo/synchronizing-data-with-cloudkit-94c6246a3fda
-    var recordID: CKRecordID {
-        return CKRecordID(recordName: id, zoneID: Constants.customZoneID)
-    }
-    
-    var record: CKRecord {
-        // Simultaneously init CKRecord with zoneID and recordID, thanks to this guy: https://stackoverflow.com/questions/45429133/how-to-initialize-ckrecord-with-both-zoneid-and-recordid
-        let r = CKRecord(recordType: Dog.recordType, recordID: recordID)
-        r[.id] = id as CKRecordValue
-        r[.age] = age as CKRecordValue
-        r[.name] = name as CKRecordValue
-        r[.isDeleted] = isDeleted as CKRecordValue
-        return r
-    }
-    
-    static var customZoneID: CKRecordZoneID {
-        return CKRecordZoneID(zoneName: "DogsZone", ownerName: CKCurrentUserDefaultName)
-    }
-
-    static var recordType: String {
-        return "Dog"
-    }
+    // Yep, let it be blank!    
 }
 
 extension Dog: CKRecordRecoverable {
-    static func objectFrom(record: CKRecord) -> Object? {
-        guard let id = record[.id] as? String,
-            let age = record[.age] as? Int,
-            let name = record[.name] as? String,
-            let isDeleted = record[.isDeleted] as? Bool
-            else { return nil }
-        
-        let dog = Dog()
-        dog.id = id
-        dog.age = age
-        dog.name = name
-        
-        return dog
-    }
+    typealias O = Dog
 }
 ```
-
-*Attention: there will be a incredibly cleaner way to do this! See [issue #2](https://github.com/caiyue1993/IceCream/issues/2) if you are interested!*
+Is that easy? Protocol Extensions do this trick.
 
 3. Start the Engine!
 ```swift

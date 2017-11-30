@@ -1,0 +1,31 @@
+PODS:
+  - IceCream (0.1.1):
+    - RealmSwift
+    - RxRealm
+  - Realm (3.0.2):
+    - Realm/Headers (= 3.0.2)
+  - Realm/Headers (3.0.2)
+  - RealmSwift (3.0.2):
+    - Realm (= 3.0.2)
+  - RxRealm (0.7.4):
+    - RealmSwift (~> 3.0)
+    - RxSwift (~> 4.0)
+  - RxSwift (4.0.0)
+
+DEPENDENCIES:
+  - IceCream (from `../`)
+
+EXTERNAL SOURCES:
+  IceCream:
+    :path: ../
+
+SPEC CHECKSUMS:
+  IceCream: f8f432793a9da4032067f8318b907c267a7e5bee
+  Realm: 6f23fd1f178a09342eac21bfa7c2bf4312a7a180
+  RealmSwift: 695393add1b8f9d5fa75dd16e6355cf3935f71e2
+  RxRealm: 9e203070a6adadd8f2592b58bbc9c8cc40aa35ec
+  RxSwift: fd680d75283beb5e2559486f3c0ff852f0d35334
+
+PODFILE CHECKSUM: 71364b21600d158fb733260a734a93e51bab96df
+
+COCOAPODS: 1.3.1

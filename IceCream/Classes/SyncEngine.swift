@@ -254,14 +254,14 @@ extension SyncEngine {
             /// The Cloud will return the modified record since the last zoneChangesToken, we need to do local cache here.
             /// Handle the record:
             guard let `self` = self else { return }
-            guard let object = T.objectFrom(record: record) else {
+            guard let object = T().parseFromRecord(record: record)  else {
                 print("There is something wrong with the converson from cloud record to local object")
                 return
             }
-            
+
             DispatchQueue.main.async {
                 let realm = try! Realm()
-                
+
                 /// If your model class includes a primary key, you can have Realm intelligently update or add objects based off of their primary key values using Realm().add(_:update:).
                 /// https://realm.io/docs/swift/latest/#objects-with-primary-keys
                 realm.beginWrite()
