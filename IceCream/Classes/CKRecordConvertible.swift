@@ -21,10 +21,26 @@ public protocol CKRecordConvertible {
     
 }
 
-public protocol CKRecordRecoverable {
-    
-    static func objectFrom(record: CKRecord) -> Object?
-    
+extension CKRecord {
+    var object: Object? {
+        let o = Object()
+        let props = o.objectSchema.properties
+        var recordValue: Any?
+        for prop in props {
+            switch prop.type {
+                case .int:
+                    recordValue = self.value(forKey: prop.name) as! Int
+                case .string:
+                    recordValue = self.value(forKey: prop.name) as! String
+                case .bool:
+                    recordValue = self.value(forKey: prop.name) as! Bool
+                default:
+                    recordValue = self.value(forKey: prop.name) as! Bool
+            }
+            o.setValue(recordValue, forKey: prop.name)
+        }
+        return o
+    }
 }
 
 extension CKRecordConvertible where Self: Object {
@@ -49,13 +65,16 @@ extension CKRecordConvertible where Self: Object {
         return CKRecordID(recordName: "")
     }
     
+    // Simultaneously init CKRecord with zoneID and recordID, thanks to this guy: https://stackoverflow.com/questions/45429133/how-to-initialize-ckrecord-with-both-zoneid-and-recordid
     public var record: CKRecord {
         let r = CKRecord(recordType: Self.recordType, recordID: recordID)
-        guard let sharedSchema = Self.sharedSchema() else { return r }
-        let properties = sharedSchema.properties
-        
-        return CKRecord(recordType: "")
+        let properties = objectSchema.properties
+        for prop in properties {
+            r[prop.name] = self[prop.name] as? CKRecordValue
+        }
+        return r
     }
     
 }
+
 

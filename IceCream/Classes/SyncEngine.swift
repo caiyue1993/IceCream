@@ -22,7 +22,7 @@ public struct IceCreamConstants {
     public static let cloudSubscriptionID = "private_changes"
 }
 
-public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecoverable> {
+public final class SyncEngine<T: Object & CKRecordConvertible> {
     
     /// Notifications are delivered as long as a reference is held to the returned notification token. You should keep a strong reference to this token on the class registering for updates, as notifications are automatically unregistered when the notification token is deallocated.
     /// For more, reference is here: https://realm.io/docs/swift/latest/#notifications
@@ -254,7 +254,7 @@ extension SyncEngine {
             /// The Cloud will return the modified record since the last zoneChangesToken, we need to do local cache here.
             /// Handle the record:
             guard let `self` = self else { return }
-            guard let object = T.objectFrom(record: record) else {
+            guard let object = record.object else {
                 print("There is something wrong with the converson from cloud record to local object")
                 return
             }
