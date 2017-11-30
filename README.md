@@ -56,7 +56,7 @@ class Dog: Object {
 2. Do stuffs like that
 ```swift
 extension Dog: CKRecordConvertible {
-    // Yep, let it be blank!    
+    // Yep, leave it blank!    
 }
 
 extension Dog: CKRecordRecoverable {
