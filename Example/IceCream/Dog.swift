@@ -11,7 +11,7 @@ import RealmSwift
 import IceCream
 import CloudKit
 
-class Dog: Object {
+class Dog: Object, Codable {
     @objc dynamic var id = NSUUID().uuidString
     @objc dynamic var name = ""
     @objc dynamic var age = 0
@@ -43,9 +43,6 @@ extension Dog: CKRecordConvertible {
         return CKRecordZoneID(zoneName: "DogsZone", ownerName: CKCurrentUserDefaultName)
     }
     
-    static var recordType: String {
-        return "Dog"
-    }
 }
 
 extension Dog: CKRecordRecoverable {

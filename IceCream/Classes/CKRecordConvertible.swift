@@ -18,11 +18,26 @@ public protocol CKRecordConvertible {
     var record: CKRecord { get }
     
     var isDeleted: Bool { get }
+    
 }
 
 public protocol CKRecordRecoverable {
     
     static func objectFrom(record: CKRecord) -> Object?
+    
+}
+
+extension CKRecordConvertible where Self: Object {
+    
+    public static func parseSchema() {
+        if let sharedSchema = Self.sharedSchema() {
+            print(sharedSchema)
+        }
+    }
+    
+    public static var recordType: String {
+        return Self.className()
+    }
     
 }
 
