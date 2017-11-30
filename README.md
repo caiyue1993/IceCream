@@ -63,7 +63,6 @@ extension Dog: CKRecordRecoverable {
     typealias O = Dog
 }
 ```
-
 Is that easy? Protocol Extensions do this trick.
 
 3. Start the Engine!
