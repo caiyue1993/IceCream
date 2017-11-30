@@ -21,21 +21,25 @@ public protocol CKRecordConvertible {
     
 }
 
-extension CKRecord {
-    var object: Object? {
+public protocol CKRecordRecoverable {
+    
+}
+
+extension CKRecordRecoverable where Self: Object {
+    func parseFromRecord(record: CKRecord) -> Object? {
         let o = Object()
         let props = o.objectSchema.properties
         var recordValue: Any?
         for prop in props {
             switch prop.type {
-                case .int:
-                    recordValue = self.value(forKey: prop.name) as! Int
-                case .string:
-                    recordValue = self.value(forKey: prop.name) as! String
-                case .bool:
-                    recordValue = self.value(forKey: prop.name) as! Bool
-                default:
-                    recordValue = self.value(forKey: prop.name) as! Bool
+            case .int:
+                recordValue = record.value(forKey: prop.name) as! Int
+            case .string:
+                recordValue = record.value(forKey: prop.name) as! String
+            case .bool:
+                recordValue = record.value(forKey: prop.name) as! Bool
+            default:
+                recordValue = record.value(forKey: prop.name) as! Bool
             }
             o.setValue(recordValue, forKey: prop.name)
         }
