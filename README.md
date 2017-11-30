@@ -99,7 +99,7 @@ extension Dog: CKRecordRecoverable {
 }
 ```
 
-Attention: there will be a incredibly cleaner way to do this! See [issue #2](https://github.com/caiyue1993/IceCream/issues/2) if you are interested!
+*Attention: there will be a incredibly cleaner way to do this! See [issue #2](https://github.com/caiyue1993/IceCream/issues/2) if you are interested!*
 
 3. Start the Engine!
 ```swift
