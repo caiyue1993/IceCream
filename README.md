@@ -158,16 +158,14 @@ it, simply add the following line to your Podfile:
 pod 'IceCream'
 ```
 
-## To-Do List
-
-- [ ] CKReference & Realm's LinkingObjects
-- [ ] CloudKit Shared Database 
-- [ ] Supports Other platforms, like macOS, tvOS and watchOS
-
 ## Make it better
-1. Fork this project
-2. Do your changes
-3. Feel free to submit a pull request
+These are the to-do list in IceCream project. You can join us to become a contributor.
+
+- Support CKReference & Realm's LinkingObjects
+- Support CloudKit Shared Database 
+- Support Other platforms, like macOS, tvOS and watchOS
+
+See the [CONTRIBUTING](https://github.com/caiyue1993/IceCream/blob/master/CONTRIBUTING.md) file for contributing guidelines.
 
 ## Live Demo
 My app [小目标 - 量化你的进步](https://itunes.apple.com/cn/app/%E5%B0%8F%E7%9B%AE%E6%A0%87-%E9%87%8F%E5%8C%96%E4%BD%A0%E7%9A%84%E8%BF%9B%E6%AD%A5/id1215312957?mt=8&at=1000lvyQ)(A lightweight task management app) is using IceCream. You can download it and try it on your muiltiple devices to see this magic.

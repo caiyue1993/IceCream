@@ -6,8 +6,8 @@ Firstly, thank you for considering contributing to IceCream! It's people like yo
 We welcome any types of contribution, not only code. You can help by
 
 - **Q&A**: file issues that you're facing. The more detailed, the better. Offering the steps that can reproduce the issue is the best.
-- **Marketing**: writing blogs or posts, howto's and ...
-- **Code**: take a look at the [open issues](https://github.com/caiyue1993/IceCream/issues). Even if you couldn't write code, commenting on them, showing that you care about a given issue matters. It really helps.
+- **Marketing**: writing blogs or posts, howto's tutorial and so on
+- **Code**: firstly take a look at the [open issues](https://github.com/caiyue1993/IceCream/issues) or [to-do list](https://github.com/caiyue1993/IceCream#make-it-better). You can change the code and raise a PR to us. Even if you couldn't write code, commenting on them, showing that you care about a given issue matters. It really helps.
 - **Money**: maintaining a active project takes time and much effort. We welcome [financial support](https://github.com/caiyue1993/IceCream#donation).
 
 ## How to Pull Request?
