@@ -27,5 +27,5 @@ extension Dog: CKRecordConvertible {
 }
 
 extension Dog: CKRecordRecoverable {
-    
+    typealias O = Dog
 }

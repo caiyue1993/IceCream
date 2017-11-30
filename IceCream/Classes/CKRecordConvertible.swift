@@ -10,7 +10,6 @@ import CloudKit
 import RealmSwift
 
 public protocol CKRecordConvertible {
-    
     static var recordType: String { get }
     static var customZoneID: CKRecordZoneID { get }
     
@@ -18,28 +17,34 @@ public protocol CKRecordConvertible {
     var record: CKRecord { get }
     
     var isDeleted: Bool { get }
-    
 }
 
 public protocol CKRecordRecoverable {
-    
+    associatedtype O: Object
 }
 
-extension CKRecordRecoverable where Self: Object {
-    func parseFromRecord(record: CKRecord) -> Object? {
-        let o = Object()
-        let props = o.objectSchema.properties
+extension CKRecordRecoverable {
+    func parseFromRecord(record: CKRecord) -> O? {
+        let o = O()
         var recordValue: Any?
-        for prop in props {
+        for prop in o.objectSchema.properties {
             switch prop.type {
             case .int:
-                recordValue = record.value(forKey: prop.name) as! Int
+                recordValue = record.value(forKey: prop.name) as? Int
             case .string:
-                recordValue = record.value(forKey: prop.name) as! String
+                recordValue = record.value(forKey: prop.name) as? String
             case .bool:
-                recordValue = record.value(forKey: prop.name) as! Bool
+                recordValue = record.value(forKey: prop.name) as? Bool
+            case .date:
+                recordValue = record.value(forKey: prop.name) as? Date
+            case .float:
+                recordValue = record.value(forKey: prop.name) as? Float
+            case .double:
+                recordValue = record.value(forKey: prop.name) as? Double
+            case .data:
+                recordValue = record.value(forKey: prop.name) as? Data
             default:
-                recordValue = record.value(forKey: prop.name) as! Bool
+                print("Other types will be supported in the future.")
             }
             o.setValue(recordValue, forKey: prop.name)
         }
@@ -60,13 +65,21 @@ extension CKRecordConvertible where Self: Object {
     /// recordName : this is the unique identifier for the record, used to locate records on the database. We can create our own ID or leave it to CloudKit to generate a random UUID.
     /// For more: https://medium.com/@guilhermerambo/synchronizing-data-with-cloudkit-94c6246a3fda
     public var recordID: CKRecordID {
-        guard let sharedSchema = Self.sharedSchema() else { return CKRecordID(recordName: "") }
-        guard let primaryKeyProperty = sharedSchema.primaryKeyProperty else { return CKRecordID(recordName: "")}
-        
-        if let primaryKeyValue = self[primaryKeyProperty.name] as? String {
-            return CKRecordID(recordName: primaryKeyValue, zoneID: Self.customZoneID)
+        guard let sharedSchema = Self.sharedSchema() else {
+            fatalError("No schema settled. Go to Realm Community to seek more help.")
         }
-        return CKRecordID(recordName: "")
+        
+        guard let primaryKeyProperty = sharedSchema.primaryKeyProperty else {
+            fatalError("You should set a primary key on your Realm object")
+        }
+        
+        if let primaryValueString = self[primaryKeyProperty.name] as? String {
+            return CKRecordID(recordName: primaryValueString, zoneID: Self.customZoneID)
+        } else if let primaryValueInt = self[primaryKeyProperty.name] as? Int {
+            return CKRecordID(recordName: "\(primaryValueInt)", zoneID: Self.customZoneID)
+        } else {
+            fatalError("Primary key should be String or Int")
+        }
     }
     
     // Simultaneously init CKRecord with zoneID and recordID, thanks to this guy: https://stackoverflow.com/questions/45429133/how-to-initialize-ckrecord-with-both-zoneid-and-recordid
