@@ -22,6 +22,5 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '10.0'
   s.source_files = 'IceCream/Classes/**/*'
 
-  s.dependency 'RealmSwift', ~> 3.0.2
-  s.dependency 'RxRealm'
+  s.dependency 'RealmSwift'
 end
