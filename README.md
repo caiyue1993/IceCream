@@ -173,18 +173,5 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 <a href="https://opencollective.com/icecream/sponsor/8/website" target="_blank"><img src="https://opencollective.com/icecream/sponsor/8/avatar.svg"></a>
 <a href="https://opencollective.com/icecream/sponsor/9/website" target="_blank"><img src="https://opencollective.com/icecream/sponsor/9/avatar.svg"></a>
 
-## Crypto Donation
-
-Or you can directly support by crypto currency donation.
-
-### Bitcoin
-
-BTC Deposit Address: 14J7KCR2x1Csh52SpPAvMWRh9EyNX5kxhE
-
-### Lisk
-[Lisk](https://lisk.io/) crypto is also my preferred.
-
-Lisk Deposit Address: 10081270051711082114L
-
 ## License
 IceCream is available under the MIT license. See the LICENSE file for more info.
