@@ -17,11 +17,15 @@ IceCream helps you sync Realm Database with CloudKit.
     - [x] Off-line First
     - [x] Thread Safety
     - [x] Reactive Programming
+    - [x] Optimized for mobile apps
+    - [x] Easy when migrating
 
 - Apple CloudKit
     - [x] Automatical Authentication
-    - [x] Silent Push
+    - [x] Silent Push 
+    - [x] Free with limits(Private database consumes your user's iCloud quota)
 
+- [x] Delta update
 - [x] Reachability(Support Long-lived Operation) 
 - [x] Error Handling
 - [x] Sync Automatically
@@ -134,7 +138,7 @@ These are the to-do list in IceCream project. You can join us to become a contri
 See the [CONTRIBUTING](https://github.com/caiyue1993/IceCream/blob/master/CONTRIBUTING.md) file for contributing guidelines.
 
 ## Live Demo
-My app [小目标 - 量化你的进步](https://itunes.apple.com/cn/app/%E5%B0%8F%E7%9B%AE%E6%A0%87-%E9%87%8F%E5%8C%96%E4%BD%A0%E7%9A%84%E8%BF%9B%E6%AD%A5/id1215312957?mt=8&at=1000lvyQ)(A lightweight task management app) is using IceCream. You can download it and try it on your muiltiple devices to see this magic.
+My app [Sprint](https://itunes.apple.com/cn/app/%E5%B0%8F%E7%9B%AE%E6%A0%87-%E9%87%8F%E5%8C%96%E4%BD%A0%E7%9A%84%E8%BF%9B%E6%AD%A5/id1215312957?mt=8&at=1000lvyQ)(A lightweight task management app) is using IceCream. You can download it and try it on your muiltiple devices to see this magic.
 
 <a href="https://itunes.apple.com/cn/app/%E5%B0%8F%E7%9B%AE%E6%A0%87-%E9%87%8F%E5%8C%96%E4%BD%A0%E7%9A%84%E8%BF%9B%E6%AD%A5/id1215312957?mt=8&at=1000lvyQ">
   <img src="https://github.com/caiyue1993/Tiptoes/blob/master/images/appstore.png">
@@ -143,23 +147,44 @@ My app [小目标 - 量化你的进步](https://itunes.apple.com/cn/app/%E5%B0%8
 
 If your app has adopted IceCream, feel free to raise a PR to add to this page.
 
-## Donation
-Crypto currency donation is the best. Even 0.01 BTC helps😄.
+## Reference
+- [Synchronizing data with CloudKit](https://medium.com/@guilhermerambo/synchronizing-data-with-cloudkit-94c6246a3fda)(Recommended)
+- [CloudKit Best Practices](https://developer.apple.com/videos/play/wwdc2016/231/)
+- [Mastering Realm Notifications](https://academy.realm.io/posts/meetup-jp-simard-mastering-realm-notifications/)
+
+## Backers
+
+By now, IceCream is mainly maintained by myself. I'd be appreciated if you could be a backer to support the maintenance of IceCream. Thank you to all our backers! [Become a backer](https://opencollective.com/icecream#backer)
+
+<a href="https://opencollective.com/icecream#backers" target="_blank"><img src="https://opencollective.com/icecream/backers.svg?width=890"></a>
+
+## Sponsors
+
+Support this project by becoming a sponsor. Your logo will show up here with a link to your designated website. [Become a sponsor](https://opencollective.com/icecream#sponsor)
+
+<a href="https://opencollective.com/icecream/sponsor/0/website" target="_blank"><img src="https://opencollective.com/icecream/sponsor/0/avatar.svg"></a>
+<a href="https://opencollective.com/icecream/sponsor/1/website" target="_blank"><img src="https://opencollective.com/icecream/sponsor/1/avatar.svg"></a>
+<a href="https://opencollective.com/icecream/sponsor/2/website" target="_blank"><img src="https://opencollective.com/icecream/sponsor/2/avatar.svg"></a>
+<a href="https://opencollective.com/icecream/sponsor/3/website" target="_blank"><img src="https://opencollective.com/icecream/sponsor/3/avatar.svg"></a>
+<a href="https://opencollective.com/icecream/sponsor/4/website" target="_blank"><img src="https://opencollective.com/icecream/sponsor/4/avatar.svg"></a>
+<a href="https://opencollective.com/icecream/sponsor/5/website" target="_blank"><img src="https://opencollective.com/icecream/sponsor/5/avatar.svg"></a>
+<a href="https://opencollective.com/icecream/sponsor/6/website" target="_blank"><img src="https://opencollective.com/icecream/sponsor/6/avatar.svg"></a>
+<a href="https://opencollective.com/icecream/sponsor/7/website" target="_blank"><img src="https://opencollective.com/icecream/sponsor/7/avatar.svg"></a>
+<a href="https://opencollective.com/icecream/sponsor/8/website" target="_blank"><img src="https://opencollective.com/icecream/sponsor/8/avatar.svg"></a>
+<a href="https://opencollective.com/icecream/sponsor/9/website" target="_blank"><img src="https://opencollective.com/icecream/sponsor/9/avatar.svg"></a>
+
+## Crypto Donation
+
+Or you can directly support by crypto currency donation.
+
 ### Bitcoin
 
-![BTC Deposit](https://i.loli.net/2017/11/19/5a11078c118b3.png)
-
-14J7KCR2x1Csh52SpPAvMWRh9EyNX5kxhE
+BTC Deposit Address: 14J7KCR2x1Csh52SpPAvMWRh9EyNX5kxhE
 
 ### Lisk
-[Lisk](https://lisk.io/) is my preferred crypto currency.
+[Lisk](https://lisk.io/) crypto is also my preferred.
 
 Lisk Deposit Address: 10081270051711082114L
-
-## Reference
-- [CloudKit Best Practices](https://developer.apple.com/videos/play/wwdc2016/231/)
-- [Synchronizing data with CloudKit](https://medium.com/@guilhermerambo/synchronizing-data-with-cloudkit-94c6246a3fda)
-- [Mastering Realm Notifications](https://academy.realm.io/posts/meetup-jp-simard-mastering-realm-notifications/)
 
 ## License
 IceCream is available under the MIT license. See the LICENSE file for more info.
