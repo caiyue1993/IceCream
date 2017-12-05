@@ -1,6 +1,6 @@
-> Below is the issue template. You can fill each part then submit your issue. Or you can just 
-> delete all of these and describe your questions in you-like style. But please remember: the more detailed info you offered, the greater possiblity your problem 
-> will be solved. 😜
+> Below is the issue template. You can fill each part then submit your issue. 
+> Or you can just delete all of these and describe your questions in you-like style. 
+> But please remember: the more detailed info you offered, the greater possiblity your problem will be solved. 😜
 
 ## Expected behavior
 
