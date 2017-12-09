@@ -9,18 +9,25 @@ import Foundation
 import RealmSwift
 import CloudKit
 
-
 public enum Notifications: String, NotificationName {
     case cloudKitDataDidChangeRemotely
 }
 
-public struct IceCreamConstants {
-    static let databaseChangesTokenKey = "database_changes_token"
-    static let zoneChangesTokenKey = "zone_changes_token"
-    static let subscriptionIsLocallyCachedKey = "subscription_is_locally_cached"
-    static let isCustomZoneCreatedKey = "is_custom_zone_created"
+public enum IceCreamKey: String {
+    /// Tokens
+    case databaseChangesTokenKey
+    case zoneChangesTokenKey
     
-    public static let cloudSubscriptionID = "private_changes"
+    /// Flags
+    case subscriptionIsLocallyCachedKey
+    case hasCustomZoneCreatedKey
+    
+    /// Others
+    case cloudKitSubscriptionID
+    
+    public var value: String {
+        return "icecream.keys." + rawValue
+    }
 }
 
 public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecoverable> {
@@ -143,16 +150,16 @@ extension SyncEngine {
         get {
             /// For the very first time when launching, the token will be nil and the server will be giving everything on the Cloud to client
             /// In other situation just get the unarchive the data object
-            guard let tokenData = UserDefaults.standard.object(forKey: IceCreamConstants.databaseChangesTokenKey) as? Data else { return nil }
+            guard let tokenData = UserDefaults.standard.object(forKey: IceCreamKey.databaseChangesTokenKey.value) as? Data else { return nil }
             return NSKeyedUnarchiver.unarchiveObject(with: tokenData) as? CKServerChangeToken
         }
         set {
             guard let n = newValue else {
-                UserDefaults.standard.setNilValueForKey(IceCreamConstants.databaseChangesTokenKey)
+                UserDefaults.standard.setNilValueForKey(IceCreamKey.databaseChangesTokenKey.value)
                 return
             }
             let data = NSKeyedArchiver.archivedData(withRootObject: n)
-            UserDefaults.standard.set(data, forKey: IceCreamConstants.databaseChangesTokenKey)
+            UserDefaults.standard.set(data, forKey: IceCreamKey.databaseChangesTokenKey.value)
         }
     }
     
@@ -160,27 +167,27 @@ extension SyncEngine {
         get {
             /// For the very first time when launching, the token will be nil and the server will be giving everything on the Cloud to client
             /// In other situation just get the unarchive the data object
-            guard let tokenData = UserDefaults.standard.object(forKey: IceCreamConstants.zoneChangesTokenKey) as? Data else { return nil }
+            guard let tokenData = UserDefaults.standard.object(forKey: IceCreamKey.zoneChangesTokenKey.value) as? Data else { return nil }
             return NSKeyedUnarchiver.unarchiveObject(with: tokenData) as? CKServerChangeToken
         }
         set {
             guard let n = newValue else {
-                UserDefaults.standard.setNilValueForKey(IceCreamConstants.zoneChangesTokenKey)
+                UserDefaults.standard.setNilValueForKey(IceCreamKey.zoneChangesTokenKey.value)
                 return
             }
             let data = NSKeyedArchiver.archivedData(withRootObject: n)
-            UserDefaults.standard.set(data, forKey: IceCreamConstants.zoneChangesTokenKey)
+            UserDefaults.standard.set(data, forKey: IceCreamKey.zoneChangesTokenKey.value)
         }
     }
     
     /// Cuz we only need to do subscription once succeed
     var subscriptionIsLocallyCached: Bool {
         get {
-            guard let flag = UserDefaults.standard.object(forKey: IceCreamConstants.subscriptionIsLocallyCachedKey) as? Bool  else { return false }
+            guard let flag = UserDefaults.standard.object(forKey: IceCreamKey.subscriptionIsLocallyCachedKey.value) as? Bool  else { return false }
             return flag
         }
         set {
-            UserDefaults.standard.set(newValue, forKey: IceCreamConstants.subscriptionIsLocallyCachedKey)
+            UserDefaults.standard.set(newValue, forKey: IceCreamKey.subscriptionIsLocallyCachedKey.value)
         }
     }
     
@@ -198,11 +205,11 @@ extension SyncEngine {
     
     var isCustomZoneCreated: Bool {
         get {
-            guard let flag = UserDefaults.standard.object(forKey: IceCreamConstants.isCustomZoneCreatedKey) as? Bool else { return false }
+            guard let flag = UserDefaults.standard.object(forKey: IceCreamKey.hasCustomZoneCreatedKey.value) as? Bool else { return false }
             return flag
         }
         set {
-            UserDefaults.standard.set(newValue, forKey: IceCreamConstants.isCustomZoneCreatedKey)
+            UserDefaults.standard.set(newValue, forKey: IceCreamKey.hasCustomZoneCreatedKey.value)
         }
     }
     
@@ -359,7 +366,7 @@ extension SyncEngine {
          */
         
         /// So I use the @Guilherme Rambo's plan: https://github.com/insidegui/NoteTaker
-        let subscription = CKQuerySubscription(recordType: T.recordType, predicate: NSPredicate(value: true), subscriptionID: IceCreamConstants.cloudSubscriptionID, options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion])
+        let subscription = CKQuerySubscription(recordType: T.recordType, predicate: NSPredicate(value: true), subscriptionID: IceCreamKey.cloudKitSubscriptionID.value, options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion])
         let notificationInfo = CKNotificationInfo()
         notificationInfo.shouldSendContentAvailable = true // Silent Push
         subscription.notificationInfo = notificationInfo
