@@ -77,10 +77,6 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
                 
                 NotificationCenter.default.addObserver(self, selector: #selector(self.cleanUp), name: .UIApplicationWillTerminate, object: nil)
                 
-                /// 3. Subscribe to future changes
-                if (`self`.subscriptionIsLocallyCached) { return }
-                `self`.createDatabaseSubscription()
-                
             } else {
                 /// Handle when user account is not available
                 print("Easy, my boy. You haven't logged into iCloud account on your device/simulator yet.")
@@ -416,14 +412,21 @@ extension SyncEngine {
         // For more, see Advanced CloudKit(https://developer.apple.com/videos/play/wwdc2014/231/)
         modifyOpe.savePolicy = .changedKeys
         modifyOpe.modifyRecordsCompletionBlock = { [weak self](_, _, error) in
+            guard let `self` = self else { return }
             guard error == nil else {
-                self?.retryOperationIfPossible(with: error, block: {
-                    self?.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete, completion: completion)
+                `self`.retryOperationIfPossible(with: error, block: {
+                    `self`.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete, completion: completion)
                 })
                 return
             }
             DispatchQueue.main.async {
                 completion?(nil)
+                
+                /// Cause we will get a error when there is very empty in the cloudKit dashboard
+                /// which often happen when users first launch your app.
+                /// So, we put the subscription process here when we sure there is a record type in CloudKit.
+                if (`self`.subscriptionIsLocallyCached) { return }
+                `self`.createDatabaseSubscription()
             }
         }
         privateDatabase.add(modifyOpe)
