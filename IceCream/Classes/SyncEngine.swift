@@ -27,6 +27,11 @@ public enum IceCreamKey: String {
     }
 }
 
+/// Dangerous part:
+/// In most cases, you should not change the string value cause it is related to user settings.
+/// e.g.: the cloudKitSubscriptionID, if you don't want to use "private_changes" and use another string. You should remove the old subsription first.
+/// Or your user will not save the same subscription again. So you got trouble.
+/// The right way is remove old subscription first and then save new subscription.
 public struct IceCreamConstant {
     public static let cloudKitSubscriptionID = "private_changes"
 }
