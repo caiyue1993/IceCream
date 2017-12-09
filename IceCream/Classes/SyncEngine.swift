@@ -22,12 +22,13 @@ public enum IceCreamKey: String {
     case subscriptionIsLocallyCachedKey
     case hasCustomZoneCreatedKey
     
-    /// Others
-    case cloudKitSubscriptionID
-    
     public var value: String {
         return "icecream.keys." + rawValue
     }
+}
+
+public struct IceCreamConstant {
+    public static let cloudKitSubscriptionID = "private_changes"
 }
 
 public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecoverable> {
@@ -366,7 +367,7 @@ extension SyncEngine {
          */
         
         /// So I use the @Guilherme Rambo's plan: https://github.com/insidegui/NoteTaker
-        let subscription = CKQuerySubscription(recordType: T.recordType, predicate: NSPredicate(value: true), subscriptionID: IceCreamKey.cloudKitSubscriptionID.value, options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion])
+        let subscription = CKQuerySubscription(recordType: T.recordType, predicate: NSPredicate(value: true), subscriptionID: IceCreamConstant.cloudKitSubscriptionID, options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion])
         let notificationInfo = CKNotificationInfo()
         notificationInfo.shouldSendContentAvailable = true // Silent Push
         subscription.notificationInfo = notificationInfo

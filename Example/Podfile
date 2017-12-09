@@ -1,8 +1,7 @@
 use_frameworks!
 
 target 'IceCream_Example' do
-  # pod 'IceCream', :path => '../'
-  pod 'IceCream', '~> 1.0.0'
+  pod 'IceCream', :path => '../'
   pod 'RxRealm'
   
   target 'IceCream_Tests' do
