@@ -33,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let notification = CKNotification(fromRemoteNotificationDictionary: dict)
         
         if (notification.subscriptionID == IceCreamConstants.cloudSubscriptionID) {
-             NotificationCenter.default.post(name: .databaseDidChangeRemotely, object: nil, userInfo: userInfo)
+             NotificationCenter.default.post(name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, userInfo: userInfo)
         }
         completionHandler(.newData)
         

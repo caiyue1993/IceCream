@@ -9,8 +9,9 @@ import Foundation
 import RealmSwift
 import CloudKit
 
-public extension Notification.Name {
-    public static let databaseDidChangeRemotely = Notification.Name(rawValue: "databaseDidChangeRemotely")
+
+public enum Notifications: String, NotificationName {
+    case cloudKitDataDidChangeRemotely
 }
 
 public struct IceCreamConstants {
@@ -377,7 +378,7 @@ extension SyncEngine {
     }
     
     fileprivate func startObservingRemoteChanges() {
-        NotificationCenter.default.addObserver(forName: .databaseDidChangeRemotely, object: nil, queue: OperationQueue.main, using: { [weak self](_) in
+        NotificationCenter.default.addObserver(forName: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, queue: OperationQueue.main, using: { [weak self](_) in
             guard let `self` = self else { return }
             `self`.fetchChangesInDatabase()
         })
