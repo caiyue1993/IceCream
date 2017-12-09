@@ -310,6 +310,7 @@ extension SyncEngine {
             }
             self?.zoneChangesToken = token
             callback?()
+            NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: "icecream.sync.successful")))
             print("Sync successfully!")
         }
         privateDatabase.add(changesOp)
