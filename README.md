@@ -125,7 +125,7 @@ IceCream is available through [CocoaPods](http://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod 'IceCream', '~> 1.0.0'
+pod 'IceCream', '~> 1.0.1'
 ```
 
 ## Make it better
