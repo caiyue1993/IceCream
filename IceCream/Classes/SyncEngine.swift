@@ -453,6 +453,7 @@ extension SyncEngine {
         case .changeTokenExpired:
             // The change token is no longer valid and must be resynced.
             zoneChangesToken = nil
+            databaseChangeToken = nil
             block()
         default:
             print("Error: \(e.localizedDescription) (\(e.code.rawValue))")
