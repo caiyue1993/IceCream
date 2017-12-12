@@ -451,12 +451,12 @@ extension SyncEngine {
                 })
             }
         case .changeTokenExpired:
-            // The change token is no longer valid and must be resynced.
+            /// The previousServerChangeToken value is too old and the client must re-sync from scratch
             zoneChangesToken = nil
             databaseChangeToken = nil
             block()
         default:
-            print("Error: \(e.localizedDescription) (\(e.code.rawValue))")
+            print("CKError Details: \(e.localizedDescription) CKError Code: (\(e.code.rawValue))")
         }
     }
 }
