@@ -47,10 +47,12 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
     /// Indicates the private database in default container
     let privateDatabase = CKContainer.default().privateCloudDatabase
     
+    private lazy var errorHandler = CKErrorHandler()
+    
     /// We recommand process the initialization when app launches
     public init() {
         /// Check iCloud status so that we can go on
-        CKContainer.default().accountStatus { [weak self](status, error) in
+        CKContainer.default().accountStatus { [weak self] (status, error) in
             guard let `self` = self else { return }
             if status == CKAccountStatus.available {
                 
@@ -235,16 +237,26 @@ extension SyncEngine {
             `self`.changedRecordZoneID = zoneID
         }
         */
-        changesOperation.fetchDatabaseChangesCompletionBlock = { [weak self] newToken, _, error in
-            guard error == nil else {
-                self?.retryOperationIfPossible(with: error, block: {
+        changesOperation.fetchDatabaseChangesCompletionBlock = {
+            [weak self]
+            newToken, _, error in
+            switch self?.errorHandler.handleCKErrorAs(error) {
+            case .success?:
+                self?.databaseChangeToken = newToken
+                // Fetch the changes in zone level
+                self?.fetchChangesInZone(callback)
+            case .retry(let timeToWait)?:
+                self?.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
                     self?.fetchChangesInDatabase(callback)
                 })
+            case .fail(let reason)?:
+                if reason == .changeTokenExpired {
+                    self?.zoneChangesToken = nil
+                    self?.databaseChangeToken = nil
+                }
+            default: // any other reason
                 return
             }
-            self?.databaseChangeToken = newToken
-            // Fetch the changes in zone level
-            self?.fetchChangesInZone(callback)
         }
         privateDatabase.add(changesOperation)
     }
@@ -260,6 +272,7 @@ extension SyncEngine {
         changesOp.recordZoneChangeTokensUpdatedBlock = { _, token, _ in
             self.zoneChangesToken = token
         }
+        
         changesOp.recordChangedBlock = { [weak self]record in
             /// The Cloud will return the modified record since the last zoneChangesToken, we need to do local cache here.
             /// Handle the record:
@@ -283,6 +296,7 @@ extension SyncEngine {
                 }
             }
         }
+        
         changesOp.recordWithIDWasDeletedBlock = { [weak self]recordId, _ in
             guard let `self` = self else { return }
             
@@ -301,17 +315,22 @@ extension SyncEngine {
                 }
             }
         }
+        
         changesOp.recordZoneFetchCompletionBlock = { [weak self](_,token, _, _, error) in
-            guard error == nil else {
-                self?.retryOperationIfPossible(with: error, block: {
+            switch self?.errorHandler.handleCKErrorAs(error) {
+            case .success?:
+                self?.zoneChangesToken = token
+                callback?()
+                print("Sync successfully!")
+            case .retry(let timeToWait)?:
+                self?.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
                     self?.fetchChangesInZone(callback)
                 })
+            default: // any other reason
                 return
             }
-            self?.zoneChangesToken = token
-            callback?()
-            print("Sync successfully!")
         }
+        
         privateDatabase.add(changesOp)
     }
  
@@ -322,31 +341,43 @@ extension SyncEngine {
         let newCustomZone = CKRecordZone(zoneID: T.customZoneID)
         let modifyOp = CKModifyRecordZonesOperation(recordZonesToSave: [newCustomZone], recordZoneIDsToDelete: nil)
         modifyOp.modifyRecordZonesCompletionBlock = { [weak self](_, _, error) in
-            guard error == nil else {
-                self?.retryOperationIfPossible(with: error, block: {
-                    self?.createCustomZone(completion)
+            switch self?.errorHandler.handleCKErrorAs(error) {
+            case .success?:
+                DispatchQueue.main.async {
+                    completion?(nil)
+                }
+            case .retry(let timeToWait)?:
+                self?.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
+                     self?.createCustomZone(completion)
                 })
+            default: // any other reason
                 return
             }
-            DispatchQueue.main.async {
-                completion?(nil)
-            }
         }
+        
         privateDatabase.add(modifyOp)
     }
  
     /// Check if custom zone already exists
-   /* fileprivate func checkCustomZoneExists(_ completion: ((Error?) -> ())? = nil) {
+  /* fileprivate func checkCustomZoneExists(_ completion: ((Error?) -> ())? = nil) {
         let checkZoneOp = CKFetchRecordZonesOperation(recordZoneIDs: [customZoneID])
         checkZoneOp.fetchRecordZonesCompletionBlock = { dic, error in
-            guard error == nil else { return }
-            DispatchQueue.main.async {
-                completion?(nil)
+            switch self?.errorHandler.handleCKErrorAs(error) {
+            case .success?:
+                DispatchQueue.main.async {
+                    completion?(nil)
+                }
+            case .retry(let timeToWait)?:
+                self?.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
+                    self?.checkCustomZoneExists(completion)
+                })
+            default: // any other reason
+                return
             }
         }
         privateDatabase.add(checkZoneOp)
     }
- */
+*/
     
     fileprivate func createDatabaseSubscription() {
         // The direct below is the subscribe way that Apple suggests in CloudKit Best Practices(https://developer.apple.com/videos/play/wwdc2016/231/) , but it doesn't work here in my place.
@@ -374,15 +405,17 @@ extension SyncEngine {
         subscription.notificationInfo = notificationInfo
         
         privateDatabase.save(subscription) { [weak self](_, error) in
-            guard error == nil else {
-                self?.retryOperationIfPossible(with: error, block: {
+            switch self?.errorHandler.handleCKErrorAs(error) {
+            case .success?:
+                print("Register remote successfully!")
+                self?.subscriptionIsLocallyCached = true
+            case .retry(let timeToWait)?:
+                self?.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
                     self?.createDatabaseSubscription()
                 })
+            default: // any other reason
                 return
             }
-            print("Register remote successfully!")
-            self?.subscriptionIsLocallyCached = true
-            return
         }
     }
     
@@ -411,53 +444,52 @@ extension SyncEngine {
         // Apple suggests using .ifServerRecordUnchanged save policy
         // For more, see Advanced CloudKit(https://developer.apple.com/videos/play/wwdc2014/231/)
         modifyOpe.savePolicy = .changedKeys
-        modifyOpe.modifyRecordsCompletionBlock = { [weak self](_, _, error) in
-            guard let `self` = self else { return }
-            guard error == nil else {
-                `self`.retryOperationIfPossible(with: error, block: {
-                    `self`.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete, completion: completion)
-                })
+        
+        // to avoid CKError.partialFailure, make the operation atomic (if one record fails to get modified, they all fail)
+        // If you want to handle partial failures, set .isAtomic to false and implement CKErrorTYpe .fail(reason: .partialFailure) where appropriate
+        modifyOpe.isAtomic = true
+        
+        modifyOpe.modifyRecordsCompletionBlock = {
+            [weak self]
+            (_, _, error) in
+            switch self?.errorHandler.handleCKErrorAs(error) {
+            case .success?:
+                DispatchQueue.main.async {
+                    completion?(nil)
+                    
+                    /// Cause we will get a error when there is very empty in the cloudKit dashboard
+                    /// which often happen when users first launch your app.
+                    /// So, we put the subscription process here when we sure there is a record type in CloudKit.
+                    if let cached = self?.subscriptionIsLocallyCached {
+                        if cached { return }
+                        self?.createDatabaseSubscription()
+                    }
+                }
+            case .retry(let timeToWait)?:
+                self?.errorHandler.retryOperationIfPossible(retryAfter: timeToWait) {
+                    self?.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete, completion: completion)
+                }
+            case .chunk?:
+                let recordChunks = recordsToStore.chunk(by: 2)
+                for chunk in recordChunks {
+                    self?.syncRecordsToCloudKit(recordsToStore: chunk, recordIDsToDelete: recordIDsToDelete, completion: completion)
+                }
+            default: // any other reason
                 return
             }
-            DispatchQueue.main.async {
-                completion?(nil)
-                
-                /// Cause we will get a error when there is very empty in the cloudKit dashboard
-                /// which often happen when users first launch your app.
-                /// So, we put the subscription process here when we sure there is a record type in CloudKit.
-                if (`self`.subscriptionIsLocallyCached) { return }
-                `self`.createDatabaseSubscription()
-            }
         }
+        
         privateDatabase.add(modifyOpe)
     }
 }
 
-/// Error Handling
-extension SyncEngine {
-    fileprivate func retryOperationIfPossible(with error: Error?, block: @escaping () -> ()) {
-        guard let e = error as? CKError else {
-            print("WTF is the CloudKit? Dial 911 to seek more help")
-            return
-        }
-        switch e.code {
-        case .internalError, .serverRejectedRequest, .invalidArguments, .permissionFailure:
-            print("These errors are unrecoverable and should not be retried")
-        case .zoneBusy, .serviceUnavailable, .requestRateLimited:
-            if let retryAfter = e.userInfo[CKErrorRetryAfterKey] as? Double {
-                let delayTime = DispatchTime.now() + retryAfter
-                DispatchQueue.main.asyncAfter(deadline: delayTime, execute: {
-                    block()
-                })
-            }
-        case .changeTokenExpired:
-            /// The previousServerChangeToken value is too old and the client must re-sync from scratch
-            zoneChangesToken = nil
-            databaseChangeToken = nil
-            block()
-        default:
-            print("CKError Details: \(e.localizedDescription) CKError Code: (\(e.code.rawValue))")
-        }
+extension Array where Element: CKRecord {
+    func chunk(by dividingBy: Int) -> [[Element]] {
+        let chunkSize = count/dividingBy
+        return stride(from: 0, to: count, by: chunkSize).map({ (startIndex) -> [Element] in
+            let endIndex = (startIndex.advanced(by: chunkSize) > count) ? count-startIndex : chunkSize
+            return Array(self[startIndex..<startIndex.advanced(by: endIndex)])
+        })
     }
 }
 
