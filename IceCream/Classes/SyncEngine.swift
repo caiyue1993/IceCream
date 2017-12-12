@@ -157,7 +157,7 @@ extension SyncEngine {
         }
         set {
             guard let n = newValue else {
-                UserDefaults.standard.setNilValueForKey(IceCreamKey.databaseChangesTokenKey.value)
+                UserDefaults.standard.removeObject(forKey: IceCreamKey.databaseChangesTokenKey.value)
                 return
             }
             let data = NSKeyedArchiver.archivedData(withRootObject: n)
@@ -174,7 +174,7 @@ extension SyncEngine {
         }
         set {
             guard let n = newValue else {
-                UserDefaults.standard.setNilValueForKey(IceCreamKey.zoneChangesTokenKey.value)
+                UserDefaults.standard.removeObject(forKey: IceCreamKey.zoneChangesTokenKey.value)
                 return
             }
             let data = NSKeyedArchiver.archivedData(withRootObject: n)
@@ -450,8 +450,13 @@ extension SyncEngine {
                     block()
                 })
             }
+        case .changeTokenExpired:
+            /// The previousServerChangeToken value is too old and the client must re-sync from scratch
+            zoneChangesToken = nil
+            databaseChangeToken = nil
+            block()
         default:
-            print("Error: " + e.localizedDescription)
+            print("CKError Details: \(e.localizedDescription) CKError Code: (\(e.code.rawValue))")
         }
     }
 }
