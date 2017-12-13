@@ -47,7 +47,7 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
     /// Indicates the private database in default container
     let privateDatabase = CKContainer.default().privateCloudDatabase
     
-    private lazy var errorHandler = CKErrorHandler()
+    private lazy var errorHandler = ErrorHandler()
     
     /// We recommand process the initialization when app launches
     public init() {
@@ -246,7 +246,7 @@ extension SyncEngine {
                 // Fetch the changes in zone level
                 self?.fetchChangesInZone(callback)
             case .retry(let timeToWait, _)?:
-                CKErrorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
+                ErrorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
                     self?.fetchChangesInDatabase(callback)
                 })
             case .recoverableError(let reason, _)?:
@@ -326,7 +326,7 @@ extension SyncEngine {
                 callback?()
                 print("Sync successfully!")
             case .retry(let timeToWait, _)?:
-                CKErrorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
+                ErrorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
                     self?.fetchChangesInZone(callback)
                 })
             default: // any other reason
@@ -350,7 +350,7 @@ extension SyncEngine {
                     completion?(nil)
                 }
             case .retry(let timeToWait, _)?:
-                CKErrorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
+                ErrorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
                      self?.createCustomZone(completion)
                 })
             default: // any other reason
@@ -413,7 +413,7 @@ extension SyncEngine {
                 print("Register remote successfully!")
                 self?.subscriptionIsLocallyCached = true
             case .retry(let timeToWait, _)?:
-                CKErrorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
+                ErrorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
                     self?.createDatabaseSubscription()
                 })
             default: // any other reason
@@ -469,7 +469,7 @@ extension SyncEngine {
                     }
                 }
             case .retry(let timeToWait, _)?:
-                CKErrorHandler.retryOperationIfPossible(retryAfter: timeToWait) {
+                ErrorHandler.retryOperationIfPossible(retryAfter: timeToWait) {
                     self?.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete, completion: completion)
                 }
             case .chunk?:

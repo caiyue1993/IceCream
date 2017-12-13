@@ -28,7 +28,7 @@ import CloudKit
  http://cocoadocs.org/docsets/EVCloudKitDao/3.1.0/index.html
  */
 
-public struct CKErrorHandler {
+public struct ErrorHandler {
     
     // MARK: - Public API
     public enum CKErrorType {
@@ -56,7 +56,7 @@ public struct CKErrorHandler {
         if error == nil {
             return .success
         }
-
+        
         guard let error = error as NSError? else {
             let message = "ErrorHandler.Fail - WTF"
             NSLog(message)
@@ -92,29 +92,29 @@ public struct CKErrorHandler {
                 seconds = Double(truncating: retry)
             }
             
-            NSLog("CKErrorHandler - \(message). Should retry in \(seconds) seconds.")
+            NSLog("ErrorHandler - \(message). Should retry in \(seconds) seconds.")
             return .retry(afterSeconds: seconds, message: message)
             
         // RECOVERABLE ERROR
         case .networkUnavailable,
              .networkFailure:
-            print("CKErrorHandler.recoverableError: \(message)")
+            print("ErrorHandler.recoverableError: \(message)")
             return .recoverableError(reason: .network, message: message)
         case .changeTokenExpired:
-            NSLog("CKErrorHandler.recoverableError: \(message)")
+            NSLog("ErrorHandler.recoverableError: \(message)")
             return .recoverableError(reason: .changeTokenExpired, message: message)
         case .serverRecordChanged:
-            NSLog("CKErrorHandler.recoverableError: \(message)")
+            NSLog("ErrorHandler.recoverableError: \(message)")
             return .recoverableError(reason: .serverRecordChanged, message: message)
         case .partialFailure: // shouldn't happen since SyncEngine.syncRecordsToCloudKit isAtomic
             if let dictionary = error.userInfo[CKPartialErrorsByItemIDKey] as? NSDictionary {
-                NSLog("CKErrorHandler.partialFailure for \(dictionary.count) items; CKPartialErrorsByItemIDKey: \(dictionary)")
+                NSLog("ErrorHandler.partialFailure for \(dictionary.count) items; CKPartialErrorsByItemIDKey: \(dictionary)")
             }
             return .recoverableError(reason: .partialFailure, message: message)
             
         // CHUNK: LIMIT EXCEEDED
         case .limitExceeded:
-            NSLog("CKErrorHandler.Chunk: \(message)")
+            NSLog("ErrorHandler.Chunk: \(message)")
             return .chunk
             
             // FAIL
@@ -137,18 +137,18 @@ public struct CKErrorHandler {
              .unknownItem,
              .userDeletedZone,
              .zoneNotFound:
-            NSLog("CKErrorHandler.Fail: \(message)")
+            NSLog("ErrorHandler.Fail: \(message)")
             return .fail(reason: .unknown, message: message)
         // Share related
         case .alreadyShared,
              .participantMayNeedVerification,
              .referenceViolation,
              .tooManyParticipants:
-            NSLog("CKErrorHandler.Fail: \(message)")
+            NSLog("ErrorHandler.Fail: \(message)")
             return .fail(reason: .shareRelated, message: message)
         // quota exceeded is sort of a special case where the user has to take action before retry
         case .quotaExceeded:
-            NSLog("CKErrorHandler.Fail: \(message)")
+            NSLog("ErrorHandler.Fail: \(message)")
             return .fail(reason: .quotaExceeded, message: message)
         }
     }
@@ -159,7 +159,7 @@ public struct CKErrorHandler {
         DispatchQueue.main.asyncAfter(deadline: delayTime, execute: {
             block()
         })
-
+        
     }
     
     private func returnErrorMessage(_ code: CKError.Code) -> String {
@@ -250,3 +250,4 @@ extension Array where Element: CKRecord {
         })
     }
 }
+
