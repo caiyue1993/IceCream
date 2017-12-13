@@ -245,14 +245,17 @@ extension SyncEngine {
                 self?.databaseChangeToken = newToken
                 // Fetch the changes in zone level
                 self?.fetchChangesInZone(callback)
-            case .retry(let timeToWait)?:
-                self?.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
+            case .retry(let timeToWait, _)?:
+                CKErrorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
                     self?.fetchChangesInDatabase(callback)
                 })
-            case .fail(let reason)?:
-                if reason == .changeTokenExpired {
+            case .recoverableError(let reason, _)?:
+                switch reason {
+                case .changeTokenExpired:
                     self?.zoneChangesToken = nil
                     self?.databaseChangeToken = nil
+                default:
+                    return
                 }
             default: // any other reason
                 return
@@ -322,8 +325,8 @@ extension SyncEngine {
                 self?.zoneChangesToken = token
                 callback?()
                 print("Sync successfully!")
-            case .retry(let timeToWait)?:
-                self?.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
+            case .retry(let timeToWait, _)?:
+                CKErrorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
                     self?.fetchChangesInZone(callback)
                 })
             default: // any other reason
@@ -346,8 +349,8 @@ extension SyncEngine {
                 DispatchQueue.main.async {
                     completion?(nil)
                 }
-            case .retry(let timeToWait)?:
-                self?.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
+            case .retry(let timeToWait, _)?:
+                CKErrorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
                      self?.createCustomZone(completion)
                 })
             default: // any other reason
@@ -368,7 +371,7 @@ extension SyncEngine {
                     completion?(nil)
                 }
             case .retry(let timeToWait)?:
-                self?.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
+                ErrorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
                     self?.checkCustomZoneExists(completion)
                 })
             default: // any other reason
@@ -409,8 +412,8 @@ extension SyncEngine {
             case .success?:
                 print("Register remote successfully!")
                 self?.subscriptionIsLocallyCached = true
-            case .retry(let timeToWait)?:
-                self?.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
+            case .retry(let timeToWait, _)?:
+                CKErrorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
                     self?.createDatabaseSubscription()
                 })
             default: // any other reason
@@ -465,8 +468,8 @@ extension SyncEngine {
                         self?.createDatabaseSubscription()
                     }
                 }
-            case .retry(let timeToWait)?:
-                self?.errorHandler.retryOperationIfPossible(retryAfter: timeToWait) {
+            case .retry(let timeToWait, _)?:
+                CKErrorHandler.retryOperationIfPossible(retryAfter: timeToWait) {
                     self?.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete, completion: completion)
                 }
             case .chunk?:
@@ -480,16 +483,6 @@ extension SyncEngine {
         }
         
         privateDatabase.add(modifyOpe)
-    }
-}
-
-extension Array where Element: CKRecord {
-    func chunk(by dividingBy: Int) -> [[Element]] {
-        let chunkSize = count/dividingBy
-        return stride(from: 0, to: count, by: chunkSize).map({ (startIndex) -> [Element] in
-            let endIndex = (startIndex.advanced(by: chunkSize) > count) ? count-startIndex : chunkSize
-            return Array(self[startIndex..<startIndex.advanced(by: endIndex)])
-        })
     }
 }
 
