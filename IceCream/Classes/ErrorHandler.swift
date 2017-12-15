@@ -40,11 +40,9 @@ public struct ErrorHandler {
             return .fail(reason: .unknown, message: "The error returned is not a CKError")
         }
         
-        guard let errorCode: CKError.Code = CKError.Code(rawValue: e.code) else { return .fail(reason: .unhandledErrorCode, message: "IceCream can not handle \(e.code) for now.") }
+        let message = returnErrorMessage(e.code)
         
-        let message = returnErrorMessage(errorCode)
-        
-        switch errorCode {
+        switch e.code {
             
         // SHOULD RETRY
         case .serverResponseLost,
@@ -60,7 +58,7 @@ public struct ErrorHandler {
             }
             
             // If there is a retry delay specified in the error, then use that.
-            let userInfo = error.userInfo
+            let userInfo = e.userInfo
             if let retry = userInfo[CKErrorRetryAfterKey] as? Double {
                 seconds = retry
             }
@@ -81,7 +79,7 @@ public struct ErrorHandler {
             return .recoverableError(reason: .serverRecordChanged, message: message)
         case .partialFailure:
             // Normally it shouldn't happen since if CKOperation `isAtomic` set to true
-            if let dictionary = error.userInfo[CKPartialErrorsByItemIDKey] as? NSDictionary {
+            if let dictionary = e.userInfo[CKPartialErrorsByItemIDKey] as? NSDictionary {
                 print("ErrorHandler.partialFailure for \(dictionary.count) items; CKPartialErrorsByItemIDKey: \(dictionary)")
             }
             return .recoverableError(reason: .partialFailure, message: message)
@@ -219,11 +217,21 @@ public struct ErrorHandler {
 }
 
 extension Array where Element: CKRecord {
-    func chunk(by dividingBy: Int) -> [[Element]] {
-        let chunkSize = count/dividingBy
+    /// Chunk the big group into smaller ones, with the given chunkSize
+    /// For example, we have some dogs(You can test it in the playground):
+    ///
+    /*  var dogs: [Dog] = []
+        for i in 0...22 {
+        var dog = Dog(age: i, name: "Dog \(i)")
+            dogs.append(dog)
+        }
+        let chunkedDogs = dogs.chunkItUp(by: 5)
+    */
+    
+    func chunkItUp(by chunkSize: Int) -> [[Element]] {
         return stride(from: 0, to: count, by: chunkSize).map({ (startIndex) -> [Element] in
-            let endIndex = (startIndex.advanced(by: chunkSize) > count) ? count-startIndex : chunkSize
-            return Array(self[startIndex..<startIndex.advanced(by: endIndex)])
+            let endIndex = (startIndex.advanced(by: chunkSize) > count) ? count : (startIndex + chunkSize)
+            return Array(self[startIndex..<endIndex])
         })
     }
 }

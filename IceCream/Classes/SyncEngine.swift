@@ -448,7 +448,7 @@ extension SyncEngine {
         // For more, see Advanced CloudKit(https://developer.apple.com/videos/play/wwdc2014/231/)
         modifyOpe.savePolicy = .changedKeys
         
-        // to avoid CKError.partialFailure, make the operation atomic (if one record fails to get modified, they all fail)
+        // To avoid CKError.partialFailure, make the operation atomic (if one record fails to get modified, they all fail)
         // If you want to handle partial failures, set .isAtomic to false and implement CKErrorTYpe .fail(reason: .partialFailure) where appropriate
         modifyOpe.isAtomic = true
         
@@ -473,8 +473,8 @@ extension SyncEngine {
                     self?.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete, completion: completion)
                 }
             case .chunk?:
-                let recordChunks = recordsToStore.chunk(by: 2)
-                for chunk in recordChunks {
+                let chunkedRecords = recordsToStore.chunkItUp(by: 300)
+                for chunk in chunkedRecords {
                     self?.syncRecordsToCloudKit(recordsToStore: chunk, recordIDsToDelete: recordIDsToDelete, completion: completion)
                 }
             default: // any other reason
