@@ -2,6 +2,24 @@
 
 -----
 
+## [1.1.0 - Equipped!](https://github.com/caiyue1993/IceCream/releases/tag/1.1.0)
+
+#### Add
+
+* A powerful Error Handler. [#15](https://github.com/caiyue1993/IceCream/pull/15).
+
+-----
+
+## [1.0.0 - Dressed Up!](https://github.com/caiyue1993/IceCream/releases/tag/1.0.0)
+
+#### Fix
+
+* Subscription bug. [#12](https://github.com/caiyue1993/IceCream/pull/12).
+
+* Bye bye, magic strings. [#11](https://github.com/caiyue1993/IceCream/pull/11)
+
+---
+
 ## [0.2.0 - One line of code, all settled](https://github.com/caiyue1993/IceCream/releases/tag/0.2.0)
 
 #### Fix
