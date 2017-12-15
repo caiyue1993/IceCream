@@ -13,7 +13,7 @@ import CloudKit
 
 public struct ErrorHandler {
     
-    /// We could classify all the result that CKOperation returns into following five CKOperationResultTypes
+    /// We could classify all the result that CKOperation returns into the following five CKOperationResultTypes
     public enum CKOperationResultType {
         case success
         case retry(afterSeconds: Double, message: String)
@@ -45,26 +45,18 @@ public struct ErrorHandler {
         switch e.code {
             
         // SHOULD RETRY
-        case .serverResponseLost,
-             .serviceUnavailable,
+        case .serviceUnavailable,
              .requestRateLimited,
-             .zoneBusy,
-             .resultsTruncated:
-            
-            // Use an exponential retry delay which maxes out at half an hour.
-            var seconds = pow(2, retryAttempt)
-            if seconds > 60 * 30 {
-                seconds = 60 * 30
-            }
+             .zoneBusy:
             
             // If there is a retry delay specified in the error, then use that.
             let userInfo = e.userInfo
             if let retry = userInfo[CKErrorRetryAfterKey] as? Double {
-                seconds = retry
+                print("ErrorHandler - \(message). Should retry in \(retry) seconds.")
+                return .retry(afterSeconds: retry, message: message)
+            } else {
+                return .fail(reason: .unknown, message: "")
             }
-            
-            print("ErrorHandler - \(message). Should retry in \(seconds) seconds.")
-            return .retry(afterSeconds: seconds, message: message)
             
         // RECOVERABLE ERROR
         case .networkUnavailable,
@@ -112,6 +104,8 @@ public struct ErrorHandler {
              .notAuthenticated,
              .operationCancelled,
              .permissionFailure,
+             .resultsTruncated,
+             .serverResponseLost,
              .serverRejectedRequest,
              .unknownItem,
              .userDeletedZone,
