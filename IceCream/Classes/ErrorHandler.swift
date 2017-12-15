@@ -34,13 +34,13 @@ public struct ErrorHandler {
         case unknown
     }
     
-    public func handleCKErrorAs(_ error: Error?) -> CKOperationResultType {
+    public func ckError(with error: Error?) -> CKOperationResultType {
         
         guard let e = error as? CKError else {
             return .fail(reason: .unknown, message: "The error returned is not a CKError")
         }
         
-        let message = returnErrorMessage(e.code)
+        let message = returnErrorMessage(for: e.code)
         
         switch e.code {
             
@@ -122,7 +122,7 @@ public struct ErrorHandler {
         
     }
     
-    static public func retryOperationIfPossible(retryAfter: Double, block: @escaping () -> ()) {
+    public func retryOperationIfPossible(retryAfter: Double, block: @escaping () -> ()) {
         
         let delayTime = DispatchTime.now() + retryAfter
         DispatchQueue.main.asyncAfter(deadline: delayTime, execute: {
@@ -131,7 +131,7 @@ public struct ErrorHandler {
         
     }
     
-    private func returnErrorMessage(_ code: CKError.Code) -> String {
+    private func returnErrorMessage(for code: CKError.Code) -> String {
         var returnMessage = ""
         
         switch code {

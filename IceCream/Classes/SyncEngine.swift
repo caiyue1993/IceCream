@@ -241,13 +241,13 @@ extension SyncEngine {
             [weak self]
             newToken, _, error in
              guard let `self` = self else { return }
-            switch `self`.errorHandler.handleCKErrorAs(error) {
+            switch `self`.errorHandler.ckError(with: error) {
             case .success:
                 `self`.databaseChangeToken = newToken
                 // Fetch the changes in zone level
                 `self`.fetchChangesInZone(callback)
             case .retry(let timeToWait, _):
-                ErrorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
+                `self`.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
                     `self`.fetchChangesInDatabase(callback)
                 })
             case .recoverableError(let reason, _):
@@ -323,13 +323,13 @@ extension SyncEngine {
         
         changesOp.recordZoneFetchCompletionBlock = { [weak self](_,token, _, _, error) in
             guard let `self` = self else { return }
-            switch `self`.errorHandler.handleCKErrorAs(error) {
+            switch `self`.errorHandler.ckError(with: error) {
             case .success:
                 `self`.zoneChangesToken = token
                 callback?()
                 print("Sync successfully!")
             case .retry(let timeToWait, _):
-                ErrorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
+                `self`.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
                     `self`.fetchChangesInZone(callback)
                 })
             case .recoverableError(let reason, _):
@@ -357,13 +357,13 @@ extension SyncEngine {
         let modifyOp = CKModifyRecordZonesOperation(recordZonesToSave: [newCustomZone], recordZoneIDsToDelete: nil)
         modifyOp.modifyRecordZonesCompletionBlock = { [weak self](_, _, error) in
             guard let `self` = self else { return }
-            switch `self`.errorHandler.handleCKErrorAs(error) {
+            switch `self`.errorHandler.ckError(with: error) {
             case .success:
                 DispatchQueue.main.async {
                     completion?(nil)
                 }
             case .retry(let timeToWait, _):
-                ErrorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
+                `self`.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
                      `self`.createCustomZone(completion)
                 })
             default:
@@ -378,7 +378,7 @@ extension SyncEngine {
   /* fileprivate func checkCustomZoneExists(_ completion: ((Error?) -> ())? = nil) {
         let checkZoneOp = CKFetchRecordZonesOperation(recordZoneIDs: [customZoneID])
         checkZoneOp.fetchRecordZonesCompletionBlock = { dic, error in
-            switch self?.errorHandler.handleCKErrorAs(error) {
+            switch self?.errorHandler.ckError(with: error) {
             case .success?:
                 DispatchQueue.main.async {
                     completion?(nil)
@@ -422,12 +422,12 @@ extension SyncEngine {
         
         privateDatabase.save(subscription) { [weak self](_, error) in
             guard let `self` = self else { return }
-            switch `self`.errorHandler.handleCKErrorAs(error) {
+            switch `self`.errorHandler.ckError(with: error) {
             case .success:
                 print("Register remote successfully!")
                 `self`.subscriptionIsLocallyCached = true
             case .retry(let timeToWait, _):
-                ErrorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
+                `self`.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
                     `self`.createDatabaseSubscription()
                 })
             default:
@@ -472,7 +472,7 @@ extension SyncEngine {
             
             guard let `self` = self else { return }
             
-            switch `self`.errorHandler.handleCKErrorAs(error) {
+            switch `self`.errorHandler.ckError(with: error) {
             case .success:
                 DispatchQueue.main.async {
                     completion?(nil)
@@ -484,7 +484,7 @@ extension SyncEngine {
                     `self`.createDatabaseSubscription()
                 }
             case .retry(let timeToWait, _):
-                ErrorHandler.retryOperationIfPossible(retryAfter: timeToWait) {
+                `self`.errorHandler.retryOperationIfPossible(retryAfter: timeToWait) {
                     `self`.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete, completion: completion)
                 }
             case .chunk:
