@@ -240,21 +240,22 @@ extension SyncEngine {
         changesOperation.fetchDatabaseChangesCompletionBlock = {
             [weak self]
             newToken, _, error in
-            switch self?.errorHandler.handleCKErrorAs(error) {
-            case .success?:
-                self?.databaseChangeToken = newToken
+             guard let `self` = self else { return }
+            switch `self`.errorHandler.handleCKErrorAs(error) {
+            case .success:
+                `self`.databaseChangeToken = newToken
                 // Fetch the changes in zone level
-                self?.fetchChangesInZone(callback)
-            case .retry(let timeToWait, _)?:
+                `self`.fetchChangesInZone(callback)
+            case .retry(let timeToWait, _):
                 ErrorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
-                    self?.fetchChangesInDatabase(callback)
+                    `self`.fetchChangesInDatabase(callback)
                 })
-            case .recoverableError(let reason, _)?:
+            case .recoverableError(let reason, _):
                 switch reason {
                 case .changeTokenExpired:
                     /// The previousServerChangeToken value is too old and the client must re-sync from scratch
-                    self?.databaseChangeToken = nil
-                    self?.fetchChangesInDatabase(callback)
+                    `self`.databaseChangeToken = nil
+                    `self`.fetchChangesInDatabase(callback)
                 default:
                     return
                 }
@@ -321,21 +322,22 @@ extension SyncEngine {
         }
         
         changesOp.recordZoneFetchCompletionBlock = { [weak self](_,token, _, _, error) in
-            switch self?.errorHandler.handleCKErrorAs(error) {
-            case .success?:
-                self?.zoneChangesToken = token
+            guard let `self` = self else { return }
+            switch `self`.errorHandler.handleCKErrorAs(error) {
+            case .success:
+                `self`.zoneChangesToken = token
                 callback?()
                 print("Sync successfully!")
-            case .retry(let timeToWait, _)?:
+            case .retry(let timeToWait, _):
                 ErrorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
-                    self?.fetchChangesInZone(callback)
+                    `self`.fetchChangesInZone(callback)
                 })
-            case .recoverableError(let reason, _)?:
+            case .recoverableError(let reason, _):
                 switch reason {
                 case .changeTokenExpired:
                     /// The previousServerChangeToken value is too old and the client must re-sync from scratch
-                    self?.zoneChangesToken = nil
-                    self?.fetchChangesInZone(callback)
+                    `self`.zoneChangesToken = nil
+                    `self`.fetchChangesInZone(callback)
                 default:
                     return
                 }
@@ -354,14 +356,15 @@ extension SyncEngine {
         let newCustomZone = CKRecordZone(zoneID: T.customZoneID)
         let modifyOp = CKModifyRecordZonesOperation(recordZonesToSave: [newCustomZone], recordZoneIDsToDelete: nil)
         modifyOp.modifyRecordZonesCompletionBlock = { [weak self](_, _, error) in
-            switch self?.errorHandler.handleCKErrorAs(error) {
-            case .success?:
+            guard let `self` = self else { return }
+            switch `self`.errorHandler.handleCKErrorAs(error) {
+            case .success:
                 DispatchQueue.main.async {
                     completion?(nil)
                 }
-            case .retry(let timeToWait, _)?:
+            case .retry(let timeToWait, _):
                 ErrorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
-                     self?.createCustomZone(completion)
+                     `self`.createCustomZone(completion)
                 })
             default:
                 return
@@ -418,13 +421,14 @@ extension SyncEngine {
         subscription.notificationInfo = notificationInfo
         
         privateDatabase.save(subscription) { [weak self](_, error) in
-            switch self?.errorHandler.handleCKErrorAs(error) {
-            case .success?:
+            guard let `self` = self else { return }
+            switch `self`.errorHandler.handleCKErrorAs(error) {
+            case .success:
                 print("Register remote successfully!")
-                self?.subscriptionIsLocallyCached = true
-            case .retry(let timeToWait, _)?:
+                `self`.subscriptionIsLocallyCached = true
+            case .retry(let timeToWait, _):
                 ErrorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
-                    self?.createDatabaseSubscription()
+                    `self`.createDatabaseSubscription()
                 })
             default:
                 return
@@ -465,27 +469,30 @@ extension SyncEngine {
         modifyOpe.modifyRecordsCompletionBlock = {
             [weak self]
             (_, _, error) in
-            switch self?.errorHandler.handleCKErrorAs(error) {
-            case .success?:
+            
+            guard let `self` = self else { return }
+            
+            switch `self`.errorHandler.handleCKErrorAs(error) {
+            case .success:
                 DispatchQueue.main.async {
                     completion?(nil)
                     
                     /// Cause we will get a error when there is very empty in the cloudKit dashboard
                     /// which often happen when users first launch your app.
                     /// So, we put the subscription process here when we sure there is a record type in CloudKit.
-                    if let cached = self?.subscriptionIsLocallyCached {
-                        if cached { return }
-                        self?.createDatabaseSubscription()
-                    }
+                    if `self`.subscriptionIsLocallyCached { return }
+                    `self`.createDatabaseSubscription()
                 }
-            case .retry(let timeToWait, _)?:
+            case .retry(let timeToWait, _):
                 ErrorHandler.retryOperationIfPossible(retryAfter: timeToWait) {
-                    self?.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete, completion: completion)
+                    `self`.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete, completion: completion)
                 }
-            case .chunk?:
+            case .chunk:
+                /// CloudKit says maximum number of items in a single request is 400.
+                /// So I think 300 should be a fine by them.
                 let chunkedRecords = recordsToStore.chunkItUp(by: 300)
                 for chunk in chunkedRecords {
-                    self?.syncRecordsToCloudKit(recordsToStore: chunk, recordIDsToDelete: recordIDsToDelete, completion: completion)
+                    `self`.syncRecordsToCloudKit(recordsToStore: chunk, recordIDsToDelete: recordIDsToDelete, completion: completion)
                 }
             default:
                 return
