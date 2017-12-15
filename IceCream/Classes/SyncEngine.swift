@@ -241,7 +241,7 @@ extension SyncEngine {
             [weak self]
             newToken, _, error in
              guard let `self` = self else { return }
-            switch `self`.errorHandler.ckError(with: error) {
+            switch `self`.errorHandler.resultType(with: error) {
             case .success:
                 `self`.databaseChangeToken = newToken
                 // Fetch the changes in zone level
@@ -323,7 +323,7 @@ extension SyncEngine {
         
         changesOp.recordZoneFetchCompletionBlock = { [weak self](_,token, _, _, error) in
             guard let `self` = self else { return }
-            switch `self`.errorHandler.ckError(with: error) {
+            switch `self`.errorHandler.resultType(with: error) {
             case .success:
                 `self`.zoneChangesToken = token
                 callback?()
@@ -357,7 +357,7 @@ extension SyncEngine {
         let modifyOp = CKModifyRecordZonesOperation(recordZonesToSave: [newCustomZone], recordZoneIDsToDelete: nil)
         modifyOp.modifyRecordZonesCompletionBlock = { [weak self](_, _, error) in
             guard let `self` = self else { return }
-            switch `self`.errorHandler.ckError(with: error) {
+            switch `self`.errorHandler.resultType(with: error) {
             case .success:
                 DispatchQueue.main.async {
                     completion?(nil)
@@ -378,7 +378,7 @@ extension SyncEngine {
   /* fileprivate func checkCustomZoneExists(_ completion: ((Error?) -> ())? = nil) {
         let checkZoneOp = CKFetchRecordZonesOperation(recordZoneIDs: [customZoneID])
         checkZoneOp.fetchRecordZonesCompletionBlock = { dic, error in
-            switch self?.errorHandler.ckError(with: error) {
+            switch self?.errorHandler.resultType(with: error) {
             case .success?:
                 DispatchQueue.main.async {
                     completion?(nil)
@@ -422,7 +422,7 @@ extension SyncEngine {
         
         privateDatabase.save(subscription) { [weak self](_, error) in
             guard let `self` = self else { return }
-            switch `self`.errorHandler.ckError(with: error) {
+            switch `self`.errorHandler.resultType(with: error) {
             case .success:
                 print("Register remote successfully!")
                 `self`.subscriptionIsLocallyCached = true
@@ -463,7 +463,7 @@ extension SyncEngine {
         modifyOpe.savePolicy = .changedKeys
         
         // To avoid CKError.partialFailure, make the operation atomic (if one record fails to get modified, they all fail)
-        // If you want to handle partial failures, set .isAtomic to false and implement CKErrorTYpe .fail(reason: .partialFailure) where appropriate
+        // If you want to handle partial failures, set .isAtomic to false and implement CKOperationResultType .fail(reason: .partialFailure) where appropriate
         modifyOpe.isAtomic = true
         
         modifyOpe.modifyRecordsCompletionBlock = {
@@ -472,7 +472,7 @@ extension SyncEngine {
             
             guard let `self` = self else { return }
             
-            switch `self`.errorHandler.ckError(with: error) {
+            switch `self`.errorHandler.resultType(with: error) {
             case .success:
                 DispatchQueue.main.async {
                     completion?(nil)

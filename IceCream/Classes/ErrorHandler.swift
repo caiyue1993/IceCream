@@ -34,7 +34,8 @@ public struct ErrorHandler {
         case unknown
     }
     
-    public func ckError(with error: Error?) -> CKOperationResultType {
+    public func resultType(with error: Error?) -> CKOperationResultType {
+        guard error != nil else { return .success }
         
         guard let e = error as? CKError else {
             return .fail(reason: .unknown, message: "The error returned is not a CKError")
