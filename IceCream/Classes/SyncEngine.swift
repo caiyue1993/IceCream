@@ -45,9 +45,9 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
 //    fileprivate var changedRecordZoneID: CKRecordZoneID?
     
     /// Indicates the private database in default container
-    let privateDatabase = CKContainer.default().privateCloudDatabase
+    private let privateDatabase = CKContainer.default().privateCloudDatabase
     
-    private lazy var errorHandler = ErrorHandler()
+    private let errorHandler = ErrorHandler()
     
     /// We recommand process the initialization when app launches
     public init() {
@@ -252,8 +252,9 @@ extension SyncEngine {
             case .recoverableError(let reason, _)?:
                 switch reason {
                 case .changeTokenExpired:
-                    self?.zoneChangesToken = nil
+                    /// The previousServerChangeToken value is too old and the client must re-sync from scratch
                     self?.databaseChangeToken = nil
+                    self?.fetchChangesInDatabase(callback)
                 default:
                     return
                 }
@@ -329,6 +330,15 @@ extension SyncEngine {
                 ErrorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
                     self?.fetchChangesInZone(callback)
                 })
+            case .recoverableError(let reason, _)?:
+                switch reason {
+                case .changeTokenExpired:
+                    /// The previousServerChangeToken value is too old and the client must re-sync from scratch
+                    self?.zoneChangesToken = nil
+                    self?.fetchChangesInZone(callback)
+                default:
+                    return
+                }
             default: // any other reason
                 return
             }
