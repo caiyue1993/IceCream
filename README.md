@@ -27,7 +27,7 @@ IceCream helps you sync Realm Database with CloudKit.
 
 - [x] Delta update
 - [x] Reachability(Support Long-lived Operation) 
-- [x] Error Handling
+- [x] Powerful Error Handling 
 - [x] Sync Automatically
 - [x] Manually Synchronization is also supported
 - [x] User Account Status Check
@@ -125,7 +125,7 @@ IceCream is available through [CocoaPods](http://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod 'IceCream', '~> 1.0.1'
+pod 'IceCream', '~> 1.1.0'
 ```
 
 ## Make it better
