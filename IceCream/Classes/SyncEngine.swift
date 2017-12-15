@@ -79,6 +79,9 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
                 
                 NotificationCenter.default.addObserver(self, selector: #selector(self.cleanUp), name: .UIApplicationWillTerminate, object: nil)
                 
+                if `self`.subscriptionIsLocallyCached { return }
+                `self`.createDatabaseSubscription()
+                
             } else {
                 /// Handle when user account is not available
                 print("Easy, my boy. You haven't logged into iCloud account on your device/simulator yet.")
