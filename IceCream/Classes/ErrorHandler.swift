@@ -8,39 +8,22 @@
 import Foundation
 import CloudKit
 
-/*
- This struct returns an explicit CKErrorType binned according to the CKErorr.Code,
- updated to the current Apple documentation CloudKit > CKError > CKError.Code (12/12/2017)
- https://developer.apple.com/documentation/cloudkit/ckerror.code
- 
- You can implement this class by switching on the handleCKError function and appropriately handling the relevant errors pertaining to the specific CKOperation.
- */
-
-/*
- This is a more detailed implementation of
- EVCloudKitDao: https://github.com/evermeer/EVCloudKitDao
- from github user evermeer: https://github.com/evermeer
- 
- The original handleCloudKitErrorAs() func can be found here:
- https://github.com/evermeer/EVCloudKitDao/blob/master/Source/EVCloudKitDao.swift
- 
- A more detailed implementation of the EVCloudKitDao would be useful. There are a ton of great features working and the source code is mostly documented.
- http://cocoadocs.org/docsets/EVCloudKitDao/3.1.0/index.html
- */
+/// This struct helps you handle all the CKErrors and has been updated to the current Apple documentation(12/15/2017):
+/// https://developer.apple.com/documentation/cloudkit/ckerror.code
 
 public struct ErrorHandler {
     
-    // MARK: - Public API
-    public enum CKErrorType {
+    /// We could classify all the result that CKOperation returns into following five CKOperationResultTypes
+    public enum CKOperationResultType {
         case success
         case retry(afterSeconds: Double, message: String)
         case chunk
-        case recoverableError(reason: CKFailReason, message: String)
-        case fail(reason: CKFailReason, message: String)
+        case recoverableError(reason: CKOperationFailReason, message: String)
+        case fail(reason: CKOperationFailReason, message: String)
     }
     
-    // I consider the following speciality cases the most likely to be specifically and separately addressed by custom code in the adopting class
-    public enum CKFailReason {
+    /// The reason of CloudKit failure could be classified into following 8 cases
+    public enum CKOperationFailReason {
         case changeTokenExpired
         case network
         case quotaExceeded
@@ -51,48 +34,38 @@ public struct ErrorHandler {
         case unknown
     }
     
-    public func handleCKErrorAs(_ error: Error?, retryAttempt: Double = 1) -> CKErrorType {
+    public func handleCKErrorAs(_ error: Error?, retryAttempt: Double = 1) -> CKOperationResultType {
         
-        if error == nil {
-            return .success
+        guard let e = error as? CKError else {
+            return .fail(reason: .unknown, message: "The error returned is not a CKError")
         }
         
-        guard let error = error as NSError? else {
-            let message = "ErrorHandler.Fail - WTF"
-            NSLog(message)
-            return .fail(reason: .unknown, message: message)
-        }
-        
-        guard let errorCode: CKError.Code = CKError.Code(rawValue: error.code)  else {
-            let message = "ErrorHandler.Fail - CKError.Code doesn't exist: \(error.localizedDescription)"
-            NSLog(message)
-            return .fail(reason: .unhandledErrorCode, message: message)
-        }
+        guard let errorCode: CKError.Code = CKError.Code(rawValue: e.code) else { return .fail(reason: .unhandledErrorCode, message: "IceCream can not handle \(e.code) for now.") }
         
         let message = returnErrorMessage(errorCode)
         
         switch errorCode {
             
-        // RETRY
+        // SHOULD RETRY
         case .serverResponseLost,
              .serviceUnavailable,
              .requestRateLimited,
              .zoneBusy,
              .resultsTruncated:
+            
             // Use an exponential retry delay which maxes out at half an hour.
-            var seconds = Double(pow(2, Double(retryAttempt)))
-            if seconds > 60*30 {
-                seconds = 60*30
+            var seconds = pow(2, retryAttempt)
+            if seconds > 60 * 30 {
+                seconds = 60 * 30
             }
             
-            // Or if there is a retry delay specified in the error, then use that.
+            // If there is a retry delay specified in the error, then use that.
             let userInfo = error.userInfo
-            
-            if let retry = userInfo[CKErrorRetryAfterKey] as? NSNumber {
-                seconds = Double(truncating: retry)
+            if let retry = userInfo[CKErrorRetryAfterKey] as? Double {
+                seconds = retry
             }
             
-            NSLog("ErrorHandler - \(message). Should retry in \(seconds) seconds.")
+            print("ErrorHandler - \(message). Should retry in \(seconds) seconds.")
             return .retry(afterSeconds: seconds, message: message)
             
         // RECOVERABLE ERROR
@@ -101,24 +74,32 @@ public struct ErrorHandler {
             print("ErrorHandler.recoverableError: \(message)")
             return .recoverableError(reason: .network, message: message)
         case .changeTokenExpired:
-            NSLog("ErrorHandler.recoverableError: \(message)")
+            print("ErrorHandler.recoverableError: \(message)")
             return .recoverableError(reason: .changeTokenExpired, message: message)
         case .serverRecordChanged:
-            NSLog("ErrorHandler.recoverableError: \(message)")
+            print("ErrorHandler.recoverableError: \(message)")
             return .recoverableError(reason: .serverRecordChanged, message: message)
-        case .partialFailure: // shouldn't happen since SyncEngine.syncRecordsToCloudKit isAtomic
+        case .partialFailure:
+            // Normally it shouldn't happen since if CKOperation `isAtomic` set to true
             if let dictionary = error.userInfo[CKPartialErrorsByItemIDKey] as? NSDictionary {
-                NSLog("ErrorHandler.partialFailure for \(dictionary.count) items; CKPartialErrorsByItemIDKey: \(dictionary)")
+                print("ErrorHandler.partialFailure for \(dictionary.count) items; CKPartialErrorsByItemIDKey: \(dictionary)")
             }
             return .recoverableError(reason: .partialFailure, message: message)
             
-        // CHUNK: LIMIT EXCEEDED
+        // SHOULD CHUNK IT UP
         case .limitExceeded:
-            NSLog("ErrorHandler.Chunk: \(message)")
+            print("ErrorHandler.Chunk: \(message)")
             return .chunk
             
-            // FAIL
-        // unhandled
+        // SHARE DATABASE RELATED
+        case .alreadyShared,
+             .participantMayNeedVerification,
+             .referenceViolation,
+             .tooManyParticipants:
+            print("ErrorHandler.Fail: \(message)")
+            return .fail(reason: .shareRelated, message: message)
+        
+        // FAIL IS THE FINAL, WE REALLY CAN'T DO MORE
         case .assetFileModified,
              .assetFileNotFound,
              .badContainer,
@@ -137,20 +118,16 @@ public struct ErrorHandler {
              .unknownItem,
              .userDeletedZone,
              .zoneNotFound:
-            NSLog("ErrorHandler.Fail: \(message)")
+            print("ErrorHandler.Fail: \(message)")
             return .fail(reason: .unknown, message: message)
-        // Share related
-        case .alreadyShared,
-             .participantMayNeedVerification,
-             .referenceViolation,
-             .tooManyParticipants:
-            NSLog("ErrorHandler.Fail: \(message)")
-            return .fail(reason: .shareRelated, message: message)
-        // quota exceeded is sort of a special case where the user has to take action before retry
+        
+        // quota exceeded is sort of a special case where the user has to take action(like spare more room in iCloud) before retry
         case .quotaExceeded:
-            NSLog("ErrorHandler.Fail: \(message)")
+            print("ErrorHandler.Fail: \(message)")
             return .fail(reason: .quotaExceeded, message: message)
+            
         }
+        
     }
     
     static public func retryOperationIfPossible(retryAfter: Double, block: @escaping () -> ()) {
@@ -233,10 +210,10 @@ public struct ErrorHandler {
         case .zoneNotFound:
             returnMessage = "Zone Not Found: the specified record zone does not exist on the server."
         default:
-            returnMessage = "Unhandled Error:\nckErrorCode: \(code.rawValue)"
+            returnMessage = "Unhandled Error."
         }
         
-        return returnMessage
+        return returnMessage + "CKError.Code: \(code.rawValue)"
     }
     
 }
