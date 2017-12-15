@@ -258,7 +258,7 @@ extension SyncEngine {
                 default:
                     return
                 }
-            default: // any other reason
+            default:
                 return
             }
         }
@@ -339,7 +339,7 @@ extension SyncEngine {
                 default:
                     return
                 }
-            default: // any other reason
+            default:
                 return
             }
         }
@@ -363,7 +363,7 @@ extension SyncEngine {
                 ErrorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
                      self?.createCustomZone(completion)
                 })
-            default: // any other reason
+            default:
                 return
             }
         }
@@ -384,7 +384,7 @@ extension SyncEngine {
                 ErrorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
                     self?.checkCustomZoneExists(completion)
                 })
-            default: // any other reason
+            default:
                 return
             }
         }
@@ -426,7 +426,7 @@ extension SyncEngine {
                 ErrorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
                     self?.createDatabaseSubscription()
                 })
-            default: // any other reason
+            default:
                 return
             }
         }
@@ -487,7 +487,7 @@ extension SyncEngine {
                 for chunk in chunkedRecords {
                     self?.syncRecordsToCloudKit(recordsToStore: chunk, recordIDsToDelete: recordIDsToDelete, completion: completion)
                 }
-            default: // any other reason
+            default:
                 return
             }
         }
