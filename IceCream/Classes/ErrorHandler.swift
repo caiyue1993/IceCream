@@ -56,7 +56,7 @@ public struct ErrorHandler {
                 print("ErrorHandler - \(message). Should retry in \(retry) seconds.")
                 return .retry(afterSeconds: retry, message: message)
             } else {
-                return .fail(reason: .unknown, message: "")
+                return .fail(reason: .unknown, message: message)
             }
             
         // RECOVERABLE ERROR
