@@ -16,6 +16,7 @@ class Dog: Object {
     @objc dynamic var name = ""
     @objc dynamic var age = 0
     @objc dynamic var isDeleted = false
+    @objc dynamic var avatar: CreamAsset?
     
     override class func primaryKey() -> String? {
         return "id"

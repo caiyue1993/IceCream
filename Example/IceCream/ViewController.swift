@@ -23,6 +23,10 @@ class ViewController: UIViewController {
         let b = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.add, target: self, action: #selector(add))
         return b
     }()
+    lazy var deleteAllBarItem: UIBarButtonItem = {
+        let b = UIBarButtonItem(title: "Delete All", style: .plain, target: self, action: #selector(deleteBtn))
+        return b
+    }()
     
     lazy var tableView: UITableView = {
         let tv = UITableView()
@@ -37,6 +41,7 @@ class ViewController: UIViewController {
         
         view.addSubview(tableView)
         navigationItem.rightBarButtonItem = addBarItem
+        navigationItem.leftBarButtonItem = deleteAllBarItem
         
         bind()
     }
@@ -61,13 +66,24 @@ class ViewController: UIViewController {
         }).disposed(by: bag)
     }
     
+    var isOdd: Bool = false
     @objc func add() {
         let dog = Dog()
         dog.name = "Dog Number " + "\(dogs.count)"
         dog.age = dogs.count + 1
+        dog.avatar = CreamAsset()
+        dog.avatar?.doData(id: dog.id, data: UIImageJPEGRepresentation(UIImage(named: `self`.isOdd ? "Face1" : "Face2")!, 1.0) as Data!)
+        isOdd = !isOdd
         
         try! realm.write {
             realm.add(dog)
+        }
+    }
+    @objc func deleteBtn() {
+        for dog in dogs {
+            try! self.realm.write {
+                dog.isDeleted = true
+            }
         }
     }
 }
@@ -97,7 +113,16 @@ extension ViewController: UITableViewDelegate {
                 dog.age += 1
             }
         }
-        return [deleteAction, archiveAction]
+        let changeImageAction = UITableViewRowAction(style: .normal, title: "Image") { [weak self](_, ip) in
+            guard let `self` = self else { return }
+            guard ip.row < `self`.dogs.count else { return }
+            let dog = `self`.dogs[ip.row]
+            try! `self`.realm.write {
+                dog.avatar?.doData(id: dog.id, data: UIImageJPEGRepresentation(UIImage(named: `self`.isOdd ? "Face1" : "Face2")!, 1.0) as Data!)
+                `self`.isOdd = !`self`.isOdd
+            }
+        }
+        return [deleteAction, archiveAction, changeImageAction]
     }
 }
 
@@ -109,6 +134,17 @@ extension ViewController: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell")
         cell?.textLabel?.text = dogs[indexPath.row].name + "Age: \(dogs[indexPath.row].age)"
+        if let path = dogs[indexPath.row].avatar?.path {// not good
+            if let data = dogs[indexPath.row].avatar?.fetchData() {
+                cell?.imageView?.image = UIImage(data: data)
+            } else {
+                let path = CreamAsset.diskCachePath(fileName: path)
+                let data = NSData(contentsOfFile: path) as Data?
+                if let data = data {
+                    cell?.imageView?.image = UIImage(data: data)
+                }
+            }
+        }
         return cell ?? UITableViewCell()
     }
 

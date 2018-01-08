@@ -32,6 +32,10 @@ extension CKRecordRecoverable {
             case .int:
                 recordValue = record.value(forKey: prop.name) as? Int
             case .string:
+                // Ignore CreamAsset mark id
+                if let str = (record.value(forKey: prop.name)) as? String, str.contains(CreamAsset.sCreamAssetMark) {
+                    continue
+                }
                 recordValue = record.value(forKey: prop.name) as? String
             case .bool:
                 recordValue = record.value(forKey: prop.name) as? Bool
@@ -43,12 +47,50 @@ extension CKRecordRecoverable {
                 recordValue = record.value(forKey: prop.name) as? Double
             case .data:
                 recordValue = record.value(forKey: prop.name) as? Data
+            case .object: // only support CKAsset now
+                recordValue = objectParse(prop: prop, record: record)
             default:
                 print("Other types will be supported in the future.")
             }
             o.setValue(recordValue, forKey: prop.name)
         }
+        CreamAsset.removeRedundantCacheFiles(record: record)
         return o
+    }
+    
+    /// Object parse section
+    private func objectParse(prop: Property, record: CKRecord) -> Any? {
+        if let asset = record.value(forKey: prop.name) as? CKAsset {
+            return recordToCreamAsset(prop: prop, record: record, asset: asset)
+        } else {
+            //Other objects
+            return record.value(forKey: prop.name) as? Object
+        }
+    }
+    
+    /// CKAsset parse to CreamAsset
+    private func recordToCreamAsset(prop: Property, record: CKRecord, asset: CKAsset) -> CreamAsset? {
+        var assetPathValue: String?
+        
+        let assetPathName = prop.name + CreamAsset.sCreamAssetMark
+        if record.allKeys().contains(assetPathName) {
+            assetPathValue = record.value(forKey: assetPathName) as? String
+        }
+        guard let assetPath = assetPathValue else {
+            return nil
+        }
+        
+        let rawData = NSData(contentsOfFile: asset.fileURL.path) as Data?
+        if let assetData = rawData {
+            let creamAsset = CreamAsset()
+            // Local cache not exist, save it to local files
+            if !CreamAsset.diskAllCacheFiles().contains(assetPath) {
+                CreamAsset.writeToFile(data: assetData, filePath: CreamAsset.diskCachePath(fileName: assetPath))
+            }
+            creamAsset.doData(path: assetPath, data: assetData)
+            return creamAsset
+        }
+        return nil
     }
 }
 
@@ -84,10 +126,35 @@ extension CKRecordConvertible where Self: Object {
     
     // Simultaneously init CKRecord with zoneID and recordID, thanks to this guy: https://stackoverflow.com/questions/45429133/how-to-initialize-ckrecord-with-both-zoneid-and-recordid
     public var record: CKRecord {
-        let r = CKRecord(recordType: Self.recordType, recordID: recordID)
+        var r = CKRecord(recordType: Self.recordType, recordID: recordID)
         let properties = objectSchema.properties
         for prop in properties {
-            r[prop.name] = self[prop.name] as? CKRecordValue
+            switch prop.type {
+            case .int, .string, .bool, .date, .float, .double, .data:
+                r[prop.name] = self[prop.name] as? CKRecordValue
+                break
+            case .object:
+                r = objcToRecord(r: r, prop: prop)
+            default:
+                break
+            }
+            
+        }
+        return r
+    }
+    
+    private func objcToRecord(r: CKRecord, prop: Property) -> CKRecord {
+        if let creamAsset = self[prop.name] as? CreamAsset {
+            let diskCachePath = CreamAsset.diskCachePath(fileName: creamAsset.path)
+            print("objcToRecord", prop.name)
+            if creamAsset.path == "" {
+                r[prop.name] = nil
+            } else {
+                r[prop.name] = CKAsset(fileURL: URL(fileURLWithPath: diskCachePath))
+            }
+            r[prop.name + CreamAsset.sCreamAssetMark] = (creamAsset.path as String) as CKRecordValue
+        } else {
+            //Other object
         }
         return r
     }
