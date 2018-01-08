@@ -41,7 +41,11 @@ public class CreamAsset: Object {
     }
     
     public func fetchData() -> Data? {
-        return data
+        if self.data != nil {
+            return self.data
+        }
+        let filePath = CreamAsset.diskCachePath(fileName: self.path)
+        return NSData(contentsOfFile: filePath) as Data?
     }
 }
 

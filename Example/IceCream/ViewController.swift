@@ -113,7 +113,7 @@ extension ViewController: UITableViewDelegate {
                 dog.age += 1
             }
         }
-        let changeImageAction = UITableViewRowAction(style: .normal, title: "Image") { [weak self](_, ip) in
+        let changeImageAction = UITableViewRowAction(style: .normal, title: "Change Img") { [weak self](_, ip) in
             guard let `self` = self else { return }
             guard ip.row < `self`.dogs.count else { return }
             let dog = `self`.dogs[ip.row]
@@ -122,7 +122,17 @@ extension ViewController: UITableViewDelegate {
                 `self`.isOdd = !`self`.isOdd
             }
         }
-        return [deleteAction, archiveAction, changeImageAction]
+        changeImageAction.backgroundColor = .blue
+        let emptyImageAction = UITableViewRowAction(style: .normal, title: "Nil Img") { [weak self](_, ip) in
+            guard let `self` = self else { return }
+            guard ip.row < `self`.dogs.count else { return }
+            let dog = `self`.dogs[ip.row]
+            try! `self`.realm.write {
+                dog.avatar = nil
+            }
+        }
+        emptyImageAction.backgroundColor = .purple
+        return [deleteAction, archiveAction, changeImageAction, emptyImageAction]
     }
 }
 
@@ -134,15 +144,13 @@ extension ViewController: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell")
         cell?.textLabel?.text = dogs[indexPath.row].name + "Age: \(dogs[indexPath.row].age)"
-        if let path = dogs[indexPath.row].avatar?.path {// not good
+        if dogs[indexPath.row].avatar == nil {
+            cell?.imageView?.image = nil
+        } else {
             if let data = dogs[indexPath.row].avatar?.fetchData() {
                 cell?.imageView?.image = UIImage(data: data)
             } else {
-                let path = CreamAsset.diskCachePath(fileName: path)
-                let data = NSData(contentsOfFile: path) as Data?
-                if let data = data {
-                    cell?.imageView?.image = UIImage(data: data)
-                }
+                cell?.imageView?.image = nil
             }
         }
         return cell ?? UITableViewCell()

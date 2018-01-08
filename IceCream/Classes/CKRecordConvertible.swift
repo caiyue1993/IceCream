@@ -129,6 +129,7 @@ extension CKRecordConvertible where Self: Object {
         var r = CKRecord(recordType: Self.recordType, recordID: recordID)
         let properties = objectSchema.properties
         for prop in properties {
+            print(prop.name)
             switch prop.type {
             case .int, .string, .bool, .date, .float, .double, .data:
                 r[prop.name] = self[prop.name] as? CKRecordValue
@@ -144,15 +145,18 @@ extension CKRecordConvertible where Self: Object {
     }
     
     private func objcToRecord(r: CKRecord, prop: Property) -> CKRecord {
-        if let creamAsset = self[prop.name] as? CreamAsset {
-            let diskCachePath = CreamAsset.diskCachePath(fileName: creamAsset.path)
-            print("objcToRecord", prop.name)
-            if creamAsset.path == "" {
-                r[prop.name] = nil
-            } else {
-                r[prop.name] = CKAsset(fileURL: URL(fileURLWithPath: diskCachePath))
+        if let objClsName = prop.objectClassName, objClsName == CreamAsset.className() {
+            let creamAsset = self[prop.name] as? CreamAsset
+            var uploadAsset: CKAsset?
+            var uploadPath: String = ""
+            if let asset = creamAsset {
+                let diskCachePath = CreamAsset.diskCachePath(fileName: asset.path)
+                // Actually, it impossible as ""
+                uploadAsset = asset.path == "" ? nil : CKAsset(fileURL: URL(fileURLWithPath: diskCachePath))
+                uploadPath = asset.path
             }
-            r[prop.name + CreamAsset.sCreamAssetMark] = (creamAsset.path as String) as CKRecordValue
+            r[prop.name] = uploadAsset
+            r[prop.name + CreamAsset.sCreamAssetMark] = uploadPath as CKRecordValue
         } else {
             //Other object
         }
