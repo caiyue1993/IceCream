@@ -7,34 +7,34 @@
 
 import Foundation
 import RealmSwift
+import Realm
 import CloudKit
 
 public class CreamAsset: Object {
     public static let sCreamAssetMark: String = "_CreamAsset"
-    //outsie: Read-only
-    @objc private(set) public dynamic var path = ""
-    ///When chang data, it should also need to create a new path
-    @objc private dynamic var data: Data? = nil
-    //Ingore data in Realm
+    
+    @objc dynamic var path = ""
+    @objc dynamic var data: Data?
+    
     override public static func ignoredProperties() -> [String] {
         return ["data"]
     }
     
-    ///This is for recreate a path. The old path will be deleted.
-    public func doData(id: String, data: Data) {
-        path = "\(id)_\(UUID().uuidString)"
-        common(data: data)
-    }
+    private var uniqueKey: String = ""
     
-    func doData(path: String, data: Data) {
-        self.path = path
-        common(data: data)
-    }
-    
-    private func common(data: Data) {
+    public convenience init(uniqueKey: String, data: Data) {
+        self.init()
+        self.uniqueKey = uniqueKey
         self.data = data
+        
+        self.path = "\(uniqueKey)_\(UUID().uuidString)"
+        save(data: data, to: path)
+    }
+    
+    func save(data: Data, to path: String) {
+        let url = URL(fileURLWithPath: CreamAsset.diskCachePath(fileName: path))
         do {
-            try self.data!.write(to: URL(fileURLWithPath: CreamAsset.diskCachePath(fileName: path)))
+            try data.write(to: url)
         } catch {
             print("Error writing avatar to temporary directory: \(error)")
         }

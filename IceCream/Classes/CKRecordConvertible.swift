@@ -82,13 +82,14 @@ extension CKRecordRecoverable {
         
         let rawData = NSData(contentsOfFile: asset.fileURL.path) as Data?
         if let assetData = rawData {
-            let creamAsset = CreamAsset()
+            let asset = CreamAsset()
+            asset.path = assetPath
+            asset.data = assetData
             // Local cache not exist, save it to local files
             if !CreamAsset.diskAllCacheFiles().contains(assetPath) {
                 CreamAsset.writeToFile(data: assetData, filePath: CreamAsset.diskCachePath(fileName: assetPath))
             }
-            creamAsset.doData(path: assetPath, data: assetData)
-            return creamAsset
+            return asset
         }
         return nil
     }

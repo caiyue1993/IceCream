@@ -71,8 +71,7 @@ class ViewController: UIViewController {
         let dog = Dog()
         dog.name = "Dog Number " + "\(dogs.count)"
         dog.age = dogs.count + 1
-        dog.avatar = CreamAsset()
-        dog.avatar?.doData(id: dog.id, data: UIImageJPEGRepresentation(UIImage(named: `self`.isOdd ? "Face1" : "Face2")!, 1.0) as Data!)
+        dog.avatar = CreamAsset(uniqueKey: dog.id, data: UIImageJPEGRepresentation(UIImage(named: `self`.isOdd ? "Face1" : "Face2")!, 1.0) as Data!)
         isOdd = !isOdd
         
         try! realm.write {
@@ -118,7 +117,7 @@ extension ViewController: UITableViewDelegate {
             guard ip.row < `self`.dogs.count else { return }
             let dog = `self`.dogs[ip.row]
             try! `self`.realm.write {
-                dog.avatar?.doData(id: dog.id, data: UIImageJPEGRepresentation(UIImage(named: `self`.isOdd ? "Face1" : "Face2")!, 1.0) as Data!)
+//                dog.avatar?.doData(id: dog.id, data: UIImageJPEGRepresentation(UIImage(named: `self`.isOdd ? "Face1" : "Face2")!, 1.0) as Data!)
                 `self`.isOdd = !`self`.isOdd
             }
         }
