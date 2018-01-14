@@ -127,39 +127,22 @@ extension CKRecordConvertible where Self: Object {
     
     // Simultaneously init CKRecord with zoneID and recordID, thanks to this guy: https://stackoverflow.com/questions/45429133/how-to-initialize-ckrecord-with-both-zoneid-and-recordid
     public var record: CKRecord {
-        var r = CKRecord(recordType: Self.recordType, recordID: recordID)
+        let r = CKRecord(recordType: Self.recordType, recordID: recordID)
         let properties = objectSchema.properties
         for prop in properties {
-            print(prop.name)
             switch prop.type {
             case .int, .string, .bool, .date, .float, .double, .data:
                 r[prop.name] = self[prop.name] as? CKRecordValue
-                break
             case .object:
-                r = objcToRecord(r: r, prop: prop)
+                guard let objectName = prop.objectClassName else { break }
+                if objectName == CreamAsset.className(), let creamAsset = self[prop.name] as? CreamAsset {
+                    r[prop.name] = creamAsset.asset
+                    r[prop.name + CreamAsset.sCreamAssetMark] = creamAsset.path as CKRecordValue
+                }
             default:
                 break
             }
             
-        }
-        return r
-    }
-    
-    private func objcToRecord(r: CKRecord, prop: Property) -> CKRecord {
-        if let objClsName = prop.objectClassName, objClsName == CreamAsset.className() {
-            let creamAsset = self[prop.name] as? CreamAsset
-            var uploadAsset: CKAsset?
-            var uploadPath: String = ""
-            if let asset = creamAsset {
-                let diskCachePath = CreamAsset.diskCachePath(fileName: asset.path)
-                // Actually, it impossible as ""
-                uploadAsset = asset.path == "" ? nil : CKAsset(fileURL: URL(fileURLWithPath: diskCachePath))
-                uploadPath = asset.path
-            }
-            r[prop.name] = uploadAsset
-            r[prop.name + CreamAsset.sCreamAssetMark] = uploadPath as CKRecordValue
-        } else {
-            //Other object
         }
         return r
     }

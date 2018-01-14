@@ -47,6 +47,14 @@ public class CreamAsset: Object {
         let filePath = CreamAsset.diskCachePath(fileName: self.path)
         return NSData(contentsOfFile: filePath) as Data?
     }
+    
+    var asset: CKAsset {
+        get {
+            let diskCachePath = CreamAsset.diskCachePath(fileName: path)
+            let uploadAsset = CKAsset(fileURL: URL(fileURLWithPath: diskCachePath))
+            return uploadAsset
+        }
+    }
 }
 
 extension CreamAsset {
