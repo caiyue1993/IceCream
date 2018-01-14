@@ -40,7 +40,7 @@ public class CreamAsset: Object {
         }
     }
     
-    public func fetchData() -> Data? {
+    public func getData() -> Data? {
         if self.data != nil {
             return self.data
         }
