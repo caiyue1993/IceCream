@@ -32,10 +32,6 @@ extension CKRecordRecoverable {
             case .int:
                 recordValue = record.value(forKey: prop.name) as? Int
             case .string:
-                // Ignore CreamAsset mark id
-                if let str = (record.value(forKey: prop.name)) as? String, str.contains(CreamAsset.sCreamAssetMark) {
-                    continue
-                }
                 recordValue = record.value(forKey: prop.name) as? String
             case .bool:
                 recordValue = record.value(forKey: prop.name) as? Bool
