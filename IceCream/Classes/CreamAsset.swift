@@ -55,6 +55,20 @@ public class CreamAsset: Object {
             return uploadAsset
         }
     }
+    
+    static func parse(from propName: String, record: CKRecord, asset: CKAsset) -> CreamAsset? {
+        let assetPathKey = propName + CreamAsset.sCreamAssetMark
+        guard let assetPathValue = record.value(forKey: assetPathKey) as? String else { return nil }
+        guard let assetData = NSData(contentsOfFile: asset.fileURL.path) as Data? else { return nil }
+        let asset = CreamAsset()
+        asset.path = assetPathValue
+        asset.data = assetData
+        // Local cache not exist, save it to local files
+        if !CreamAsset.diskAllCacheFiles().contains(assetPathValue) {
+            CreamAsset.writeToFile(data: assetData, filePath: CreamAsset.diskCachePath(fileName: assetPathValue))
+        }
+        return asset
+    }
 }
 
 extension CreamAsset {

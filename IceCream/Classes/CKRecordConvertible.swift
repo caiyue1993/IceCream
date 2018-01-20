@@ -43,8 +43,12 @@ extension CKRecordRecoverable {
                 recordValue = record.value(forKey: prop.name) as? Double
             case .data:
                 recordValue = record.value(forKey: prop.name) as? Data
-            case .object: // only support CKAsset now
-                recordValue = objectParse(prop: prop, record: record)
+            case .object:
+                if let asset = record.value(forKey: prop.name) as? CKAsset {
+                    recordValue = CreamAsset.parse(from: prop.name, record: record, asset: asset)
+                } else {
+                    print("Only supported CKAsset-Object mapping for now.")
+                }
             default:
                 print("Other types will be supported in the future.")
             }
@@ -52,42 +56,6 @@ extension CKRecordRecoverable {
         }
         CreamAsset.removeRedundantCacheFiles(record: record)
         return o
-    }
-    
-    /// Object parse section
-    private func objectParse(prop: Property, record: CKRecord) -> Any? {
-        if let asset = record.value(forKey: prop.name) as? CKAsset {
-            return recordToCreamAsset(prop: prop, record: record, asset: asset)
-        } else {
-            //Other objects
-            return record.value(forKey: prop.name) as? Object
-        }
-    }
-    
-    /// CKAsset parse to CreamAsset
-    private func recordToCreamAsset(prop: Property, record: CKRecord, asset: CKAsset) -> CreamAsset? {
-        var assetPathValue: String?
-        
-        let assetPathName = prop.name + CreamAsset.sCreamAssetMark
-        if record.allKeys().contains(assetPathName) {
-            assetPathValue = record.value(forKey: assetPathName) as? String
-        }
-        guard let assetPath = assetPathValue else {
-            return nil
-        }
-        
-        let rawData = NSData(contentsOfFile: asset.fileURL.path) as Data?
-        if let assetData = rawData {
-            let asset = CreamAsset()
-            asset.path = assetPath
-            asset.data = assetData
-            // Local cache not exist, save it to local files
-            if !CreamAsset.diskAllCacheFiles().contains(assetPath) {
-                CreamAsset.writeToFile(data: assetData, filePath: CreamAsset.diskCachePath(fileName: assetPath))
-            }
-            return asset
-        }
-        return nil
     }
 }
 
