@@ -143,8 +143,10 @@ extension ViewController: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell")
         cell?.textLabel?.text = dogs[indexPath.row].name + " Age: \(dogs[indexPath.row].age)"
-        if let data = dogs[indexPath.row].avatar?.getData() {
+        if let data = dogs[indexPath.row].avatar?.storedData() {
             cell?.imageView?.image = UIImage(data: data)
+        } else {
+            cell?.imageView?.image = nil
         }
         return cell ?? UITableViewCell()
     }

@@ -33,6 +33,14 @@ public class CreamAsset: Object {
         save(data: data, to: uniqueFileName)
     }
     
+    /// There is an important point that we need to consider:
+    /// Cuz we only store the path of data, so we can't access data by `data` property
+    /// So use this method if you want get the data of this object
+    public func storedData() -> Data? {
+        let filePath = CreamAsset.creamAssetDefaultURL().appendingPathComponent(uniqueFileName)
+        return try! Data(contentsOf: filePath)
+    }
+    
     func save(data: Data, to path: String) {
         let url = CreamAsset.creamAssetDefaultURL().appendingPathComponent(path)
         do {
@@ -40,14 +48,6 @@ public class CreamAsset: Object {
         } catch {
             print("Error writing avatar to temporary directory: \(error)")
         }
-    }
-    
-    public func getData() -> Data? {
-        if data != nil {
-            return data
-        }
-        let filePath = CreamAsset.creamAssetDefaultURL().appendingPathComponent(uniqueFileName)
-        return try! Data(contentsOf: filePath)
     }
     
     var asset: CKAsset {
