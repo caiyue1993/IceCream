@@ -26,8 +26,8 @@ public protocol CKRecordRecoverable {
 extension CKRecordRecoverable {
     func parseFromRecord(record: CKRecord) -> O? {
         let o = O()
-        var recordValue: Any?
         for prop in o.objectSchema.properties {
+            var recordValue: Any?
             switch prop.type {
             case .int:
                 recordValue = record.value(forKey: prop.name) as? Int
@@ -99,9 +99,14 @@ extension CKRecordConvertible where Self: Object {
                 r[prop.name] = self[prop.name] as? CKRecordValue
             case .object:
                 guard let objectName = prop.objectClassName else { break }
-                if objectName == CreamAsset.className(), let creamAsset = self[prop.name] as? CreamAsset {
-                    r[prop.name] = creamAsset.asset
-                    r[prop.name + CreamAsset.sCreamAssetMark] = creamAsset.uniqueFileName as CKRecordValue
+                if objectName == CreamAsset.className() {
+                    if let creamAsset = self[prop.name] as? CreamAsset {
+                        r[prop.name] = creamAsset.asset
+                        r[prop.name + CreamAsset.sCreamAssetMark] = creamAsset.uniqueFileName as CKRecordValue
+                    } else {
+                        r[prop.name] = nil
+                        r[prop.name + CreamAsset.sCreamAssetMark] = nil
+                    }
                 }
             default:
                 break
