@@ -10,29 +10,31 @@ import RealmSwift
 import Realm
 import CloudKit
 
+/// If you want to store and sync big data automatically, then using CreamAsset might be a good choice.
+/// According to Apple https://developer.apple.com/documentation/cloudkit/ckasset :
+/// "You can also use assets in places where the data you want to assign to a field is more than a few kilobytes in size. "
+/// And According to Realm https://realm.io/docs/objc/latest/#current-limitations :
+/// "Data and String properties cannot hold data exceeding 16MB in size. To store larger amounts of data, either break it up into 16MB chunks or store it directly on the file system, storing paths to these files in the Realm. An exception will be thrown at runtime if your app attempts to store more than 16MB in a single property."
+/// We choose the latter, that's storing it directly on the file system, storing paths to these files in the Realm.
+/// So this is the deal.
 public class CreamAsset: Object {
     public static let sCreamAssetMark: String = "_CreamAsset"
     
-    @objc dynamic var path = ""
+    @objc dynamic var uniqueFileName = ""
     @objc dynamic var data: Data?
-    
     override public static func ignoredProperties() -> [String] {
         return ["data"]
     }
     
-    private var uniqueKey: String = ""
-    
     public convenience init(uniqueKey: String, data: Data) {
         self.init()
-        self.uniqueKey = uniqueKey
         self.data = data
-        
-        self.path = "\(uniqueKey)_\(UUID().uuidString)"
-        save(data: data, to: path)
+        self.uniqueFileName = "\(uniqueKey)_\(UUID().uuidString)"
+        save(data: data, to: uniqueFileName)
     }
     
     func save(data: Data, to path: String) {
-        let url = URL(fileURLWithPath: CreamAsset.diskCachePath(fileName: path))
+        let url = CreamAsset.creamAssetDefaultURL().appendingPathComponent(path)
         do {
             try data.write(to: url)
         } catch {
@@ -41,17 +43,17 @@ public class CreamAsset: Object {
     }
     
     public func getData() -> Data? {
-        if self.data != nil {
-            return self.data
+        if data != nil {
+            return data
         }
-        let filePath = CreamAsset.diskCachePath(fileName: self.path)
-        return NSData(contentsOfFile: filePath) as Data?
+        let filePath = CreamAsset.creamAssetDefaultURL().appendingPathComponent(uniqueFileName)
+        return try! Data(contentsOf: filePath)
     }
     
     var asset: CKAsset {
         get {
-            let diskCachePath = CreamAsset.diskCachePath(fileName: path)
-            let uploadAsset = CKAsset(fileURL: URL(fileURLWithPath: diskCachePath))
+            let diskCachePath = CreamAsset.creamAssetDefaultURL().appendingPathComponent(uniqueFileName)
+            let uploadAsset = CKAsset(fileURL: diskCachePath)
             return uploadAsset
         }
     }
@@ -61,81 +63,71 @@ public class CreamAsset: Object {
         guard let assetPathValue = record.value(forKey: assetPathKey) as? String else { return nil }
         guard let assetData = NSData(contentsOfFile: asset.fileURL.path) as Data? else { return nil }
         let asset = CreamAsset()
-        asset.path = assetPathValue
+        asset.uniqueFileName = assetPathValue
         asset.data = assetData
         // Local cache not exist, save it to local files
-        if !CreamAsset.diskAllCacheFiles().contains(assetPathValue) {
-            CreamAsset.writeToFile(data: assetData, filePath: CreamAsset.diskCachePath(fileName: assetPathValue))
+        if !CreamAsset.creamAssetFilesPaths().contains(assetPathValue) {
+            try! assetData.write(to: creamAssetDefaultURL().appendingPathComponent(assetPathValue))
         }
         return asset
     }
 }
 
 extension CreamAsset {
-    
-    ///According to file name to create cache file path
-    public static func diskCachePath(fileName: String) -> String {
-        let dcPath = diskCacheFolder() as NSString
-        return dcPath.appendingPathComponent(fileName)
-    }
-    
-    ///Fetch the cache file folder
-    public static func diskCacheFolder() -> String {
-        let docPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first! as NSString
-        let folderPath = docPath.appendingPathComponent("IceCreamCacheFiles")
-        if FileManager.default.fileExists(atPath: folderPath) == false {
-            do{
-                try FileManager.default.createDirectory(atPath: folderPath, withIntermediateDirectories: false, attributes: nil)
-            }catch{
+    /// The default path for the storing of CreamAsset. That is:
+    /// xxx/Document/CreamAsset/
+    public static func creamAssetDefaultURL() -> URL {
+        let documentDir = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+        let commonAssetPath = documentDir.appendingPathComponent(className())
+        if !FileManager.default.fileExists(atPath: commonAssetPath.path) {
+            do {
+                try FileManager.default.createDirectory(atPath: commonAssetPath.path, withIntermediateDirectories: false, attributes: nil)
+            } catch {
+                
             }
         }
-        return folderPath
+        return commonAssetPath
     }
     
-    ///Fetch all cache files
-    public static func diskAllCacheFiles() -> [String] {
+    /// Fetch all CreamAsset files' path
+    public static func creamAssetFilesPaths() -> [String] {
         do {
-            return try FileManager.default.contentsOfDirectory(atPath: CreamAsset.diskCacheFolder())
-        } catch  {
+            return try FileManager.default.contentsOfDirectory(atPath: CreamAsset.creamAssetDefaultURL().path)
+        } catch {
+            
         }
         return [String]()
     }
     
-    ///Execute delete
-    private static func doDelete(files: [String]){
-        for fileName in files {
-            let absolutePath = CreamAsset.diskCachePath(fileName: fileName)
+    /// Execute deletions
+    private static func excecuteDeletions(in filesNames: [String]) {
+        for fileName in filesNames {
+            let absolutePath = CreamAsset.creamAssetDefaultURL().appendingPathComponent(fileName).path
             do {
                 print("deleteCacheFiles.removeItem:", absolutePath)
                 try FileManager.default.removeItem(atPath: absolutePath)
             } catch {
-                print(error)
+                
             }
         }
     }
     
-    ///When delete an object. Delete related cache files
-    public static func deleteCacheFiles(id: String) {
-        var needToDeleteCacheFiles = [String]()
-        let allCacheFiles = diskAllCacheFiles()
-        for fileName in allCacheFiles {
-            if fileName.contains(id) {
-                needToDeleteCacheFiles.append(fileName)
-            }
-        }
-        doDelete(files: needToDeleteCacheFiles)
+    /// When delete an object. We need to delete related CreamAsset files
+    public static func deleteCreamAssetFile(with id: String) {
+        let needToDeleteCacheFiles = creamAssetFilesPaths().filter { $0.contains(id) }
+        excecuteDeletions(in: needToDeleteCacheFiles)
     }
     
-    ///This step will only delete the local files which are not exist in iCloud. CKRecord to compare with local cache files, continue to keep local files which iCloud's record are still exists. 
+    /// This step will only delete the local files which are not exist in iCloud. CKRecord to compare with local cache files, continue to keep local files which iCloud's record are still exists.
     public static func removeRedundantCacheFiles(record: CKRecord) {
         DispatchQueue.global(qos: .background).async {
             let idForThisRecord: String = record.value(forKey: "id") as! String
-            ///Which must have value in iCloud
+            /// Which must have value in iCloud
             var allCloudAssetStringValues = [String]()
-            ///Local files, which must relate with this record's id
+            /// Local files, which must relate with this record's id
             var allLocalRelateCacheFiles = [String]()
             
-            //Get all iCloud exist files' name
+            // Get all iCloud exist files' name
             let allKeys = record.allKeys()
             for key in allKeys {
                 if key.contains(CreamAsset.sCreamAssetMark) {
@@ -145,7 +137,7 @@ extension CreamAsset {
                     }
                 }
             }
-            let allCacheFiles = diskAllCacheFiles()
+            let allCacheFiles = creamAssetFilesPaths()
             for fileName in allCacheFiles {
                 if fileName.contains(idForThisRecord) {
                     allLocalRelateCacheFiles.append(fileName)
@@ -158,15 +150,7 @@ extension CreamAsset {
                 }
             }
             
-            doDelete(files: needToDeleteCacheFiles)
-        }
-    }
-    
-    public static func writeToFile(data: Data, filePath: String){
-        do {
-            try data.write(to: URL(fileURLWithPath: filePath), options: .atomic)
-        } catch {
-            print("Write, Error:\(error)")
+            excecuteDeletions(in: needToDeleteCacheFiles)
         }
     }
 }

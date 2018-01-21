@@ -54,7 +54,7 @@ extension CKRecordRecoverable {
             }
             o.setValue(recordValue, forKey: prop.name)
         }
-        CreamAsset.removeRedundantCacheFiles(record: record)
+//        CreamAsset.removeRedundantCacheFiles(record: record)
         return o
     }
 }
@@ -101,7 +101,7 @@ extension CKRecordConvertible where Self: Object {
                 guard let objectName = prop.objectClassName else { break }
                 if objectName == CreamAsset.className(), let creamAsset = self[prop.name] as? CreamAsset {
                     r[prop.name] = creamAsset.asset
-                    r[prop.name + CreamAsset.sCreamAssetMark] = creamAsset.path as CKRecordValue
+                    r[prop.name + CreamAsset.sCreamAssetMark] = creamAsset.uniqueFileName as CKRecordValue
                 }
             default:
                 break
