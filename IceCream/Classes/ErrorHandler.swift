@@ -90,35 +90,16 @@ public struct ErrorHandler {
             print("ErrorHandler.Fail: \(message)")
             return .fail(reason: .shareRelated, message: message)
         
-        // FAIL IS THE FINAL, WE REALLY CAN'T DO MORE
-        case .assetFileModified,
-             .assetFileNotFound,
-             .badContainer,
-             .badDatabase,
-             .batchRequestFailed,
-             .constraintViolation,
-             .invalidArguments,
-             .incompatibleVersion,
-             .internalError,
-             .managedAccountRestricted,
-             .missingEntitlement,
-             .notAuthenticated,
-             .operationCancelled,
-             .permissionFailure,
-             .resultsTruncated,
-             .serverResponseLost,
-             .serverRejectedRequest,
-             .unknownItem,
-             .userDeletedZone,
-             .zoneNotFound:
-            print("ErrorHandler.Fail: \(message)")
-            return .fail(reason: .unknown, message: message)
-        
         // quota exceeded is sort of a special case where the user has to take action(like spare more room in iCloud) before retry
         case .quotaExceeded:
             print("ErrorHandler.Fail: \(message)")
             return .fail(reason: .quotaExceeded, message: message)
             
+        // FAIL IS THE FINAL, WE REALLY CAN'T DO MORE
+        default:
+            print("ErrorHandler.Fail: \(message)")
+            return .fail(reason: .unknown, message: message)
+
         }
         
     }
