@@ -18,7 +18,7 @@ import CloudKit
 /// We choose the latter, that's storing it directly on the file system, storing paths to these files in the Realm.
 /// So this is the deal.
 public class CreamAsset: Object {
-    public static let sCreamAssetMark: String = "_CreamAsset"
+    public static let assetPathSuffix: String = "AssetPath"
     
     @objc dynamic var uniqueFileName = ""
     @objc dynamic var data: Data?
@@ -59,7 +59,7 @@ public class CreamAsset: Object {
     }
     
     static func parse(from propName: String, record: CKRecord, asset: CKAsset) -> CreamAsset? {
-        let assetPathKey = propName + CreamAsset.sCreamAssetMark
+        let assetPathKey = propName + CreamAsset.assetPathSuffix
         guard let assetPathValue = record.value(forKey: assetPathKey) as? String else { return nil }
         guard let assetData = NSData(contentsOfFile: asset.fileURL.path) as Data? else { return nil }
         let asset = CreamAsset()
