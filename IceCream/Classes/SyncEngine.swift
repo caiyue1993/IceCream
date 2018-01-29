@@ -314,6 +314,7 @@ extension SyncEngine {
                     // Not found in local
                     return
                 }
+                CreamAsset.deleteCreamAssetFile(with: recordId.recordName)
                 realm.beginWrite()
                 realm.delete(object)
                 if let token = `self`.notificationToken {

@@ -65,11 +65,12 @@ class ViewController: UIViewController {
         let dog = Dog()
         dog.name = "Dog Number " + "\(dogs.count)"
         dog.age = dogs.count + 1
-        
+        dog.avatar = CreamAsset(uniqueKey: dog.id, data: UIImageJPEGRepresentation(UIImage(named: dog.age % 2 == 1 ? "smile_dog" : "tongue_dog")!, 1.0) as Data!)
         try! realm.write {
             realm.add(dog)
         }
     }
+    
 }
 
 extension ViewController: UITableViewDelegate {
@@ -97,7 +98,27 @@ extension ViewController: UITableViewDelegate {
                 dog.age += 1
             }
         }
-        return [deleteAction, archiveAction]
+        let changeImageAction = UITableViewRowAction(style: .normal, title: "Change Img") { [weak self](_, ip) in
+            guard let `self` = self else { return }
+            guard ip.row < `self`.dogs.count else { return }
+            let dog = `self`.dogs[ip.row]
+            try! `self`.realm.write {
+                if let imageData = UIImageJPEGRepresentation(UIImage(named: dog.age % 2 == 0 ? "smile_dog" : "tongue_dog")!, 1.0) {
+                    dog.avatar = CreamAsset(uniqueKey: dog.id, data: imageData)
+                }
+            }
+        }
+        changeImageAction.backgroundColor = .blue
+        let emptyImageAction = UITableViewRowAction(style: .normal, title: "Nil Img") { [weak self](_, ip) in
+            guard let `self` = self else { return }
+            guard ip.row < `self`.dogs.count else { return }
+            let dog = `self`.dogs[ip.row]
+            try! `self`.realm.write {
+                dog.avatar = nil
+            }
+        }
+        emptyImageAction.backgroundColor = .purple
+        return [deleteAction, archiveAction, changeImageAction, emptyImageAction]
     }
 }
 
@@ -108,7 +129,12 @@ extension ViewController: UITableViewDataSource {
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell")
-        cell?.textLabel?.text = dogs[indexPath.row].name + "Age: \(dogs[indexPath.row].age)"
+        cell?.textLabel?.text = dogs[indexPath.row].name + " Age: \(dogs[indexPath.row].age)"
+        if let data = dogs[indexPath.row].avatar?.storedData() {
+            cell?.imageView?.image = UIImage(data: data)
+        } else {
+            cell?.imageView?.image = UIImage(named: "dog_placeholder")
+        }
         return cell ?? UITableViewCell()
     }
 

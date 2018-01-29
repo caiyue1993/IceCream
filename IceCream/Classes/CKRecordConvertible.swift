@@ -26,8 +26,8 @@ public protocol CKRecordRecoverable {
 extension CKRecordRecoverable {
     func parseFromRecord(record: CKRecord) -> O? {
         let o = O()
-        var recordValue: Any?
         for prop in o.objectSchema.properties {
+            var recordValue: Any?
             switch prop.type {
             case .int:
                 recordValue = record.value(forKey: prop.name) as? Int
@@ -43,6 +43,12 @@ extension CKRecordRecoverable {
                 recordValue = record.value(forKey: prop.name) as? Double
             case .data:
                 recordValue = record.value(forKey: prop.name) as? Data
+            case .object:
+                guard let asset = record.value(forKey: prop.name) as? CKAsset else {
+                    print("For now, the Object only support CKAsset related type.")
+                    break
+                }
+                recordValue = CreamAsset.parse(from: prop.name, record: record, asset: asset)
             default:
                 print("Other types will be supported in the future.")
             }
@@ -87,7 +93,26 @@ extension CKRecordConvertible where Self: Object {
         let r = CKRecord(recordType: Self.recordType, recordID: recordID)
         let properties = objectSchema.properties
         for prop in properties {
-            r[prop.name] = self[prop.name] as? CKRecordValue
+            switch prop.type {
+            case .int, .string, .bool, .date, .float, .double, .data:
+                r[prop.name] = self[prop.name] as? CKRecordValue
+            case .object:
+                guard let objectName = prop.objectClassName else { break }
+                if objectName == CreamAsset.className() {
+                    if let creamAsset = self[prop.name] as? CreamAsset {
+                        r[prop.name] = creamAsset.asset
+                        r[prop.name + CreamAsset.assetPathSuffix] = creamAsset.uniqueFileName as CKRecordValue
+                    } else {
+                        /// Just a warm hint:
+                        /// When we set nil to the property of a CKRecord, that record's property will be hidden in the CloudKit Dashboard
+                        r[prop.name] = nil
+                        r[prop.name + CreamAsset.assetPathSuffix] = nil
+                    }
+                }
+            default:
+                break
+            }
+            
         }
         return r
     }
