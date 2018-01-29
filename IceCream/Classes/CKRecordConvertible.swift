@@ -54,7 +54,6 @@ extension CKRecordRecoverable {
             }
             o.setValue(recordValue, forKey: prop.name)
         }
-//        CreamAsset.removeRedundantCacheFiles(record: record)
         return o
     }
 }

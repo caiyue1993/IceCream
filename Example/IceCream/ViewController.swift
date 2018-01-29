@@ -23,10 +23,6 @@ class ViewController: UIViewController {
         let b = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.add, target: self, action: #selector(add))
         return b
     }()
-    lazy var deleteAllBarItem: UIBarButtonItem = {
-        let b = UIBarButtonItem(title: "Delete All", style: .plain, target: self, action: #selector(deleteBtn))
-        return b
-    }()
     
     lazy var tableView: UITableView = {
         let tv = UITableView()
@@ -41,7 +37,6 @@ class ViewController: UIViewController {
         
         view.addSubview(tableView)
         navigationItem.rightBarButtonItem = addBarItem
-        navigationItem.leftBarButtonItem = deleteAllBarItem
         
         bind()
     }
@@ -78,13 +73,7 @@ class ViewController: UIViewController {
             realm.add(dog)
         }
     }
-    @objc func deleteBtn() {
-        for dog in dogs {
-            try! self.realm.write {
-                dog.isDeleted = true
-            }
-        }
-    }
+    
 }
 
 extension ViewController: UITableViewDelegate {

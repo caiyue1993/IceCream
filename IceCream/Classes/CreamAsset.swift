@@ -118,39 +118,4 @@ extension CreamAsset {
         excecuteDeletions(in: needToDeleteCacheFiles)
     }
     
-    /// This step will only delete the local files which are not exist in iCloud. CKRecord to compare with local cache files, continue to keep local files which iCloud's record are still exists.
-    public static func removeRedundantCacheFiles(record: CKRecord) {
-        DispatchQueue.global(qos: .background).async {
-            let idForThisRecord: String = record.value(forKey: "id") as! String
-            /// Which must have value in iCloud
-            var allCloudAssetStringValues = [String]()
-            /// Local files, which must relate with this record's id
-            var allLocalRelateCacheFiles = [String]()
-            
-            // Get all iCloud exist files' name
-            let allKeys = record.allKeys()
-            for key in allKeys {
-                if key.contains(CreamAsset.sCreamAssetMark) {
-                    let valueA = record.value(forKey: key) as? String
-                    if let value = valueA, value != "" {
-                        allCloudAssetStringValues.append(value)
-                    }
-                }
-            }
-            let allCacheFiles = creamAssetFilesPaths()
-            for fileName in allCacheFiles {
-                if fileName.contains(idForThisRecord) {
-                    allLocalRelateCacheFiles.append(fileName)
-                }
-            }
-            var needToDeleteCacheFiles = [String]()
-            for cacheFile in allLocalRelateCacheFiles {
-                if !allCloudAssetStringValues.contains(cacheFile) {
-                    needToDeleteCacheFiles.append(cacheFile)
-                }
-            }
-            
-            excecuteDeletions(in: needToDeleteCacheFiles)
-        }
-    }
 }
