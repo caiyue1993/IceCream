@@ -1,8 +1,19 @@
 # Change Log
 
 -----
+## [1.2.0 - Colorful World](https://github.com/caiyue1993/IceCream/releases/tag/1.2.0)
 
-## [1.1.0 - Equipped!](https://github.com/caiyue1993/IceCream/releases/tag/1.1.0)
+#### Add
+
+* CKAsset Support. [#24](https://github.com/caiyue1993/IceCream/pull/24)
+
+#### Fix
+
+* Make Error Handler perfect. [26](https://github.com/caiyue1993/IceCream/pull/26) 
+
+-----
+
+## [1.1.0 - Error Handler Matters](https://github.com/caiyue1993/IceCream/releases/tag/1.1.0)
 
 #### Add
 
