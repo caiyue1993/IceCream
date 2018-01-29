@@ -103,6 +103,8 @@ extension CKRecordConvertible where Self: Object {
                         r[prop.name] = creamAsset.asset
                         r[prop.name + CreamAsset.sCreamAssetMark] = creamAsset.uniqueFileName as CKRecordValue
                     } else {
+                        /// Just a warm hint:
+                        /// When we set nil to the property of a CKRecord, that record's property will be hidden in the CloudKit Dashboard
                         r[prop.name] = nil
                         r[prop.name + CreamAsset.sCreamAssetMark] = nil
                     }
