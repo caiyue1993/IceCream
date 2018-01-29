@@ -29,6 +29,7 @@ IceCream helps you sync Realm Database with CloudKit.
 - [x] Delta update
 - [x] Reachability(Support Long-lived Operation) 
 - [x] Powerful Error Handling 
+- [x] Perfect asset syncing solution
 - [x] Sync Automatically
 - [x] Manually Synchronization is also supported
 - [x] User Account Status Check
@@ -50,6 +51,7 @@ class Dog: Object {
     @objc dynamic var id = NSUUID().uuidString
     @objc dynamic var name = ""
     @objc dynamic var age = 0
+    @objc dynamic var avatar: CreamAsset?
     @objc dynamic var isDeleted = false
 
     override class func primaryKey() -> String? {
@@ -85,13 +87,18 @@ That's all you need to do! Everytime you write to Realm, the SyncEngine will get
 
 For more details, clone the project to see the source code.
 
-### About Object Deletions
+### Object Deletions
 
 Yep, we highly recommend you use **Soft Deletions**. That's why we add a `isDeleted` property to CKRecordConvertible protocol. 
 
 When you want to delete a object, you just need to set its `isDeleted` property to true. And the rest of things are already taken care of.
 
 *You also don't need to worry about the clean-up things. It has also been considered.*
+
+### How about syncing asset? 
+Luckily, we have a perfect solution for syncing asset. 
+Absolutely, you could also store your image or kind of resource stuff as `Data` type and everything works fine. But Realm has a [16MB limit]() of data property. And CloudKit encourages us to use `CKAsset` in places where the data you want to assign to a field is more than a few kilobytes in size.
+So taking the consideration of the above two, we recommend you to use `CreamAsset` property to hold data. `CreamAsset` will store local data on the file system and just save file paths in the Realm, all automatically. And we'll wrap things up to upload to CloudKit as `CKAsset`. 
 
 Example project is provided to see the detailed usage.
 
@@ -126,7 +133,7 @@ IceCream is available through [CocoaPods](http://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod 'IceCream', '~> 1.1.0'
+pod 'IceCream', '~> 1.2.0'
 ```
 
 ## Make it better
