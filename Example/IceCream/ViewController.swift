@@ -61,14 +61,11 @@ class ViewController: UIViewController {
         }).disposed(by: bag)
     }
     
-    var isOdd: Bool = false
     @objc func add() {
         let dog = Dog()
         dog.name = "Dog Number " + "\(dogs.count)"
         dog.age = dogs.count + 1
-        dog.avatar = CreamAsset(uniqueKey: dog.id, data: UIImageJPEGRepresentation(UIImage(named: `self`.isOdd ? "Face1" : "Face2")!, 1.0) as Data!)
-        isOdd = !isOdd
-        
+        dog.avatar = CreamAsset(uniqueKey: dog.id, data: UIImageJPEGRepresentation(UIImage(named: dog.age % 2 == 1 ? "smile_dog" : "tongue_dog")!, 1.0) as Data!)
         try! realm.write {
             realm.add(dog)
         }
@@ -106,8 +103,9 @@ extension ViewController: UITableViewDelegate {
             guard ip.row < `self`.dogs.count else { return }
             let dog = `self`.dogs[ip.row]
             try! `self`.realm.write {
-//                dog.avatar?.doData(id: dog.id, data: UIImageJPEGRepresentation(UIImage(named: `self`.isOdd ? "Face1" : "Face2")!, 1.0) as Data!)
-                `self`.isOdd = !`self`.isOdd
+                if let imageData = UIImageJPEGRepresentation(UIImage(named: dog.age % 2 == 0 ? "smile_dog" : "tongue_dog")!, 1.0) {
+                    dog.avatar = CreamAsset(uniqueKey: dog.id, data: imageData)
+                }
             }
         }
         changeImageAction.backgroundColor = .blue
@@ -135,7 +133,7 @@ extension ViewController: UITableViewDataSource {
         if let data = dogs[indexPath.row].avatar?.storedData() {
             cell?.imageView?.image = UIImage(data: data)
         } else {
-            cell?.imageView?.image = nil
+            cell?.imageView?.image = UIImage(named: "dog_placeholder")
         }
         return cell ?? UITableViewCell()
     }
