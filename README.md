@@ -1,13 +1,17 @@
 ![IceCream](https://i.loli.net/2017/11/18/5a104e5acfea5.png)
 
+<p>
+[![Version](https://img.shields.io/cocoapods/v/IceCream.svg?style=flat)](http://cocoapods.org/pods/IceCream)
 [![CI Status](http://img.shields.io/travis/caiyue1993/IceCream.svg?style=flat)](https://travis-ci.org/caiyue1993/IceCream)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
-[![Version](https://img.shields.io/cocoapods/v/IceCream.svg?style=flat)](http://cocoapods.org/pods/IceCream)
 [![License](https://img.shields.io/cocoapods/l/IceCream.svg?style=flat)](http://cocoapods.org/pods/IceCream)
 [![Platform](https://img.shields.io/cocoapods/p/IceCream.svg?style=flat)](http://cocoapods.org/pods/IceCream)
+</p>
+<p>
+<a href="http://cocoapods.org/pods/IceCream"><img src="https://img.shields.io/cocoapods/at/IceCream.svg?label=Apps%20Using%20IceCream&colorB=28B9FE"></a>
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/caiyue1993/icecream/issues)
 <a href="https://twitter.com/caiyue5"><img src="https://img.shields.io/twitter/follow/caiyue5.svg?style=social"></a>
-
+</p>
 IceCream helps you sync Realm Database with CloudKit.
 
 "It works like magic!"
