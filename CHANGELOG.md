@@ -1,6 +1,13 @@
 # Change Log
 
 -----
+## [1.2.1 - Make yourself at home]
+
+#### Add
+
+* Log or not log. It's up to you. [#23](https://github.com/caiyue1993/IceCream/issues/23)
+
+-----
 ## [1.2.0 - Colorful World](https://github.com/caiyue1993/IceCream/releases/tag/1.2.0)
 
 #### Add
