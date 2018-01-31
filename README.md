@@ -32,8 +32,8 @@ IceCream helps you sync Realm Database with CloudKit.
 - [x] Delta update
 - [x] Reachability(Support Long-lived Operation) 
 - [x] Powerful Error Handling 
-- [x] Perfect asset syncing solution
 - [x] Sync Automatically
+- [x] Large Data support
 - [x] Manually Synchronization is also supported
 - [x] User Account Status Check
 - [ ] Complete Documentation 
@@ -119,6 +119,7 @@ It's true that debugging CloudKit is hard and tedious. But I have some tips for 
 - Using GUI tools, like [Realm Browser](https://itunes.apple.com/us/app/realm-browser/id1007457278?mt=12) and [CloudKit Dashboard](https://icloud.developer.apple.com/dashboard).
 - When you are lost and don't remember where you are, I suggest starting all over again. In CloudKit Dashboard, "Reset..." button is provided. You can also
 clear local database by re-install apps.
+- By default, IceCream only prints some logs to your console in DEBUG mode. However, you could turn it off by adding `IceCream.shared.enableLogging = false` if it bothers you.
 - Keep calm and carry on!
 
 *Warning: If you're going to launch your app onto App Store, don't forget to deploy your environment settings to production. You can do it easily in the CloudKit Dashboard. Write & Read permissions are also need to be considered.*
