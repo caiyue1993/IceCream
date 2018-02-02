@@ -57,8 +57,6 @@ public class CreamAsset: Object {
     }
     
   static func parse(from propName: String, record: CKRecord, asset: CKAsset) -> CreamAsset? {
-//    let assetPathKey = propName + CreamAsset.assetPathSuffix
-//    guard let assetPathValue = record.value(forKey: assetPathKey) as? String else { return nil }
     guard let assetData = NSData(contentsOfFile: asset.fileURL.path) as Data? else { return nil }
 
     return CreamAsset(objectID: record.recordID.recordName,
