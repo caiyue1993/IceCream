@@ -44,11 +44,13 @@ extension CKRecordRecoverable {
             case .data:
                 recordValue = record.value(forKey: prop.name) as? Data
             case .object:
-                if record.value(forKey: prop.name) == nil {
-                    //This step is for setting nil CreamAsset to Object. Otherwise, it may cause error
-                    recordValue = record.value(forKey: prop.name) as? Object
-                } else {
-                    print("For now, the Object only support CKAsset related type.")
+                guard let asset = record.value(forKey: prop.name) as? CKAsset else {
+                    if record.value(forKey: prop.name) == nil {
+                        //This step is for setting nil CreamAsset to Object. Otherwise, it may cause error
+                        recordValue = record.value(forKey: prop.name) as? Object
+                    } else {
+                        print("For now, the Object only support CKAsset related type.")
+                    }
                     break
                 }
                 recordValue = CreamAsset.parse(from: prop.name, record: record, asset: asset)
