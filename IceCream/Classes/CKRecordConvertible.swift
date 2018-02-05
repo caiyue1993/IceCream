@@ -49,6 +49,7 @@ extension CKRecordRecoverable {
                     recordValue = record.value(forKey: prop.name) as? Object
                 } else {
                     print("For now, the Object only support CKAsset related type.")
+                    break
                 }
                 recordValue = CreamAsset.parse(from: prop.name, record: record, asset: asset)
             default:
