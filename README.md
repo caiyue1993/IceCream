@@ -54,8 +54,10 @@ class Dog: Object {
     @objc dynamic var id = NSUUID().uuidString
     @objc dynamic var name = ""
     @objc dynamic var age = 0
-    @objc dynamic var avatar: CreamAsset?
     @objc dynamic var isDeleted = false
+
+    static let AVATAR_KEY = "avatar"
+    @objc dynamic var avatar: CreamAsset?
 
     override class func primaryKey() -> String? {
         return "id"
@@ -103,7 +105,7 @@ When you want to delete a object, you just need to set its `isDeleted` property 
 
 ### How about syncing asset? 
 Luckily, we have a perfect solution for syncing asset. 
-Absolutely, you could also store your image or kind of resource stuff as `Data` type and everything works fine. But Realm has a [16MB limit]() of data property. And CloudKit encourages us to use `CKAsset` in places where the data you want to assign to a field is more than a few kilobytes in size.
+Absolutely, you could also store your image or kind of resource stuff as `Data` type and everything works fine. But Realm has a [16MB limit](https://realm.io/docs/objc/latest/#current-limitations) of data property. And CloudKit encourages us to use `CKAsset` in places where the data you want to assign to a field is more than a few kilobytes in size.
 So taking the consideration of the above two, we recommend you to use `CreamAsset` property to hold data. `CreamAsset` will store local data on the file system and just save file paths in the Realm, all automatically. And we'll wrap things up to upload to CloudKit as `CKAsset`. 
 
 Example project is provided to see the detailed usage.
@@ -136,6 +138,46 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 
 ## Installation
 
+Using Carthage or CocoaPods.
+
+### Carthage
+
+[Carthage](https://github.com/Carthage/Carthage) is a decentralized dependency manager for Cocoa application.
+
+To integrate IceCream into your Xcode project using Carthage, specify it in your `Cartfile`:
+
+```ogdl
+github "caiyue1993/IceCream"
+```
+
+Then, run the following command to build the frameworks:
+
+```bash
+$ carthage update
+```
+
+Normally you'll get IceCream, Realm and RealmSwift frameworks. You need to set up your Xcode project manually to add these 3 frameworks.
+
+On your application targets’ “General” settings tab, in the “Linked Frameworks and Libraries” section, drag and drop each framework to use from the Carthage/Build folder on disk.
+
+On your application targets’ “Build Phases” settings tab, click the “+” icon and choose “New Run Script Phase”. Create a Run Script with the following content:
+
+```
+/usr/local/bin/carthage copy-frameworks
+```
+
+and add the paths to the frameworks you want to use under “Input Files”:
+
+```
+$(SRCROOT)/Carthage/Build/iOS/IceCream.framework
+$(SRCROOT)/Carthage/Build/iOS/Realm.framework
+$(SRCROOT)/Carthage/Build/iOS/RealmSwift.framework
+```
+
+For more information about how to use Carthage, please see its [project page](https://github.com/Carthage/Carthage).
+
+### CocoaPods
+
 IceCream is available through [CocoaPods](http://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
@@ -144,6 +186,7 @@ pod 'IceCream', '~> 1.2.1'
 ```
 
 ## Make it better
+
 These are the to-do list in IceCream project. You can join us to become a contributor.
 
 - CKReference & Realm's LinkingObjects
@@ -154,6 +197,7 @@ These are the to-do list in IceCream project. You can join us to become a contri
 See the [CONTRIBUTING](https://github.com/caiyue1993/IceCream/blob/master/CONTRIBUTING.md) file for contributing guidelines.
 
 ## Live Demo
+
 My app [Sprint](https://itunes.apple.com/cn/app/%E5%B0%8F%E7%9B%AE%E6%A0%87-%E9%87%8F%E5%8C%96%E4%BD%A0%E7%9A%84%E8%BF%9B%E6%AD%A5/id1215312957?mt=8&at=1000lvyQ)(A lightweight task management app) is using IceCream. You can download it and try it on your muiltiple devices to see this magic.
 
 <a href="https://itunes.apple.com/cn/app/%E5%B0%8F%E7%9B%AE%E6%A0%87-%E9%87%8F%E5%8C%96%E4%BD%A0%E7%9A%84%E8%BF%9B%E6%AD%A5/id1215312957?mt=8&at=1000lvyQ">
@@ -164,6 +208,7 @@ My app [Sprint](https://itunes.apple.com/cn/app/%E5%B0%8F%E7%9B%AE%E6%A0%87-%E9%
 If your app has adopted IceCream, feel free to raise a PR to add to this page.
 
 ## Reference
+
 - [Synchronizing data with CloudKit](https://medium.com/@guilhermerambo/synchronizing-data-with-cloudkit-94c6246a3fda)(Recommended)
 - [CloudKit Best Practices](https://developer.apple.com/videos/play/wwdc2016/231/)
 - [Mastering Realm Notifications](https://academy.realm.io/posts/meetup-jp-simard-mastering-realm-notifications/)
@@ -190,4 +235,5 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 <a href="https://opencollective.com/icecream/sponsor/9/website" target="_blank"><img src="https://opencollective.com/icecream/sponsor/9/avatar.svg"></a>
 
 ## License
+
 IceCream is available under the MIT license. See the LICENSE file for more info.
