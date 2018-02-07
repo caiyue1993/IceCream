@@ -18,21 +18,19 @@ import CloudKit
 /// We choose the latter, that's storing it directly on the file system, storing paths to these files in the Realm.
 /// So this is the deal.
 public class CreamAsset: Object {
-    public static let assetPathSuffix: String = "AssetPath"
-    
     @objc dynamic var uniqueFileName = ""
     @objc dynamic var data: Data?
     override public static func ignoredProperties() -> [String] {
         return ["data"]
     }
-    
-    public convenience init(uniqueKey: String, data: Data) {
+
+  private convenience init(objectID: String, propName: String, data: Data) {
         self.init()
         self.data = data
-        self.uniqueFileName = "\(uniqueKey)_\(UUID().uuidString)"
+        self.uniqueFileName = "\(objectID)_\(propName)"
         save(data: data, to: uniqueFileName)
     }
-    
+
     /// There is an important point that we need to consider:
     /// Cuz we only store the path of data, so we can't access data by `data` property
     /// So use this method if you want get the data of this object
@@ -58,19 +56,19 @@ public class CreamAsset: Object {
         }
     }
     
-    static func parse(from propName: String, record: CKRecord, asset: CKAsset) -> CreamAsset? {
-        let assetPathKey = propName + CreamAsset.assetPathSuffix
-        guard let assetPathValue = record.value(forKey: assetPathKey) as? String else { return nil }
-        guard let assetData = NSData(contentsOfFile: asset.fileURL.path) as Data? else { return nil }
-        let asset = CreamAsset()
-        asset.uniqueFileName = assetPathValue
-        asset.data = assetData
-        // Local cache not exist, save it to local files
-        if !CreamAsset.creamAssetFilesPaths().contains(assetPathValue) {
-            try! assetData.write(to: creamAssetDefaultURL().appendingPathComponent(assetPathValue))
-        }
-        return asset
-    }
+  static func parse(from propName: String, record: CKRecord, asset: CKAsset) -> CreamAsset? {
+    guard let assetData = NSData(contentsOfFile: asset.fileURL.path) as Data? else { return nil }
+
+    return CreamAsset(objectID: record.recordID.recordName,
+                      propName: propName,
+                      data: assetData)
+  }
+
+  public static func create(object: CKRecordConvertible, propName: String, data: Data) -> CreamAsset? {
+    return CreamAsset(objectID: object.recordID.recordName,
+                      propName: propName,
+                           data: data)
+  }
 }
 
 extension CreamAsset {
