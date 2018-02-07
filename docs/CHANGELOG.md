@@ -1,6 +1,17 @@
 # Change Log
 
 -----
+## [1.3.0 - Decentralized is the Future]
+
+#### Add
+
+* Support Carthage. [#34](https://github.com/caiyue1993/IceCream/pull/34)
+
+#### Fix 
+
+* CreamAsset behaves better. [32](https://github.com/caiyue1993/IceCream/pull/32) 
+
+-----
 ## [1.2.1 - Make yourself at home]
 
 #### Add
