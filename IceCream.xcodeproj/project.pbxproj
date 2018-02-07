@@ -16,6 +16,8 @@
 		6743F72B202B0F9400912163 /* CreamAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F723202B0F9400912163 /* CreamAsset.swift */; };
 		6743F72C202B0F9400912163 /* CKRecordConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F724202B0F9400912163 /* CKRecordConvertible.swift */; };
 		6743F72D202B0F9400912163 /* Notification+Name.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F725202B0F9400912163 /* Notification+Name.swift */; };
+		67FE320F202B505000125432 /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67FE320E202B505000125432 /* Realm.framework */; };
+		67FE3211202B505600125432 /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67FE3210202B505600125432 /* RealmSwift.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +32,8 @@
 		6743F723202B0F9400912163 /* CreamAsset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreamAsset.swift; sourceTree = "<group>"; };
 		6743F724202B0F9400912163 /* CKRecordConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CKRecordConvertible.swift; sourceTree = "<group>"; };
 		6743F725202B0F9400912163 /* Notification+Name.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Notification+Name.swift"; sourceTree = "<group>"; };
+		67FE320E202B505000125432 /* Realm.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Realm.framework; path = Carthage/Build/iOS/Realm.framework; sourceTree = "<group>"; };
+		67FE3210202B505600125432 /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealmSwift.framework; path = Carthage/Build/iOS/RealmSwift.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,6 +41,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				67FE320F202B505000125432 /* Realm.framework in Frameworks */,
+				67FE3211202B505600125432 /* RealmSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -48,6 +54,7 @@
 			children = (
 				6743F714202B0F0F00912163 /* IceCream */,
 				6743F713202B0F0F00912163 /* Products */,
+				67FE320D202B505000125432 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -84,6 +91,15 @@
 			path = Classes;
 			sourceTree = "<group>";
 		};
+		67FE320D202B505000125432 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				67FE3210202B505600125432 /* RealmSwift.framework */,
+				67FE320E202B505000125432 /* Realm.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -106,6 +122,7 @@
 				6743F70E202B0F0F00912163 /* Frameworks */,
 				6743F70F202B0F0F00912163 /* Headers */,
 				6743F710202B0F0F00912163 /* Resources */,
+				67FE3212202B50A200125432 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -158,6 +175,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		67FE3212202B50A200125432 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/Realm.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/RealmSwift.framework",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		6743F70D202B0F0F00912163 /* Sources */ = {
@@ -299,6 +334,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = IceCream/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -319,6 +358,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = IceCream/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
