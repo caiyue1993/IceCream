@@ -10,8 +10,8 @@ sudo: required
 
 env:
   global:
-    - WORKSPACE=Example/IceCream.xcworkspace
-    - SCHEME=IceCream-Example
+    - WORKSPACE=Example/IceCream_Example.xcworkspace
+    - SCHEME=IceCream_Example
     - SDK=iphonesimulator11.1
   matrix:
     - DESTINATION="platform=iOS Simulator,name=iPhone 8,OS=11.1"
