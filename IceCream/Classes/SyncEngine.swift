@@ -49,6 +49,8 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
     
     private let errorHandler = ErrorHandler()
     
+    private var backgroundWorker: BackgroundWorker?
+    
     /// We recommand process the initialization when app launches
     public init() {
         /// Check iCloud status so that we can go on
@@ -73,11 +75,9 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
                 `self`.startObservingRemoteChanges()
                 
                 /// 2. Register to local database
-                DispatchQueue.main.async {
-                    `self`.registerLocalDatabase()
-                }
+                `self`.registerLocalDatabase()
                 
-                NotificationCenter.default.addObserver(self, selector: #selector(self.cleanUp), name: .UIApplicationWillTerminate, object: nil)
+                NotificationCenter.default.addObserver(self, selector: #selector(self.cleanUp), name: .UIApplicationWillResignActive, object: nil)
                 
                 if `self`.subscriptionIsLocallyCached { return }
                 `self`.createDatabaseSubscription()
@@ -89,41 +89,53 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
         }
     }
     
+    deinit {
+        backgroundWorker?.stop()
+        notificationToken?.invalidate()
+    }
+    
     /// When you commit a write transaction to a Realm, all other instances of that Realm will be notified, and be updated automatically.
     /// For more: https://realm.io/docs/swift/latest/#writes
 
     private func registerLocalDatabase() {
-        let objects = Cream<T>().realm.objects(T.self)
-        notificationToken = objects.observe({ [weak self](changes) in
+        backgroundWorker = BackgroundWorker()
+        backgroundWorker?.start { [weak self] in
             guard let `self` = self else { return }
-            
-            switch changes {
-            case .initial(let collection):
-                print("Inited:" + "\(collection)")
-                break
-            case .update(let collection, let deletions, let insertions, let modifications):
-                print("collections:" + "\(collection)")
-                print("deletions:" + "\(deletions)")
-                print("insertions:" + "\(insertions)")
-                print("modifications:" + "\(modifications)")
+            let objects = Cream<T>().realm.objects(T.self)
+            `self`.notificationToken = objects.observe({ [weak `self`] (changes) in
+                guard let `self2` = `self` else { return }
                 
-                let objectsToStore = (insertions + modifications).filter { $0 < collection.count }.map { collection[$0] }.filter{ !$0.isDeleted }
-                let objectsToDelete = modifications.filter { $0 < collection.count }.map{ collection[$0] }.filter { $0.isDeleted }
-                
-                `self`.syncObjectsToCloudKit(objectsToStore: objectsToStore, objectsToDelete: objectsToDelete)
-                
-            case .error(_):
-                break
-            }
-        })
+                switch changes {
+                case .initial(let collection):
+                    print("Inited:" + "\(collection)")
+                    break
+                case .update(let collection, let deletions, let insertions, let modifications):
+                    print("collections:" + "\(collection)")
+                    print("deletions:" + "\(deletions)")
+                    print("insertions:" + "\(insertions)")
+                    print("modifications:" + "\(modifications)")
+                    
+                    let objectsToStore = (insertions + modifications).filter { $0 < collection.count }.map { collection[$0] }.filter{ !$0.isDeleted }
+                    let objectsToDelete = modifications.filter { $0 < collection.count }.map{ collection[$0] }.filter { $0.isDeleted }
+                    
+                    `self2`.syncObjectsToCloudKit(objectsToStore: objectsToStore, objectsToDelete: objectsToDelete)
+                    
+                case .error(_):
+                    break
+                }
+            })
+        }
     }
     
     @objc func cleanUp() {
-        let cream = Cream<T>()
-        do {
-            try cream.deletePreviousSoftDeleteObjects(notNotifying: notificationToken)
-        } catch {
-            // Error handles here
+        backgroundWorker?.start { [weak self] in
+            guard let token = self?.notificationToken else { return }
+            let cream = Cream<T>()
+            do {
+                try cream.deletePreviousSoftDeleteObjects(notNotifying: token)
+            } catch {
+                // Error handles here
+            }
         }
     }
 }
@@ -290,7 +302,7 @@ extension SyncEngine {
                 return
             }
 
-            DispatchQueue.main.async {
+            `self`.backgroundWorker?.start {
                 let realm = try! Realm()
 
                 /// If your model class includes a primary key, you can have Realm intelligently update or add objects based off of their primary key values using Realm().add(_:update:).
@@ -308,7 +320,7 @@ extension SyncEngine {
         changesOp.recordWithIDWasDeletedBlock = { [weak self]recordId, _ in
             guard let `self` = self else { return }
             
-            DispatchQueue.main.async {
+            `self`.backgroundWorker?.start {
                 let realm = try! Realm()
                 guard let object = realm.object(ofType: T.self, forPrimaryKey: recordId.recordName) else {
                     // Not found in local
