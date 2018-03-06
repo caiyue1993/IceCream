@@ -117,7 +117,7 @@ extension CKRecordConvertible where Self: Object {
     
 }
 
-protocol IceCreamRecordConvertiblePublic {
+public protocol IceCreamRecordConvertiblePublic {
     var customZoneID: CKRecordZoneID { get }
 }
 
