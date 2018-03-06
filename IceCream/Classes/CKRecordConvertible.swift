@@ -79,10 +79,17 @@ extension CKRecordConvertible where Self: Object {
             fatalError("You should set a primary key on your Realm object")
         }
         
+        let zoneID: CKRecordZoneID
+        if self is StoredInPublicDatabase {
+            zoneID = CKRecordZone.default().zoneID
+        } else {
+            zoneID = Self.customZoneID
+        }
+        
         if let primaryValueString = self[primaryKeyProperty.name] as? String {
-            return CKRecordID(recordName: primaryValueString, zoneID: Self.customZoneID)
+            return CKRecordID(recordName: primaryValueString, zoneID: zoneID)
         } else if let primaryValueInt = self[primaryKeyProperty.name] as? Int {
-            return CKRecordID(recordName: "\(primaryValueInt)", zoneID: Self.customZoneID)
+            return CKRecordID(recordName: "\(primaryValueInt)", zoneID: zoneID)
         } else {
             fatalError("Primary key should be String or Int")
         }
@@ -117,13 +124,5 @@ extension CKRecordConvertible where Self: Object {
     
 }
 
-public protocol IceCreamRecordConvertiblePublic {
-    var customZoneID: CKRecordZoneID { get }
+public protocol StoredInPublicDatabase {
 }
-
-extension IceCreamRecordConvertiblePublic {
-    public var customZoneID: CKRecordZoneID {
-        return CKRecordZone.default().zoneID
-    }
-}
-
