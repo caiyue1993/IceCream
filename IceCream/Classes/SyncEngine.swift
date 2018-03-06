@@ -44,13 +44,19 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
     
 //    fileprivate var changedRecordZoneID: CKRecordZoneID?
     
-    /// Indicates the private database in default container
-    private let privateDatabase = CKContainer.default().privateCloudDatabase
+    /// Indicates the database in default container
+    private let database: CKDatabase
     
     private let errorHandler = ErrorHandler()
     
     /// We recommand process the initialization when app launches
-    public init() {
+    public init(usePublicDatabase: Bool = false) {
+        if usePublicDatabase {
+            database = CKContainer.default().publicCloudDatabase
+        } else {
+            database = CKContainer.default().privateCloudDatabase
+        }
+        
         /// Check iCloud status so that we can go on
         CKContainer.default().accountStatus { [weak self] (status, error) in
             guard let `self` = self else { return }
@@ -266,7 +272,7 @@ extension SyncEngine {
                 return
             }
         }
-        privateDatabase.add(changesOperation)
+        database.add(changesOperation)
     }
     
     private func fetchChangesInZone(_ callback: (() -> Void)? = nil) {
@@ -350,7 +356,7 @@ extension SyncEngine {
             }
         }
         
-        privateDatabase.add(changesOp)
+        database.add(changesOp)
     }
  
     
@@ -375,7 +381,7 @@ extension SyncEngine {
             }
         }
         
-        privateDatabase.add(modifyOp)
+        database.add(modifyOp)
     }
  
     /// Check if custom zone already exists
@@ -424,7 +430,7 @@ extension SyncEngine {
         notificationInfo.shouldSendContentAvailable = true // Silent Push
         subscription.notificationInfo = notificationInfo
         
-        privateDatabase.save(subscription) { [weak self](_, error) in
+        database.save(subscription) { [weak self](_, error) in
             guard let `self` = self else { return }
             switch `self`.errorHandler.resultType(with: error) {
             case .success:
@@ -503,7 +509,7 @@ extension SyncEngine {
             }
         }
         
-        privateDatabase.add(modifyOpe)
+        database.add(modifyOpe)
     }
 }
 
