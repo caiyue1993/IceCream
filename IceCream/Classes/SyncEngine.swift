@@ -46,6 +46,7 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
     
     /// Indicates the database in default container
     private let database: CKDatabase
+    private let recordZone: CKRecordZone
     
     private let errorHandler = ErrorHandler()
     
@@ -53,8 +54,10 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
     public init(usePublicDatabase: Bool = false) {
         if usePublicDatabase {
             database = CKContainer.default().publicCloudDatabase
+            recordZone = CKRecordZone.default()
         } else {
             database = CKContainer.default().privateCloudDatabase
+            recordZone = CKRecordZone(zoneID: T.customZoneID)
         }
         
         /// Check iCloud status so that we can go on
@@ -280,7 +283,7 @@ extension SyncEngine {
         let zoneChangesOptions = CKFetchRecordZoneChangesOptions()
         zoneChangesOptions.previousServerChangeToken = zoneChangesToken
         
-        let changesOp = CKFetchRecordZoneChangesOperation(recordZoneIDs: [T.customZoneID], optionsByRecordZoneID: [T.customZoneID: zoneChangesOptions])
+        let changesOp = CKFetchRecordZoneChangesOperation(recordZoneIDs: [recordZone.zoneID], optionsByRecordZoneID: [recordZone.zoneID: zoneChangesOptions])
         changesOp.fetchAllChanges = true
         
         changesOp.recordZoneChangeTokensUpdatedBlock = { _, token, _ in
@@ -363,7 +366,7 @@ extension SyncEngine {
     /// Create new custom zones
     /// You can(but you shouldn't) invoke this method more times, but the CloudKit is smart and will handle that for you
     fileprivate func createCustomZone(_ completion: ((Error?) -> ())? = nil) {
-        let newCustomZone = CKRecordZone(zoneID: T.customZoneID)
+        let newCustomZone = CKRecordZone(zoneID: recordZone.zoneID)
         let modifyOp = CKModifyRecordZonesOperation(recordZonesToSave: [newCustomZone], recordZoneIDsToDelete: nil)
         modifyOp.modifyRecordZonesCompletionBlock = { [weak self](_, _, error) in
             guard let `self` = self else { return }

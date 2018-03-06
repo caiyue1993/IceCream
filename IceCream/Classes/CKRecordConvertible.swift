@@ -117,4 +117,13 @@ extension CKRecordConvertible where Self: Object {
     
 }
 
+protocol IceCreamRecordConvertiblePublic {
+    var customZoneID: CKRecordZoneID { get }
+}
+
+extension IceCreamRecordConvertiblePublic {
+    public var customZoneID: CKRecordZoneID {
+        return CKRecordZone.default().zoneID
+    }
+}
 
