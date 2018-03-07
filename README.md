@@ -236,7 +236,7 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 
 ## Contributors
 
-This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+This project exists thanks to all the people who contribute. [Contribute](docs/CONTRIBUTING.md).
 <a href="graphs/contributors"><img src="https://opencollective.com/IceCream/contributors.svg?width=890&button=false" /></a>
 
 
