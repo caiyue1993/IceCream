@@ -4,7 +4,7 @@
 [![CI Status](http://img.shields.io/travis/caiyue1993/IceCream.svg?style=flat)](https://travis-ci.org/caiyue1993/IceCream)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![License](https://img.shields.io/cocoapods/l/IceCream.svg?style=flat)](http://cocoapods.org/pods/IceCream)
-[![Platform](https://img.shields.io/cocoapods/p/IceCream.svg?style=flat)](http://cocoapods.org/pods/IceCream) [![Backers on Open Collective](https://opencollective.com/IceCream/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/IceCream/sponsors/badge.svg)](#sponsors)
+[![Platform](https://img.shields.io/cocoapods/p/IceCream.svg?style=flat)](http://cocoapods.org/pods/IceCream)
 <p>
    
 <a href="http://cocoapods.org/pods/IceCream"><img src="https://img.shields.io/cocoapods/at/IceCream.svg?label=Apps%20Using%20IceCream&colorB=28B9FE"></a>
