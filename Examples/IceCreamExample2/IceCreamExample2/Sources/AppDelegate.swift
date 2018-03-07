@@ -7,15 +7,24 @@
 //
 
 import UIKit
+import IceCream
+import UserNotifications
+import CloudKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
+    var syncEngine: SyncEngine<Dog>?
+}
 
+extension AppDelegate {
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        setup(application: application)
+        
         return true
     }
 
@@ -44,3 +53,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 }
 
+extension AppDelegate {
+    func setup(application: UIApplication) {
+        syncEngine = SyncEngine<Dog>()
+        
+        application.registerForRemoteNotifications()
+    }
+    
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        print("Error")
+    }
+    
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        print("Success")
+    }
+    
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+
+        let notification = CKNotification(fromRemoteNotificationDictionary: userInfo)
+        
+        if (notification.subscriptionID == IceCreamConstant.cloudKitSubscriptionID) {
+            NotificationCenter.default.post(name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, userInfo: userInfo)
+        }
+        
+        completionHandler(.newData)
+    }
+}

@@ -9,26 +9,35 @@
 /* Begin PBXBuildFile section */
 		00BCA2CA828E36E021934840 /* Pods_IceCreamExample2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1769AE7D277E513F1961B85D /* Pods_IceCreamExample2.framework */; };
 		A122B84E204FF0FB003F0CC0 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = A122B84D204FF0FB003F0CC0 /* Podfile */; };
+		A1638ABC20501A2500E0684F /* CloudKitRecordTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1638ABB20501A2500E0684F /* CloudKitRecordTableViewController.swift */; };
 		A17F1DEB204FEEBD00A62832 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17F1DEA204FEEBD00A62832 /* AppDelegate.swift */; };
 		A17F1DED204FEEBD00A62832 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17F1DEC204FEEBD00A62832 /* ViewController.swift */; };
-		A17F1DF0204FEEBD00A62832 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A17F1DEE204FEEBD00A62832 /* Main.storyboard */; };
 		A17F1DF2204FEEBD00A62832 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A17F1DF1204FEEBD00A62832 /* Assets.xcassets */; };
 		A17F1DF5204FEEBD00A62832 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A17F1DF3204FEEBD00A62832 /* LaunchScreen.storyboard */; };
 		A1BF0FCF204FF2C90027965A /* Dog.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1BF0FCE204FF2C90027965A /* Dog.swift */; };
+		A1BF0FD1204FF4790027965A /* RealmObjectTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1BF0FD0204FF4790027965A /* RealmObjectTableViewController.swift */; };
+		A1BF0FD4204FF6B80027965A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A1BF0FD2204FF6B80027965A /* Main.storyboard */; };
+		A1BF0FD7204FF83C0027965A /* RealmObjectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1BF0FD6204FF83C0027965A /* RealmObjectViewController.swift */; };
+		A1BF0FDA205015550027965A /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1BF0FD9205015550027965A /* CloudKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		1769AE7D277E513F1961B85D /* Pods_IceCreamExample2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IceCreamExample2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C65B421B001D118F9061B7B /* Pods-IceCreamExample2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IceCreamExample2.release.xcconfig"; path = "Pods/Target Support Files/Pods-IceCreamExample2/Pods-IceCreamExample2.release.xcconfig"; sourceTree = "<group>"; };
 		A122B84D204FF0FB003F0CC0 /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
+		A1638ABB20501A2500E0684F /* CloudKitRecordTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitRecordTableViewController.swift; sourceTree = "<group>"; };
 		A17F1DE7204FEEBD00A62832 /* IceCreamExample2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IceCreamExample2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A17F1DEA204FEEBD00A62832 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A17F1DEC204FEEBD00A62832 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		A17F1DEF204FEEBD00A62832 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		A17F1DF1204FEEBD00A62832 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A17F1DF4204FEEBD00A62832 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A17F1DF6204FEEBD00A62832 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A1BF0FCE204FF2C90027965A /* Dog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dog.swift; sourceTree = "<group>"; };
+		A1BF0FD0204FF4790027965A /* RealmObjectTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmObjectTableViewController.swift; sourceTree = "<group>"; };
+		A1BF0FD3204FF6B80027965A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		A1BF0FD6204FF83C0027965A /* RealmObjectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmObjectViewController.swift; sourceTree = "<group>"; };
+		A1BF0FD82050142C0027965A /* IceCreamExample2.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = IceCreamExample2.entitlements; sourceTree = "<group>"; };
+		A1BF0FD9205015550027965A /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		B1F8A5928CAEC1941D91B9AC /* Pods-IceCreamExample2.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IceCreamExample2.debug.xcconfig"; path = "Pods/Target Support Files/Pods-IceCreamExample2/Pods-IceCreamExample2.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -38,6 +47,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00BCA2CA828E36E021934840 /* Pods_IceCreamExample2.framework in Frameworks */,
+				A1BF0FDA205015550027965A /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -47,6 +57,7 @@
 		0FCB58BA78C411B8461885BC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A1BF0FD9205015550027965A /* CloudKit.framework */,
 				1769AE7D277E513F1961B85D /* Pods_IceCreamExample2.framework */,
 			);
 			name = Frameworks;
@@ -59,6 +70,15 @@
 				8C65B421B001D118F9061B7B /* Pods-IceCreamExample2.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		A1638ABD20501A3200E0684F /* Table View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				A1638ABB20501A2500E0684F /* CloudKitRecordTableViewController.swift */,
+				A1BF0FD0204FF4790027965A /* RealmObjectTableViewController.swift */,
+			);
+			path = "Table View Controllers";
 			sourceTree = "<group>";
 		};
 		A17F1DDE204FEEBD00A62832 = {
@@ -83,10 +103,10 @@
 		A17F1DE9204FEEBD00A62832 /* IceCreamExample2 */ = {
 			isa = PBXGroup;
 			children = (
+				A1BF0FD82050142C0027965A /* IceCreamExample2.entitlements */,
+				A1BF0FD5204FF6C10027965A /* Storyboards */,
 				A1BF0FCD204FF2B00027965A /* Sources */,
-				A17F1DEE204FEEBD00A62832 /* Main.storyboard */,
 				A17F1DF1204FEEBD00A62832 /* Assets.xcassets */,
-				A17F1DF3204FEEBD00A62832 /* LaunchScreen.storyboard */,
 				A17F1DF6204FEEBD00A62832 /* Info.plist */,
 			);
 			path = IceCreamExample2;
@@ -95,11 +115,22 @@
 		A1BF0FCD204FF2B00027965A /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				A1BF0FCE204FF2C90027965A /* Dog.swift */,
 				A17F1DEA204FEEBD00A62832 /* AppDelegate.swift */,
+				A1BF0FCE204FF2C90027965A /* Dog.swift */,
 				A17F1DEC204FEEBD00A62832 /* ViewController.swift */,
+				A1BF0FD6204FF83C0027965A /* RealmObjectViewController.swift */,
+				A1638ABD20501A3200E0684F /* Table View Controllers */,
 			);
 			path = Sources;
+			sourceTree = "<group>";
+		};
+		A1BF0FD5204FF6C10027965A /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				A17F1DF3204FEEBD00A62832 /* LaunchScreen.storyboard */,
+				A1BF0FD2204FF6B80027965A /* Main.storyboard */,
+			);
+			path = Storyboards;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -138,6 +169,17 @@
 					A17F1DE6204FEEBD00A62832 = {
 						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.Push = {
+								enabled = 1;
+							};
+							com.apple.iCloud = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -167,7 +209,7 @@
 				A17F1DF5204FEEBD00A62832 /* LaunchScreen.storyboard in Resources */,
 				A17F1DF2204FEEBD00A62832 /* Assets.xcassets in Resources */,
 				A122B84E204FF0FB003F0CC0 /* Podfile in Resources */,
-				A17F1DF0204FEEBD00A62832 /* Main.storyboard in Resources */,
+				A1BF0FD4204FF6B80027965A /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -238,27 +280,30 @@
 			files = (
 				A17F1DED204FEEBD00A62832 /* ViewController.swift in Sources */,
 				A17F1DEB204FEEBD00A62832 /* AppDelegate.swift in Sources */,
+				A1BF0FD1204FF4790027965A /* RealmObjectTableViewController.swift in Sources */,
+				A1638ABC20501A2500E0684F /* CloudKitRecordTableViewController.swift in Sources */,
 				A1BF0FCF204FF2C90027965A /* Dog.swift in Sources */,
+				A1BF0FD7204FF83C0027965A /* RealmObjectViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		A17F1DEE204FEEBD00A62832 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				A17F1DEF204FEEBD00A62832 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		A17F1DF3204FEEBD00A62832 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				A17F1DF4204FEEBD00A62832 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		A1BF0FD2204FF6B80027965A /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A1BF0FD3204FF6B80027965A /* Base */,
+			);
+			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -376,6 +421,7 @@
 			baseConfigurationReference = B1F8A5928CAEC1941D91B9AC /* Pods-IceCreamExample2.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = IceCreamExample2/IceCreamExample2.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = LELYLPEANY;
 				INFOPLIST_FILE = IceCreamExample2/Info.plist;
@@ -392,6 +438,7 @@
 			baseConfigurationReference = 8C65B421B001D118F9061B7B /* Pods-IceCreamExample2.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = IceCreamExample2/IceCreamExample2.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = LELYLPEANY;
 				INFOPLIST_FILE = IceCreamExample2/Info.plist;
