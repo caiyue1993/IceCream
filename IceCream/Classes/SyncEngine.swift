@@ -36,7 +36,7 @@ public struct IceCreamConstant {
     public static let cloudKitSubscriptionID = "private_changes"
 }
 
-public final class SyncEngine<T: Object & CKRecordConvertible> {
+public final class SyncEngine<SyncedObjectType: Object & CKRecordConvertible> {
     
     /// Notifications are delivered as long as a reference is held to the returned notification token. You should keep a strong reference to this token on the class registering for updates, as notifications are automatically unregistered when the notification token is deallocated.
     /// For more, reference is here: https://realm.io/docs/swift/latest/#notifications
@@ -101,7 +101,7 @@ public final class SyncEngine<T: Object & CKRecordConvertible> {
 
     private func registerLocalDatabase() {
         Realm.query { realm in
-            let objects = realm.objects(T.self)
+            let objects = realm.objects(SyncedObjectType.self)
             notificationToken = objects.observe({ [weak self](changes) in
                 guard let `self` = self else { return }
                 
@@ -129,7 +129,7 @@ public final class SyncEngine<T: Object & CKRecordConvertible> {
     
     @objc func cleanUp() {
         do {
-            try Realm.purgeDeletedObjects(ofType: T.self, withoutNotifying: notificationToken)
+            try Realm.purgeDeletedObjects(ofType: SyncedObjectType.self, withoutNotifying: notificationToken)
         } catch {
             // Error handles here
         }
@@ -146,7 +146,7 @@ extension SyncEngine {
     
     // This method is commonly used when you want to push your datas to CloudKit manually
     // In most cases, you don't need this
-    public func syncObjectsToCloudKit(objectsToStore: [T], objectsToDelete: [T] = []) {
+    public func syncObjectsToCloudKit(objectsToStore: [CKRecordConvertible], objectsToDelete: [Object & CKRecordConvertible] = []) {
         guard objectsToStore.count > 0 || objectsToDelete.count > 0 else { return }
         
         let recordsToStore = objectsToStore.map{ $0.record }
@@ -158,7 +158,7 @@ extension SyncEngine {
             
             let realm = try! Realm()
             try! realm.write {
-                realm.delete(objectsToDelete)
+                realm.delete(objectsToDelete as [Object])
             }
             
             print("Completeed deletion of \(objectsToDelete.count) objects")
@@ -293,7 +293,7 @@ extension SyncEngine {
             /// The Cloud will return the modified record since the last zoneChangesToken, we need to do local cache here.
             /// Handle the record:
             guard let `self` = self else { return }
-            guard let object = CloudKitToObject.create(object: T.self, withRecord: record)  else {
+            guard let object = CloudKitToObject.create(object: SyncedObjectType.self, withRecord: record)  else {
                 print("There is something wrong with the conversion from cloud record to local object")
                 return
             }
@@ -318,7 +318,7 @@ extension SyncEngine {
             
             DispatchQueue.main.async {
                 let realm = try! Realm()
-                guard let object = realm.object(ofType: T.self, forPrimaryKey: recordId.recordName) else {
+                guard let object = realm.object(ofType: SyncedObjectType.self, forPrimaryKey: recordId.recordName) else {
                     // Not found in local
                     return
                 }
@@ -427,7 +427,7 @@ extension SyncEngine {
          */
         
         /// So I use the @Guilherme Rambo's plan: https://github.com/insidegui/NoteTaker
-        let subscription = CKQuerySubscription(recordType: T.recordType, predicate: NSPredicate(value: true), subscriptionID: IceCreamConstant.cloudKitSubscriptionID, options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion])
+        let subscription = CKQuerySubscription(recordType: SyncedObjectType.recordType, predicate: NSPredicate(value: true), subscriptionID: IceCreamConstant.cloudKitSubscriptionID, options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion])
         let notificationInfo = CKNotificationInfo()
         notificationInfo.shouldSendContentAvailable = true // Silent Push
         subscription.notificationInfo = notificationInfo
