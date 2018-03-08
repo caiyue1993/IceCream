@@ -17,14 +17,46 @@
                     <view key="view" contentMode="scaleToFill" id="Pud-RY-9Xu">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OrO-b6-GTO">
+                                <rect key="frame" x="0.0" y="20" width="375" height="598"/>
+                                <connections>
+                                    <segue destination="4P5-fQ-nnS" kind="embed" id="4hI-EV-3AG"/>
+                                </connections>
+                            </containerView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="CrE-lM-tTv" firstAttribute="trailing" secondItem="OrO-b6-GTO" secondAttribute="trailing" id="4IO-4E-iOs"/>
+                            <constraint firstItem="CrE-lM-tTv" firstAttribute="bottom" secondItem="OrO-b6-GTO" secondAttribute="bottom" id="fYH-9n-gHS"/>
+                            <constraint firstItem="OrO-b6-GTO" firstAttribute="top" secondItem="CrE-lM-tTv" secondAttribute="top" id="nQe-TX-qMd"/>
+                            <constraint firstItem="OrO-b6-GTO" firstAttribute="leading" secondItem="CrE-lM-tTv" secondAttribute="leading" id="txg-ix-BVy"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="CrE-lM-tTv"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="Private" id="0wa-V1-6YA"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZXV-JL-GeI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="26" y="287"/>
+            <point key="canvasLocation" x="24.800000000000001" y="286.50674662668666"/>
+        </scene>
+        <!--Cloud Kit Record Table View Controller-->
+        <scene sceneID="RZp-Ko-KG9">
+            <objects>
+                <tableViewController id="4P5-fQ-nnS" customClass="CloudKitRecordTableViewController" customModule="IceCreamExample2" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="paM-Kp-qqx">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="598"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <connections>
+                            <outlet property="dataSource" destination="4P5-fQ-nnS" id="MGW-Mu-Zse"/>
+                            <outlet property="delegate" destination="4P5-fQ-nnS" id="5hE-O9-EXu"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2RG-d5-bqy" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="923" y="242"/>
         </scene>
         <!--Realm Object View Controller-->
         <scene sceneID="59e-pW-VIJ">

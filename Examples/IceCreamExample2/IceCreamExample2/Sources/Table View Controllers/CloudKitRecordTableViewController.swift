@@ -12,6 +12,11 @@ import IceCream
 
 class CloudKitRecordTableViewController: UITableViewController {
 
+    private var records: [CKRecord] = []
+}
+
+extension CloudKitRecordTableViewController {
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -32,12 +37,10 @@ class CloudKitRecordTableViewController: UITableViewController {
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
         return numberOfSections
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
         return numberOfRows
     }
 
@@ -104,19 +107,68 @@ extension CloudKitRecordTableViewController {
     }
     
     var numberOfRows: Int {
-        return 0
+        return records.count
     }
     
     func setup() {
         
         startObservingRemoteChanges()
+        
+        fetchAll(recordType: "Dog")
     }
     
+     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = UITableViewCell()
+     
+        let row = indexPath.row
+        let record = records[row]
+        if let name = record.value(forKey: "name") as? String {
+            cell.textLabel?.text = name
+        }
+        
+        return cell
+     }
+
     private func startObservingRemoteChanges() {
         NotificationCenter.default.addObserver(forName: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, queue: OperationQueue.main, using: { [weak self](_) in
             guard self != nil else { return }
             
-            print("Change detected")
+            self?.fetchAll(recordType: "Dog")
+
         })
+    }
+    
+    private func fetchAll(recordType: String) {
+        self.fetchChanges(recordType: recordType) { records in
+            self.records = records
+            
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
+    }
+    
+    private func fetchChanges(recordType: String, fetchCompletionBlock fetchCompletedWith: @escaping ([CKRecord]) -> Void) {
+        let predicate = NSPredicate(value: true)
+        
+        var fetchedRecords: [CKRecord] = []
+        
+        let query = CKQuery(recordType: recordType, predicate: predicate)
+        
+        let op = CKQueryOperation(query: query)
+        
+        op.database = CKContainer.default().privateCloudDatabase
+        
+        op.recordFetchedBlock = { record in
+            fetchedRecords.append(record)
+        }
+        
+        op.queryCompletionBlock = { cursor, error in
+            guard error == nil else { return }
+            
+            fetchCompletedWith(fetchedRecords)
+        }
+        
+        OperationQueue.main.addOperation(op)
     }
 }
