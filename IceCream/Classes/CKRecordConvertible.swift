@@ -19,12 +19,9 @@ public protocol CKRecordConvertible {
     var isDeleted: Bool { get }
 }
 
-public protocol CKRecordRecoverable {
-    associatedtype O: Object
-}
-
-extension CKRecordRecoverable {
-    func parseFromRecord(record: CKRecord) -> O? {
+struct CloudKitToObject {
+    
+    static func create<O: Object>(object: O.Type, withRecord record: CKRecord) -> O? {
         let o = O()
         for prop in o.objectSchema.properties {
             var recordValue: Any?
@@ -54,6 +51,7 @@ extension CKRecordRecoverable {
             }
             o.setValue(recordValue, forKey: prop.name)
         }
+        
         return o
     }
 }
