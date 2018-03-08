@@ -151,7 +151,17 @@ extension SyncEngine {
         let recordsToStore = objectsToStore.map{ $0.record }
         let recordIDsToDelete = objectsToDelete.map{ $0.recordID }
         
-        self.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete)
+        self.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete) { error in
+            guard error == nil else { return }
+            guard !objectsToDelete.isEmpty else { return }
+            
+            let realm = try! Realm()
+            try! realm.write {
+                realm.delete(objectsToDelete)
+            }
+            
+            print("Completeed deletion of \(objectsToDelete.count) objects")
+        }
     }
 
 }

@@ -13,6 +13,9 @@ class RealmObjectTableViewController: UITableViewController {
 
     var dogs: Results<Dog>?
     var notificationToken: NotificationToken?
+}
+
+extension RealmObjectTableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,23 +37,11 @@ class RealmObjectTableViewController: UITableViewController {
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return numberOfSections
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dogs?.count ?? 0
-    }
-
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
-        let cell = UITableViewCell()
-
-        let row = indexPath.row
-        if let dog = dogs?[row] {
-            cell.textLabel?.text = dog.name
-        }
-
-        return cell
+        return numberOfRows
     }
 
     /*
@@ -61,17 +52,6 @@ class RealmObjectTableViewController: UITableViewController {
     }
     */
 
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
 
     /*
     // Override to support rearranging the table view.
@@ -101,6 +81,43 @@ class RealmObjectTableViewController: UITableViewController {
 }
 
 extension RealmObjectTableViewController {
+    
+    var numberOfSections: Int {
+        return 1
+    }
+    
+    var numberOfRows: Int {
+        return dogs?.count ?? 0
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell = UITableViewCell()
+        
+        let row = indexPath.row
+        if let dog = dogs?[row] {
+            cell.textLabel?.text = dog.name
+        }
+        
+        return cell
+    }
+
+     // Override to support editing the table view.
+     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            // Delete the row from the data source
+            let row = indexPath.row
+            if let dog = dogs?[row] {
+                let realm = try! Realm()
+                try! realm.write {
+                    dog.isDeleted = true
+                }
+            }
+        } else if editingStyle == .insert {
+            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+        }
+     }
+
     func setup() {
         let realm = try! Realm()
         
