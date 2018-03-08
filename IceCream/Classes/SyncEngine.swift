@@ -57,7 +57,7 @@ public final class SyncEngine<T: Object & CKRecordConvertible> {
             recordZone = CKRecordZone.default()
         } else {
             database = CKContainer.default().privateCloudDatabase
-            recordZone = CKRecordZone(zoneID: T.customZoneID)
+            recordZone = CKRecordZone(zoneID: CustomZone.id)
         }
         
         /// Check iCloud status so that we can go on

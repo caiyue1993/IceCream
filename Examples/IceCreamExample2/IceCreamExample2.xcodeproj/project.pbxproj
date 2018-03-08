@@ -24,7 +24,7 @@
 /* Begin PBXFileReference section */
 		1769AE7D277E513F1961B85D /* Pods_IceCreamExample2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IceCreamExample2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C65B421B001D118F9061B7B /* Pods-IceCreamExample2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IceCreamExample2.release.xcconfig"; path = "Pods/Target Support Files/Pods-IceCreamExample2/Pods-IceCreamExample2.release.xcconfig"; sourceTree = "<group>"; };
-		A122B84D204FF0FB003F0CC0 /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
+		A122B84D204FF0FB003F0CC0 /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		A1638ABB20501A2500E0684F /* CloudKitRecordTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitRecordTableViewController.swift; sourceTree = "<group>"; };
 		A17F1DE7204FEEBD00A62832 /* IceCreamExample2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IceCreamExample2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A17F1DEA204FEEBD00A62832 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };

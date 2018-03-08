@@ -11,7 +11,6 @@ import RealmSwift
 
 public protocol CKRecordConvertible {
     static var recordType: String { get }
-    static var customZoneID: CKRecordZoneID { get }
     
     var recordID: CKRecordID { get }
     var record: CKRecord { get }
@@ -56,14 +55,14 @@ struct CloudKitToObject {
     }
 }
 
+public struct CustomZone {
+    public static let id: CKRecordZoneID = CKRecordZoneID(zoneName: "IceCream", ownerName: CKCurrentUserDefaultName)
+}
+
 extension CKRecordConvertible where Self: Object {
     
     public static var recordType: String {
         return className()
-    }
-    
-    public static var customZoneID: CKRecordZoneID {
-        return CKRecordZoneID(zoneName: "IceCream", ownerName: CKCurrentUserDefaultName)
     }
     
     /// recordName : this is the unique identifier for the record, used to locate records on the database. We can create our own ID or leave it to CloudKit to generate a random UUID.
@@ -81,7 +80,7 @@ extension CKRecordConvertible where Self: Object {
         if self is StoredInPublicDatabase {
             zoneID = CKRecordZone.default().zoneID
         } else {
-            zoneID = Self.customZoneID
+            zoneID = CustomZone.id
         }
         
         if let primaryValueString = self[primaryKeyProperty.name] as? String {
