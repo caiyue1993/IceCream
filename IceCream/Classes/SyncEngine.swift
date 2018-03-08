@@ -100,35 +100,36 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
     /// For more: https://realm.io/docs/swift/latest/#writes
 
     private func registerLocalDatabase() {
-        let objects = Cream<T>().realm.objects(T.self)
-        notificationToken = objects.observe({ [weak self](changes) in
-            guard let `self` = self else { return }
-            
-            switch changes {
-            case .initial(let collection):
-                print("Inited:" + "\(collection)")
-                break
-            case .update(let collection, let deletions, let insertions, let modifications):
-                print("collections:" + "\(collection)")
-                print("deletions:" + "\(deletions)")
-                print("insertions:" + "\(insertions)")
-                print("modifications:" + "\(modifications)")
+        Realm.query { realm in
+            let objects = realm.objects(T.self)
+            notificationToken = objects.observe({ [weak self](changes) in
+                guard let `self` = self else { return }
                 
-                let objectsToStore = (insertions + modifications).filter { $0 < collection.count }.map { collection[$0] }.filter{ !$0.isDeleted }
-                let objectsToDelete = modifications.filter { $0 < collection.count }.map{ collection[$0] }.filter { $0.isDeleted }
-                
-                `self`.syncObjectsToCloudKit(objectsToStore: objectsToStore, objectsToDelete: objectsToDelete)
-                
-            case .error(_):
-                break
-            }
-        })
+                switch changes {
+                case .initial(let collection):
+                    print("Inited:" + "\(collection)")
+                    break
+                case .update(let collection, let deletions, let insertions, let modifications):
+                    print("collections:" + "\(collection)")
+                    print("deletions:" + "\(deletions)")
+                    print("insertions:" + "\(insertions)")
+                    print("modifications:" + "\(modifications)")
+                    
+                    let objectsToStore = (insertions + modifications).filter { $0 < collection.count }.map { collection[$0] }.filter{ !$0.isDeleted }
+                    let objectsToDelete = modifications.filter { $0 < collection.count }.map{ collection[$0] }.filter { $0.isDeleted }
+                    
+                    `self`.syncObjectsToCloudKit(objectsToStore: objectsToStore, objectsToDelete: objectsToDelete)
+                    
+                case .error(_):
+                    break
+                }
+            })
+        }
     }
     
     @objc func cleanUp() {
-        let cream = Cream<T>()
         do {
-            try cream.deletePreviousSoftDeleteObjects(notNotifying: notificationToken)
+            try Realm.purgeDeletedObjects(ofType: T.self, withoutNotifying: notificationToken)
         } catch {
             // Error handles here
         }
