@@ -55,9 +55,9 @@ struct CloudKitToObject {
     }
 }
 
-public struct CustomZone {
-    public static let id: CKRecordZoneID = CKRecordZoneID(zoneName: "IceCream", ownerName: CKCurrentUserDefaultName)
-}
+//public struct CustomZone {
+//    public static let id: CKRecordZoneID = CKRecordZoneID(zoneName: "IceCream", ownerName: CKCurrentUserDefaultName)
+//}
 
 extension CKRecordConvertible where Self: Object {
     
@@ -81,7 +81,7 @@ extension CKRecordConvertible where Self: Object {
         if self is StoredInPublicDatabase {
             zoneID = CKRecordZone.default().zoneID
         } else {
-            zoneID = CustomZone.id
+            zoneID = NewSyncEngine.customZoneID
         }
         
         if let primaryValueString = self[primaryKeyProperty.name] as? String {

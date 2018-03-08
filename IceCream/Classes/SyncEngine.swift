@@ -39,7 +39,12 @@ public struct IceCreamConstant {
 public final class SyncEngine<SyncedObjectType: Object & CKRecordConvertible> {
     private let syncEngine: NewSyncEngine
     
+
     public init(usePublicDatabase: Bool = false) {
+        let zoneName = "\(SyncedObjectType.className())sZone"
+        
+        NewSyncEngine.customZoneID = CKRecordZoneID(zoneName: zoneName, ownerName: CKCurrentUserDefaultName)
+        
         syncEngine = NewSyncEngine(objectType: SyncedObjectType.self, usePublicDatabase: usePublicDatabase)
     
         syncEngine.start()
@@ -50,6 +55,8 @@ public final class NewSyncEngine {
     
     private let objectType: Object.Type
     
+    public static var customZoneID: CKRecordZoneID = CKRecordZoneID(zoneName: "IceCream", ownerName: CKCurrentUserDefaultName)
+
     /// Notifications are delivered as long as a reference is held to the returned notification token. You should keep a strong reference to this token on the class registering for updates, as notifications are automatically unregistered when the notification token is deallocated.
     /// For more, reference is here: https://realm.io/docs/swift/latest/#notifications
     private var notificationToken: NotificationToken?
@@ -71,7 +78,7 @@ public final class NewSyncEngine {
             recordZone = CKRecordZone.default()
         } else {
             database = CKContainer.default().privateCloudDatabase
-            recordZone = CKRecordZone(zoneID: CustomZone.id)
+            recordZone = CKRecordZone(zoneID: NewSyncEngine.customZoneID)
         }
     }
     
