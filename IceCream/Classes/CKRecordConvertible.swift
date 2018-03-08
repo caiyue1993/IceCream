@@ -65,7 +65,7 @@ extension CKRecordConvertible where Self: Object {
     }
     
     public static var customZoneID: CKRecordZoneID {
-        return CKRecordZoneID(zoneName: "\(recordType)sZone", ownerName: CKCurrentUserDefaultName)
+        return CKRecordZoneID(zoneName: "IceCream", ownerName: CKCurrentUserDefaultName)
     }
     
     /// recordName : this is the unique identifier for the record, used to locate records on the database. We can create our own ID or leave it to CloudKit to generate a random UUID.
