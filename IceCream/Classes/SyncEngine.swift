@@ -75,9 +75,7 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
                 
                 `self`.resumeLongLivedOperationIfPossible()
                 
-                if (!`self`.isCustomZoneCreated) {
-                    `self`.createCustomZone()
-                }
+                `self`.createCustomZone()
                 
                 `self`.startObservingRemoteChanges()
                 
@@ -218,16 +216,6 @@ extension SyncEngine {
         }
     }
     */
-    
-    var isCustomZoneCreated: Bool {
-        get {
-            guard let flag = UserDefaults.standard.object(forKey: IceCreamKey.hasCustomZoneCreatedKey.value) as? Bool else { return false }
-            return flag
-        }
-        set {
-            UserDefaults.standard.set(newValue, forKey: IceCreamKey.hasCustomZoneCreatedKey.value)
-        }
-    }
     
     /// Only update the changeToken when fetch process completes
     private func fetchChangesInDatabase(_ callback: (() -> Void)? = nil) {
