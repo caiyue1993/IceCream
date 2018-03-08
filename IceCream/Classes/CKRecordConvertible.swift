@@ -21,7 +21,7 @@ public protocol CKRecordConvertible {
 struct CloudKitToObject {
     
     static func create<O: Object>(object: O.Type, withRecord record: CKRecord) -> O? {
-        let o = O()
+        let o = object.init()
         for prop in o.objectSchema.properties {
             var recordValue: Any?
             switch prop.type {
@@ -62,7 +62,8 @@ public struct CustomZone {
 extension CKRecordConvertible where Self: Object {
     
     public static var recordType: String {
-        return className()
+        let type = className()
+        return type
     }
     
     /// recordName : this is the unique identifier for the record, used to locate records on the database. We can create our own ID or leave it to CloudKit to generate a random UUID.
