@@ -8,6 +8,7 @@
 import Foundation
 import RealmSwift
 import CloudKit
+import Realm
 
 public enum Notifications: String, NotificationName {
     case cloudKitDataDidChangeRemotely
@@ -50,6 +51,68 @@ struct ObjectSyncInfo {
     var recordZoneID: CKRecordZoneID {
         return recordZone.zoneID
     }
+
+    var sharedSchema: RLMObjectSchema? {
+        return T.sharedSchema()
+    }
+    
+    func recordID(of object: Object & CKRecordConvertible) -> CKRecordID {
+        guard let sharedSchema = sharedSchema else {
+            fatalError("No schema settled. Go to Realm Community to seek more help.")
+        }
+        
+        guard let primaryKeyProperty = sharedSchema.primaryKeyProperty else {
+            fatalError("You should set a primary key on your Realm object")
+        }
+        
+        //        guard let zoneID: CKRecordZoneID = ObjectSyncEngine.zoneID(forRecordType: Self.recordType) else {
+        //            fatalError("\(Self.recordType) has not been registered for syncing.")
+        //        }
+        
+        //        if self is StoredInPublicDatabase {
+        //            zoneID = CKRecordZone.default().zoneID
+        //        } else {
+        //            zoneID = NewSyncEngine.customZoneID
+        //        }
+        
+        if let primaryValueString = object[primaryKeyProperty.name] as? String {
+            return CKRecordID(recordName: primaryValueString, zoneID: recordZoneID)
+        } else if let primaryValueInt = object[primaryKeyProperty.name] as? Int {
+            return CKRecordID(recordName: "\(primaryValueInt)", zoneID: recordZoneID)
+        } else {
+            fatalError("Primary key should be String or Int")
+        }
+    }
+    
+    // Simultaneously init CKRecord with zoneID and recordID, thanks to this guy: https://stackoverflow.com/questions/45429133/how-to-initialize-ckrecord-with-both-zoneid-and-recordid
+    func cloudKitRecord(from object: Object & CKRecordConvertible) -> CKRecord {
+        let recordID = self.recordID(of: object)
+        let objectSchema = sharedSchema!
+        
+        let r = CKRecord(recordType: name, recordID: recordID)
+        let properties = objectSchema.properties
+        for prop in properties {
+            switch prop.type {
+            case .int, .string, .bool, .date, .float, .double, .data:
+                r[prop.name] = object[prop.name] as? CKRecordValue
+            case .object:
+                guard let objectName = prop.objectClassName else { break }
+                if objectName == CreamAsset.className() {
+                    if let creamAsset = object[prop.name] as? CreamAsset {
+                        r[prop.name] = creamAsset.asset
+                    } else {
+                        /// Just a warm hint:
+                        /// When we set nil to the property of a CKRecord, that record's property will be hidden in the CloudKit Dashboard
+                        r[prop.name] = nil
+                    }
+                }
+            default:
+                break
+            }
+            
+        }
+        return r
+    }
 }
 
 /// Dangerous part:
@@ -66,9 +129,6 @@ public final class SyncEngine<SyncedObjectType: Object & CKRecordConvertible> {
     
 
     public init(usePublicDatabase: Bool = false) {
-//        let zoneName = "\(SyncedObjectType.className())sZone"
-        
-//        NewSyncEngine.customZoneID = CKRecordZoneID(zoneName: zoneName, ownerName: CKCurrentUserDefaultName)
         
         syncEngine = ObjectSyncEngine(objectType: SyncedObjectType.self)
     
@@ -78,15 +138,22 @@ public final class SyncEngine<SyncedObjectType: Object & CKRecordConvertible> {
 
 public final class ObjectSyncEngine {
     
-    private static var syncedObjects: [String : ObjectSyncInfo] = [:]
+    private lazy var syncedObjects: [String : ObjectSyncInfo] = {
+        var syncedObjects = [String: ObjectSyncInfo]()
+        self.objectSyncInfos.forEach {
+            syncedObjects[$0.name] = $0
+        }
+        
+        return syncedObjects
+    }()
     
-    public static func zoneID(forRecordType recordType: String) -> CKRecordZoneID? {
-        let zoneID = ObjectSyncEngine.syncedObjects[recordType]?.recordZoneID
+    public func zoneID(forRecordType recordType: String) -> CKRecordZoneID? {
+        let zoneID = syncedObjects[recordType]?.recordZoneID
         
         return zoneID
     }
     
-    public static func handleRemoteNotification(userInfo: [AnyHashable : Any]) -> Bool {
+    public func handleRemoteNotification(userInfo: [AnyHashable : Any]) -> Bool {
         let notification = CKNotification(fromRemoteNotificationDictionary: userInfo)
 
         if syncedObjects.contains(where: { (_ , object) in return object.cloudKitSubscriptionID == notification.subscriptionID}) {
@@ -98,7 +165,12 @@ public final class ObjectSyncEngine {
         }
     }
     
-    private let objectSyncInfo: ObjectSyncInfo
+    private let objectSyncInfos: [ObjectSyncInfo]
+    
+    private var objectSyncInfo: ObjectSyncInfo {
+        return objectSyncInfos.first!
+    }
+
     
 //    public static var customZoneID: CKRecordZoneID = CKRecordZoneID(zoneName: "IceCream", ownerName: CKCurrentUserDefaultName)
 
@@ -108,10 +180,6 @@ public final class ObjectSyncEngine {
     
 //    fileprivate var changedRecordZoneID: CKRecordZoneID?
     
-    /// Indicates the database in default container
-//    private let database: CKDatabase
-//    private let recordZone: CKRecordZone
-    
     private let errorHandler = ErrorHandler()
     
     /// We recommand process the initialization when app launches
@@ -119,14 +187,13 @@ public final class ObjectSyncEngine {
         let zoneName = "\(objectType.className())sZone"
         let recordZoneID = CKRecordZoneID(zoneName: zoneName, ownerName: CKCurrentUserDefaultName)
         
-        self.objectSyncInfo = ObjectSyncInfo(objectType: objectType,
+        self.objectSyncInfos = [ObjectSyncInfo(objectType: objectType,
                                              subscriptionIsLocallyCachedKey: IceCreamKey.subscriptionIsLocallyCachedKey.value,
                                              recordZone: CKRecordZone(zoneID: recordZoneID),
                                              database: CKContainer.default().privateCloudDatabase,
-                                             cloudKitSubscriptionID: "private_changes")
+                                             cloudKitSubscriptionID: "private_changes")]
         
-        ObjectSyncEngine.syncedObjects[self.objectSyncInfo.name] = self.objectSyncInfo
-        
+
 //        if usePublicDatabase {
 //            database = CKContainer.default().publicCloudDatabase
 //            recordZone = CKRecordZone.default()
@@ -137,9 +204,12 @@ public final class ObjectSyncEngine {
 //
 //
 //        }
+        print("Remember to start() the engine!")
     }
     
-    func start() {
+    public func start() {
+        print("Object Sync Engine started.")
+        
         /// Check iCloud status so that we can go on
         CKContainer.default().accountStatus { [weak self] (status, error) in
             if status == CKAccountStatus.available {
@@ -200,7 +270,7 @@ public final class ObjectSyncEngine {
                     
                     let objectsToStore = (insertions + modifications)
                         .filter { $0 < collection.count }
-                        .map { i -> CKRecordConvertible? in return collection[i] as? CKRecordConvertible }
+                        .map { i -> (Object & CKRecordConvertible)? in return collection[i] as? Object & CKRecordConvertible }
                         .filter { $0 != nil }.map { $0! }
                         .filter{ !$0.isDeleted }
                     
@@ -238,11 +308,11 @@ extension ObjectSyncEngine {
     
     // This method is commonly used when you want to push your datas to CloudKit manually
     // In most cases, you don't need this
-    public func syncObjectsToCloudKit(objectsToStore: [CKRecordConvertible], objectsToDelete: [Object & CKRecordConvertible] = []) {
+    public func syncObjectsToCloudKit(objectsToStore: [Object & CKRecordConvertible], objectsToDelete: [Object & CKRecordConvertible] = []) {
         guard objectsToStore.count > 0 || objectsToDelete.count > 0 else { return }
         
-        let recordsToStore = objectsToStore.map{ $0.record }
-        let recordIDsToDelete = objectsToDelete.map{ $0.recordID }
+        let recordsToStore = objectsToStore.map{ self.objectSyncInfo.cloudKitRecord(from: $0) }
+        let recordIDsToDelete = objectsToDelete.map{ self.objectSyncInfo.recordID(of: $0) }
         
         self.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete) { error in
             guard error == nil else { return }
@@ -256,7 +326,6 @@ extension ObjectSyncEngine {
             print("Completeed deletion of \(objectsToDelete.count) objects")
         }
     }
-
 }
 
 /// Chat to the CloudKit API directly

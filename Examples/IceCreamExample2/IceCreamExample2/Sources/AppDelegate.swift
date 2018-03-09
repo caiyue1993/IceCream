@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-    var syncEngine: SyncEngine<Dog>?
+    var syncEngine: ObjectSyncEngine?
 }
 
 extension AppDelegate {
@@ -55,9 +55,11 @@ extension AppDelegate {
 
 extension AppDelegate {
     func setup(application: UIApplication) {
-        syncEngine = SyncEngine<Dog>()
-        
+        syncEngine = ObjectSyncEngine(objectType: Dog.self)
+        syncEngine?.start()
+
         application.registerForRemoteNotifications()
+        
     }
     
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
@@ -70,7 +72,7 @@ extension AppDelegate {
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
 
-        _ = ObjectSyncEngine.handleRemoteNotification(userInfo: userInfo)
+        _ = syncEngine?.handleRemoteNotification(userInfo: userInfo)
         
         completionHandler(.newData)
     }
