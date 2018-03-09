@@ -72,7 +72,7 @@ extension AppDelegate {
 
         let notification = CKNotification(fromRemoteNotificationDictionary: userInfo)
         
-        if (notification.subscriptionID == IceCreamConstant.cloudKitSubscriptionID) {
+        if let id = notification.subscriptionID, NewSyncEngine.isHandling(subscriptionID: id) {
             NotificationCenter.default.post(name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, userInfo: userInfo)
         }
         

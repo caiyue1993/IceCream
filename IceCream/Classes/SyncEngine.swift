@@ -20,10 +20,35 @@ public enum IceCreamKey: String {
     
     /// Flags
     case subscriptionIsLocallyCachedKey
-    case hasCustomZoneCreatedKey
     
     public var value: String {
         return "icecream.keys." + rawValue
+    }
+}
+
+struct ObjectSyncInfo {
+    let objectType: Object.Type
+    let subscriptionIsLocallyCachedKey: String
+    let recordZone: CKRecordZone
+    let database: CKDatabase
+
+    /// Dangerous part:
+    /// In most cases, you should not change the string value cause it is related to user settings.
+    /// e.g.: the cloudKitSubscriptionID, if you don't want to use "private_changes" and use another string. You should remove the old subsription first.
+    /// Or your user will not save the same subscription again. So you got trouble.
+    /// The right way is remove old subscription first and then save new subscription.
+    let cloudKitSubscriptionID: String
+    
+    var name: String {
+        return objectType.className()
+    }
+    
+    var T: Object.Type {
+        return objectType.self
+    }
+    
+    var recordZoneID: CKRecordZoneID {
+        return recordZone.zoneID
     }
 }
 
@@ -32,20 +57,20 @@ public enum IceCreamKey: String {
 /// e.g.: the cloudKitSubscriptionID, if you don't want to use "private_changes" and use another string. You should remove the old subsription first.
 /// Or your user will not save the same subscription again. So you got trouble.
 /// The right way is remove old subscription first and then save new subscription.
-public struct IceCreamConstant {
-    public static let cloudKitSubscriptionID = "private_changes"
-}
+//public struct IceCreamConstant {
+//    public static let cloudKitSubscriptionID = "private_changes"
+//}
 
 public final class SyncEngine<SyncedObjectType: Object & CKRecordConvertible> {
     private let syncEngine: NewSyncEngine
     
 
     public init(usePublicDatabase: Bool = false) {
-        let zoneName = "\(SyncedObjectType.className())sZone"
+//        let zoneName = "\(SyncedObjectType.className())sZone"
         
-        NewSyncEngine.customZoneID = CKRecordZoneID(zoneName: zoneName, ownerName: CKCurrentUserDefaultName)
+//        NewSyncEngine.customZoneID = CKRecordZoneID(zoneName: zoneName, ownerName: CKCurrentUserDefaultName)
         
-        syncEngine = NewSyncEngine(objectType: SyncedObjectType.self, usePublicDatabase: usePublicDatabase)
+        syncEngine = NewSyncEngine(objectType: SyncedObjectType.self)
     
         syncEngine.start()
     }
@@ -53,9 +78,30 @@ public final class SyncEngine<SyncedObjectType: Object & CKRecordConvertible> {
 
 public final class NewSyncEngine {
     
-    private let objectType: Object.Type
+    private static var syncedObjects: [String : ObjectSyncInfo] = [:]
     
-    public static var customZoneID: CKRecordZoneID = CKRecordZoneID(zoneName: "IceCream", ownerName: CKCurrentUserDefaultName)
+    public static func zoneID(forRecordType recordType: String) -> CKRecordZoneID? {
+        let zoneID = NewSyncEngine.syncedObjects[recordType]?.recordZoneID
+        
+        return zoneID
+    }
+    
+    public static func isHandling(subscriptionID: String) -> Bool {
+        var result = false
+        
+        for (_, object) in syncedObjects {
+            if object.cloudKitSubscriptionID == subscriptionID {
+                result = true
+                break
+            }
+        }
+        
+        return result
+    }
+    
+    private let objectSyncInfo: ObjectSyncInfo
+    
+//    public static var customZoneID: CKRecordZoneID = CKRecordZoneID(zoneName: "IceCream", ownerName: CKCurrentUserDefaultName)
 
     /// Notifications are delivered as long as a reference is held to the returned notification token. You should keep a strong reference to this token on the class registering for updates, as notifications are automatically unregistered when the notification token is deallocated.
     /// For more, reference is here: https://realm.io/docs/swift/latest/#notifications
@@ -64,22 +110,34 @@ public final class NewSyncEngine {
 //    fileprivate var changedRecordZoneID: CKRecordZoneID?
     
     /// Indicates the database in default container
-    private let database: CKDatabase
-    private let recordZone: CKRecordZone
+//    private let database: CKDatabase
+//    private let recordZone: CKRecordZone
     
     private let errorHandler = ErrorHandler()
     
     /// We recommand process the initialization when app launches
-    public init(objectType: Object.Type, usePublicDatabase: Bool = false) {
-        self.objectType = objectType
+    public init(objectType: Object.Type) {
+        let zoneName = "\(objectType.className())sZone"
+        let recordZoneID = CKRecordZoneID(zoneName: zoneName, ownerName: CKCurrentUserDefaultName)
         
-        if usePublicDatabase {
-            database = CKContainer.default().publicCloudDatabase
-            recordZone = CKRecordZone.default()
-        } else {
-            database = CKContainer.default().privateCloudDatabase
-            recordZone = CKRecordZone(zoneID: NewSyncEngine.customZoneID)
-        }
+        self.objectSyncInfo = ObjectSyncInfo(objectType: objectType,
+                                             subscriptionIsLocallyCachedKey: IceCreamKey.subscriptionIsLocallyCachedKey.value,
+                                             recordZone: CKRecordZone(zoneID: recordZoneID),
+                                             database: CKContainer.default().privateCloudDatabase,
+                                             cloudKitSubscriptionID: "private_changes")
+        
+        NewSyncEngine.syncedObjects[self.objectSyncInfo.name] = self.objectSyncInfo
+        
+//        if usePublicDatabase {
+//            database = CKContainer.default().publicCloudDatabase
+//            recordZone = CKRecordZone.default()
+//        } else {
+//            database = CKContainer.default().privateCloudDatabase
+//            recordZone = CKRecordZone(zoneID: NewSyncEngine.customZoneID)
+//
+//
+//
+//        }
     }
     
     func start() {
@@ -113,7 +171,7 @@ public final class NewSyncEngine {
                 NotificationCenter.default.addObserver(weakSelf, selector: #selector(weakSelf.cleanUp), name: .UIApplicationWillTerminate, object: nil)
                 
                 if weakSelf.subscriptionIsLocallyCached { return }
-                weakSelf.createDatabaseSubscription(forType: weakSelf.objectType.className())
+                weakSelf.createDatabaseSubscription(forType: weakSelf.objectSyncInfo.name)
                 
             } else {
                 /// Handle when user account is not available
@@ -127,7 +185,7 @@ public final class NewSyncEngine {
 
     private func registerLocalDatabase() {
         Realm.query { realm in
-            let objects = realm.objects(objectType.self)
+            let objects = realm.objects(objectSyncInfo.T)
             notificationToken = objects.observe({ [weak self](changes) in
                 guard let `self` = self else { return }
                 
@@ -164,7 +222,7 @@ public final class NewSyncEngine {
     
     @objc func cleanUp() {
         do {
-            try Realm.purgeDeletedObjects(ofType: objectType.self as Object.Type, withoutNotifying: notificationToken)
+            try Realm.purgeDeletedObjects(ofType: objectSyncInfo.T, withoutNotifying: notificationToken)
         } catch {
             // Error handles here
         }
@@ -309,7 +367,7 @@ extension NewSyncEngine {
                 return
             }
         }
-        database.add(changesOperation)
+        objectSyncInfo.database.add(changesOperation)
     }
     
     private func fetchChangesInZone(_ callback: (() -> Void)? = nil) {
@@ -317,7 +375,7 @@ extension NewSyncEngine {
         let zoneChangesOptions = CKFetchRecordZoneChangesOptions()
         zoneChangesOptions.previousServerChangeToken = zoneChangesToken
         
-        let changesOp = CKFetchRecordZoneChangesOperation(recordZoneIDs: [recordZone.zoneID], optionsByRecordZoneID: [recordZone.zoneID: zoneChangesOptions])
+        let changesOp = CKFetchRecordZoneChangesOperation(recordZoneIDs: [objectSyncInfo.recordZoneID], optionsByRecordZoneID: [objectSyncInfo.recordZoneID: zoneChangesOptions])
         changesOp.fetchAllChanges = true
         
         changesOp.recordZoneChangeTokensUpdatedBlock = { _, token, _ in
@@ -328,7 +386,7 @@ extension NewSyncEngine {
             /// The Cloud will return the modified record since the last zoneChangesToken, we need to do local cache here.
             /// Handle the record:
             guard let `self` = self else { return }
-            guard let object = CloudKitToObject.create(object: self.objectType.self, withRecord: record) else {
+            guard let object = CloudKitToObject.object(ofType: self.objectSyncInfo.T, withRecord: record) else {
                 print("There is something wrong with the conversion from cloud record to local object")
                 return
             }
@@ -353,7 +411,7 @@ extension NewSyncEngine {
             
             DispatchQueue.main.async {
                 let realm = try! Realm()
-                guard let object = realm.object(ofType: self.objectType.self, forPrimaryKey: recordId.recordName) else {
+                guard let object = realm.object(ofType: self.objectSyncInfo.T, forPrimaryKey: recordId.recordName) else {
                     // Not found in local
                     return
                 }
@@ -393,14 +451,14 @@ extension NewSyncEngine {
             }
         }
         
-        database.add(changesOp)
+        objectSyncInfo.database.add(changesOp)
     }
  
     
     /// Create new custom zones
     /// You can(but you shouldn't) invoke this method more times, but the CloudKit is smart and will handle that for you
     fileprivate func createCustomZone(_ completion: ((Error?) -> ())? = nil) {
-        let newCustomZone = CKRecordZone(zoneID: recordZone.zoneID)
+        let newCustomZone = CKRecordZone(zoneID: objectSyncInfo.recordZoneID)
         let modifyOp = CKModifyRecordZonesOperation(recordZonesToSave: [newCustomZone], recordZoneIDsToDelete: nil)
         modifyOp.modifyRecordZonesCompletionBlock = { [weak self](_, _, error) in
             guard let `self` = self else { return }
@@ -418,7 +476,7 @@ extension NewSyncEngine {
             }
         }
         
-        database.add(modifyOp)
+        objectSyncInfo.database.add(modifyOp)
     }
  
     /// Check if custom zone already exists
@@ -462,12 +520,12 @@ extension NewSyncEngine {
          */
         
         /// So I use the @Guilherme Rambo's plan: https://github.com/insidegui/NoteTaker
-        let subscription = CKQuerySubscription(recordType: recordType, predicate: NSPredicate(value: true), subscriptionID: IceCreamConstant.cloudKitSubscriptionID, options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion])
+        let subscription = CKQuerySubscription(recordType: recordType, predicate: NSPredicate(value: true), subscriptionID: objectSyncInfo.cloudKitSubscriptionID, options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion])
         let notificationInfo = CKNotificationInfo()
         notificationInfo.shouldSendContentAvailable = true // Silent Push
         subscription.notificationInfo = notificationInfo
         
-        database.save(subscription) { [weak self](_, error) in
+        objectSyncInfo.database.save(subscription) { [weak self](_, error) in
             guard let `self` = self else { return }
             switch `self`.errorHandler.resultType(with: error) {
             case .success:
@@ -528,7 +586,7 @@ extension NewSyncEngine {
                     /// which often happen when users first launch your app.
                     /// So, we put the subscription process here when we sure there is a record type in CloudKit.
                     if `self`.subscriptionIsLocallyCached { return }
-                    `self`.createDatabaseSubscription(forType: `self`.objectType.className())
+                    `self`.createDatabaseSubscription(forType: `self`.objectSyncInfo.name)
                 }
             case .retry(let timeToWait, _):
                 `self`.errorHandler.retryOperationIfPossible(retryAfter: timeToWait) {
@@ -546,7 +604,7 @@ extension NewSyncEngine {
             }
         }
         
-        database.add(modifyOpe)
+        objectSyncInfo.database.add(modifyOpe)
     }
 }
 

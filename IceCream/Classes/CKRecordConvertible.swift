@@ -20,8 +20,8 @@ public protocol CKRecordConvertible {
 
 struct CloudKitToObject {
     
-    static func create<O: Object>(object: O.Type, withRecord record: CKRecord) -> O? {
-        let o = object.init()
+    static func object<O: Object>(ofType: O.Type, withRecord record: CKRecord) -> O? {
+        let o = ofType.init()
         for prop in o.objectSchema.properties {
             var recordValue: Any?
             switch prop.type {
@@ -77,12 +77,15 @@ extension CKRecordConvertible where Self: Object {
             fatalError("You should set a primary key on your Realm object")
         }
         
-        let zoneID: CKRecordZoneID
-        if self is StoredInPublicDatabase {
-            zoneID = CKRecordZone.default().zoneID
-        } else {
-            zoneID = NewSyncEngine.customZoneID
+        guard let zoneID: CKRecordZoneID = NewSyncEngine.zoneID(forRecordType: Self.recordType) else {
+            fatalError("\(Self.recordType) has not been registered for syncing.")
         }
+        
+//        if self is StoredInPublicDatabase {
+//            zoneID = CKRecordZone.default().zoneID
+//        } else {
+//            zoneID = NewSyncEngine.customZoneID
+//        }
         
         if let primaryValueString = self[primaryKeyProperty.name] as? String {
             return CKRecordID(recordName: primaryValueString, zoneID: zoneID)
