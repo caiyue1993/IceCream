@@ -11,11 +11,7 @@ import RealmSwift
 import Realm
 
 public protocol CKRecordConvertible {
-//    static var recordType: String { get }
-    
-//    var recordID: CKRecordID { get }
-//    var record: CKRecord { get }
-    
+
     var isDeleted: Bool { get }
 }
 
@@ -54,77 +50,6 @@ struct CloudKitToObject {
         
         return o
     }
-}
-
-//public struct CustomZone {
-//    public static let id: CKRecordZoneID = CKRecordZoneID(zoneName: "IceCream", ownerName: CKCurrentUserDefaultName)
-//}
-
-extension CKRecordConvertible where Self: Object {
-    
-//    public static var recordType: String {
-//        let type = className()
-//        return type
-//    }
-    
-
-    /// recordName : this is the unique identifier for the record, used to locate records on the database. We can create our own ID or leave it to CloudKit to generate a random UUID.
-    /// For more: https://medium.com/@guilhermerambo/synchronizing-data-with-cloudkit-94c6246a3fda
-//    public var recordID: CKRecordID {
-//        guard let sharedSchema = Self.sharedSchema() else {
-//            fatalError("No schema settled. Go to Realm Community to seek more help.")
-//        }
-//        
-//        guard let primaryKeyProperty = sharedSchema.primaryKeyProperty else {
-//            fatalError("You should set a primary key on your Realm object")
-//        }
-//        
-//        guard let zoneID: CKRecordZoneID = ObjectSyncEngine.zoneID(forRecordType: Self.recordType) else {
-//            fatalError("\(Self.recordType) has not been registered for syncing.")
-//        }
-//
-////        if self is StoredInPublicDatabase {
-////            zoneID = CKRecordZone.default().zoneID
-////        } else {
-////            zoneID = NewSyncEngine.customZoneID
-////        }
-//
-//        if let primaryValueString = self[primaryKeyProperty.name] as? String {
-//            return CKRecordID(recordName: primaryValueString, zoneID: zoneID)
-//        } else if let primaryValueInt = self[primaryKeyProperty.name] as? Int {
-//            return CKRecordID(recordName: "\(primaryValueInt)", zoneID: zoneID)
-//        } else {
-//            fatalError("Primary key should be String or Int")
-//        }
-//    }
-    
-//    // Simultaneously init CKRecord with zoneID and recordID, thanks to this guy: https://stackoverflow.com/questions/45429133/how-to-initialize-ckrecord-with-both-zoneid-and-recordid
-//    public var record: CKRecord {
-//        let r = CKRecord(recordType: Self.recordType, recordID: recordID)
-//        let properties = objectSchema.properties
-//        for prop in properties {
-//            switch prop.type {
-//            case .int, .string, .bool, .date, .float, .double, .data:
-//                r[prop.name] = self[prop.name] as? CKRecordValue
-//            case .object:
-//                guard let objectName = prop.objectClassName else { break }
-//                if objectName == CreamAsset.className() {
-//                    if let creamAsset = self[prop.name] as? CreamAsset {
-//                        r[prop.name] = creamAsset.asset
-//                    } else {
-//                        /// Just a warm hint:
-//                        /// When we set nil to the property of a CKRecord, that record's property will be hidden in the CloudKit Dashboard
-//                        r[prop.name] = nil
-//                    }
-//                }
-//            default:
-//                break
-//            }
-//
-//        }
-//        return r
-//    }
-    
 }
 
 public protocol StoredInPublicDatabase {
