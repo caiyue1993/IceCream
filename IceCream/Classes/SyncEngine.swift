@@ -87,21 +87,15 @@ public final class ObjectSyncEngine {
     }
     
     public static func handleRemoteNotification(userInfo: [AnyHashable : Any]) -> Bool {
-        var result = false
-        
-        for (_, object) in syncedObjects {
-            let notification = CKNotification(fromRemoteNotificationDictionary: userInfo)
-            
-            if object.cloudKitSubscriptionID == notification.subscriptionID {
+        let notification = CKNotification(fromRemoteNotificationDictionary: userInfo)
 
-                NotificationCenter.default.post(name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, userInfo: userInfo)
-                
-                result = true
-                break
-            }
+        if syncedObjects.contains(where: { (_ , object) in return object.cloudKitSubscriptionID == notification.subscriptionID}) {
+            NotificationCenter.default.post(name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, userInfo: userInfo)
+    
+            return true
+        } else {
+            return false
         }
-        
-        return result
     }
     
     private let objectSyncInfo: ObjectSyncInfo
