@@ -70,11 +70,7 @@ extension AppDelegate {
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
 
-        let notification = CKNotification(fromRemoteNotificationDictionary: userInfo)
-        
-        if let id = notification.subscriptionID, NewSyncEngine.isHandling(subscriptionID: id) {
-            NotificationCenter.default.post(name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, userInfo: userInfo)
-        }
+        _ = ObjectSyncEngine.handleRemoteNotification(userInfo: userInfo)
         
         completionHandler(.newData)
     }

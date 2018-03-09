@@ -77,7 +77,7 @@ extension CKRecordConvertible where Self: Object {
             fatalError("You should set a primary key on your Realm object")
         }
         
-        guard let zoneID: CKRecordZoneID = NewSyncEngine.zoneID(forRecordType: Self.recordType) else {
+        guard let zoneID: CKRecordZoneID = ObjectSyncEngine.zoneID(forRecordType: Self.recordType) else {
             fatalError("\(Self.recordType) has not been registered for syncing.")
         }
         

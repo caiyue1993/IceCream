@@ -62,7 +62,7 @@ struct ObjectSyncInfo {
 //}
 
 public final class SyncEngine<SyncedObjectType: Object & CKRecordConvertible> {
-    private let syncEngine: NewSyncEngine
+    private let syncEngine: ObjectSyncEngine
     
 
     public init(usePublicDatabase: Bool = false) {
@@ -70,27 +70,32 @@ public final class SyncEngine<SyncedObjectType: Object & CKRecordConvertible> {
         
 //        NewSyncEngine.customZoneID = CKRecordZoneID(zoneName: zoneName, ownerName: CKCurrentUserDefaultName)
         
-        syncEngine = NewSyncEngine(objectType: SyncedObjectType.self)
+        syncEngine = ObjectSyncEngine(objectType: SyncedObjectType.self)
     
         syncEngine.start()
     }
 }
 
-public final class NewSyncEngine {
+public final class ObjectSyncEngine {
     
     private static var syncedObjects: [String : ObjectSyncInfo] = [:]
     
     public static func zoneID(forRecordType recordType: String) -> CKRecordZoneID? {
-        let zoneID = NewSyncEngine.syncedObjects[recordType]?.recordZoneID
+        let zoneID = ObjectSyncEngine.syncedObjects[recordType]?.recordZoneID
         
         return zoneID
     }
     
-    public static func isHandling(subscriptionID: String) -> Bool {
+    public static func handleRemoteNotification(userInfo: [AnyHashable : Any]) -> Bool {
         var result = false
         
         for (_, object) in syncedObjects {
-            if object.cloudKitSubscriptionID == subscriptionID {
+            let notification = CKNotification(fromRemoteNotificationDictionary: userInfo)
+            
+            if object.cloudKitSubscriptionID == notification.subscriptionID {
+
+                NotificationCenter.default.post(name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, userInfo: userInfo)
+                
                 result = true
                 break
             }
@@ -126,7 +131,7 @@ public final class NewSyncEngine {
                                              database: CKContainer.default().privateCloudDatabase,
                                              cloudKitSubscriptionID: "private_changes")
         
-        NewSyncEngine.syncedObjects[self.objectSyncInfo.name] = self.objectSyncInfo
+        ObjectSyncEngine.syncedObjects[self.objectSyncInfo.name] = self.objectSyncInfo
         
 //        if usePublicDatabase {
 //            database = CKContainer.default().publicCloudDatabase
@@ -230,7 +235,7 @@ public final class NewSyncEngine {
 }
 
 /// Public Methods
-extension NewSyncEngine {
+extension ObjectSyncEngine {
     
     // Manually sync data with CloudKit
     public func sync() {
@@ -261,7 +266,7 @@ extension NewSyncEngine {
 }
 
 /// Chat to the CloudKit API directly
-extension NewSyncEngine {
+extension ObjectSyncEngine {
     
     /// The changes token, for more please reference to https://developer.apple.com/videos/play/wwdc2016/231/
     var databaseChangeToken: CKServerChangeToken? {
@@ -609,7 +614,7 @@ extension NewSyncEngine {
 }
 
 /// Long-lived Manipulation
-extension NewSyncEngine {
+extension ObjectSyncEngine {
     /// The CloudKit Best Practice is out of date, now use this:
     /// https://developer.apple.com/documentation/cloudkit/ckoperation
     /// Which problem does this func solve? E.g.:
