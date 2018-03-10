@@ -10,9 +10,9 @@ import RealmSwift
 import CloudKit
 import Realm
 
-struct ObjectSyncInfo {
+public struct ObjectSyncInfo {
     let objectType: Object.Type
-    let subscriptionIsLocallyCachedKey: String
+//    let subscriptionIsLocallyCachedKey: String
 
     var databaseZone: DatabaseZone
     
@@ -21,7 +21,7 @@ struct ObjectSyncInfo {
     /// e.g.: the cloudKitSubscriptionID, if you don't want to use "private_changes" and use another string. You should remove the old subsription first.
     /// Or your user will not save the same subscription again. So you got trouble.
     /// The right way is remove old subscription first and then save new subscription.
-    let cloudKitSubscriptionID: String
+//    let cloudKitSubscriptionID: String
     
     var name: String {
         return objectType.className()
@@ -101,11 +101,11 @@ struct ObjectSyncInfo {
         return r
     }
     
-    init(objectType: Object.Type, subscriptionIsLocallyCachedKey: String, databaseZone: DatabaseZone, cloudKitSubscriptionID: String) {
+    init(objectType: Object.Type, databaseZone: DatabaseZone) {
         self.objectType = objectType
-        self.subscriptionIsLocallyCachedKey = subscriptionIsLocallyCachedKey
+//        self.subscriptionIsLocallyCachedKey = subscriptionIsLocallyCachedKey
         self.databaseZone = databaseZone
-        self.cloudKitSubscriptionID = cloudKitSubscriptionID
+//        self.cloudKitSubscriptionID = cloudKitSubscriptionID
         
         let name = objectType.className()
         ObjectSyncInfo.objectTypeRegister[name] = objectType
