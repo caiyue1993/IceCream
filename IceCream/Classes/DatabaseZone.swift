@@ -12,7 +12,7 @@ import RealmSwift
 struct DatabaseZone: Hashable {
     let database: CKDatabase
     let recordZone: CKRecordZone
-    
+
     var hashValue: Int {
         return database.hashValue ^ recordZone.hashValue
     }
@@ -24,13 +24,39 @@ struct DatabaseZone: Hashable {
     var recordZoneID: CKRecordZoneID {
         return recordZone.zoneID
     }
-    
-    private let databaseChangesTokenKey = "icecream.keys.databaseChangesTokenKey"
-    private let zoneChangesTokenKey = "icecream.keys.zoneChangesTokenKey"
-    private let subscriptionIsLocallyCachedKey = "icecream.keys.subscriptionIsLocallyCachedKey"
-    
-    let cloudKitSubscriptionID = "private_changes"
 
+    private let databaseChangesTokenKey: String
+    private let zoneChangesTokenKey: String
+//    private let subscriptionIsLocallyCachedKey: String
+//    let cloudKitSubscriptionID: String
+
+    init(database: CKDatabase, recordZone: CKRecordZone, multiObjectSupport: Bool = true) {
+        self.database = database
+        self.recordZone = recordZone
+        
+        if !multiObjectSupport {
+            databaseChangesTokenKey = "icecream.keys.databaseChangesTokenKey"
+            zoneChangesTokenKey = "icecream.keys.zoneChangesTokenKey"
+        } else {
+            let databaseScope: String
+            switch database.databaseScope {
+            case .private:
+                databaseScope = "private"
+                
+            case .public:
+                databaseScope = "public"
+
+            case .shared:
+                databaseScope = "shared"
+            }
+            
+            let zoneName = recordZone.zoneID.zoneName
+            
+            databaseChangesTokenKey = "icecream.keys.databaseChangesTokenKey.\(databaseScope)"
+            zoneChangesTokenKey = "icecream.keys.zoneChangesTokenKey.\(databaseScope).\(zoneName)"
+        }
+    }
+    
     /// The changes token, for more please reference to https://developer.apple.com/videos/play/wwdc2016/231/
     var databaseChangeToken: CKServerChangeToken? {
         get {
@@ -195,116 +221,4 @@ struct DatabaseZone: Hashable {
         
         database.add(changesOp)
     }
-    
-    public mutating func createDatabaseSubscription(forType recordType: String) {
-        // The direct below is the subscribe way that Apple suggests in CloudKit Best Practices(https://developer.apple.com/videos/play/wwdc2016/231/) , but it doesn't work here in my place.
-        /*
-         let subscription = CKDatabaseSubscription(subscriptionID: IceCreamConstants.cloudSubscriptionID)
-         
-         let notificationInfo = CKNotificationInfo()
-         notificationInfo.shouldSendContentAvailable = true // Silent Push
-         
-         subscription.notificationInfo = notificationInfo
-         
-         let createOp = CKModifySubscriptionsOperation(subscriptionsToSave: [subscription], subscriptionIDsToDelete: [])
-         createOp.modifySubscriptionsCompletionBlock = { _, _, error in
-         guard error == nil else { return }
-         self.subscriptionIsLocallyCached = true
-         }
-         createOp.qualityOfService = .utility
-         privateDatabase.add(createOp)
-         */
-        
-        /// So I use the @Guilherme Rambo's plan: https://github.com/insidegui/NoteTaker
-        let subscription = CKQuerySubscription(recordType: recordType, predicate: NSPredicate(value: true), subscriptionID: cloudKitSubscriptionID, options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion])
-        let notificationInfo = CKNotificationInfo()
-        notificationInfo.shouldSendContentAvailable = true // Silent Push
-        subscription.notificationInfo = notificationInfo
-        
-        var myself = self
-        database.save(subscription) { (_, error) in
-            switch myself.errorHandler.resultType(with: error) {
-            case .success:
-                print("Register remote successfully!")
-                myself.subscriptionIsLocallyCached = true
-            case .retry(let timeToWait, _):
-                myself.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
-                    myself.createDatabaseSubscription(forType: recordType)
-                })
-            default:
-                return
-            }
-        }
-    }
-    
-    // Cuz we only need to do subscription once succeed
-    var subscriptionIsLocallyCached: Bool {
-        get {
-            guard let flag = UserDefaults.standard.object(forKey: subscriptionIsLocallyCachedKey) as? Bool  else { return false }
-            return flag
-        }
-        set {
-            UserDefaults.standard.set(newValue, forKey: subscriptionIsLocallyCachedKey)
-        }
-    }
-    
-    /// Sync local data to CloudKit
-    /// For more about the savePolicy: https://developer.apple.com/documentation/cloudkit/ckrecordsavepolicy
-    mutating func syncRecordsToCloudKit(objectSyncInfo: ObjectSyncInfo, recordsToStore: [CKRecord], recordIDsToDelete: [CKRecordID], completion: ((Error?) -> ())? = nil) {
-        let modifyOpe = CKModifyRecordsOperation(recordsToSave: recordsToStore, recordIDsToDelete: recordIDsToDelete)
-        
-        if #available(iOS 11.0, *) {
-            let config = CKOperationConfiguration()
-            config.isLongLived = true
-            modifyOpe.configuration = config
-        } else {
-            // Fallback on earlier versions
-            modifyOpe.isLongLived = true
-        }
-        
-        // We use .changedKeys savePolicy to do unlocked changes here cause my app is contentious and off-line first
-        // Apple suggests using .ifServerRecordUnchanged save policy
-        // For more, see Advanced CloudKit(https://developer.apple.com/videos/play/wwdc2014/231/)
-        modifyOpe.savePolicy = .changedKeys
-        
-        // To avoid CKError.partialFailure, make the operation atomic (if one record fails to get modified, they all fail)
-        // If you want to handle partial failures, set .isAtomic to false and implement CKOperationResultType .fail(reason: .partialFailure) where appropriate
-        modifyOpe.isAtomic = true
-        
-        var myself = self
-
-        modifyOpe.modifyRecordsCompletionBlock = {
-            (_, _, error) in
-            
-
-            switch myself.errorHandler.resultType(with: error) {
-            case .success:
-                DispatchQueue.main.async {
-                    completion?(nil)
-                    
-                    /// Cause we will get a error when there is very empty in the cloudKit dashboard
-                    /// which often happen when users first launch your app.
-                    /// So, we put the subscription process here when we sure there is a record type in CloudKit.
-                    if myself.subscriptionIsLocallyCached { return }
-                    myself.createDatabaseSubscription(forType: objectSyncInfo.name)
-                }
-            case .retry(let timeToWait, _):
-                myself.errorHandler.retryOperationIfPossible(retryAfter: timeToWait) {
-                    myself.syncRecordsToCloudKit(objectSyncInfo: objectSyncInfo, recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete, completion: completion)
-                }
-            case .chunk:
-                /// CloudKit says maximum number of items in a single request is 400.
-                /// So I think 300 should be a fine by them.
-                let chunkedRecords = recordsToStore.chunkItUp(by: 300)
-                for chunk in chunkedRecords {
-                    myself.syncRecordsToCloudKit(objectSyncInfo: objectSyncInfo, recordsToStore: chunk, recordIDsToDelete: recordIDsToDelete, completion: completion)
-                }
-            default:
-                return
-            }
-        }
-        
-        database.add(modifyOpe)
-    }
-
 }

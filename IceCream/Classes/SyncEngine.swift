@@ -13,16 +13,6 @@ public enum Notifications: String, NotificationName {
     case cloudKitDataDidChangeRemotely
 }
 
-//public enum IceCreamKey: String {
-//
-//    /// Flags
-//    case subscriptionIsLocallyCachedKey
-//
-//    public var value: String {
-//        return "icecream.keys." + rawValue
-//    }
-//}
-
 public final class SyncEngine<SyncedObjectType: Object & CKRecordConvertible> {
     private let syncEngine: ObjectSyncEngine
     
@@ -54,8 +44,7 @@ public final class ObjectSyncEngine {
     public func handleRemoteNotification(userInfo: [AnyHashable : Any]) -> Bool {
         let notification = CKNotification(fromRemoteNotificationDictionary: userInfo)
 
-        print("//TODO: replace syncedObjectswith syncedDatabaseZones")
-        if syncedObjects.contains(where: { entry in return entry.value.databaseZone.cloudKitSubscriptionID == notification.subscriptionID}) {
+        if syncedObjects.contains(where: { entry in return entry.value.cloudKitSubscriptionID == notification.subscriptionID}) {
             NotificationCenter.default.post(name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, userInfo: userInfo)
     
             return true
@@ -75,6 +64,7 @@ public final class ObjectSyncEngine {
         }
     }
 
+    private var databaseZones = Set<DatabaseZone>()
     
 //    public static var customZoneID: CKRecordZoneID = CKRecordZoneID(zoneName: "IceCream", ownerName: CKCurrentUserDefaultName)
 
@@ -91,11 +81,17 @@ public final class ObjectSyncEngine {
         let zoneName = "\(objectType.className())sZone"
         let recordZoneID = CKRecordZoneID(zoneName: zoneName, ownerName: CKCurrentUserDefaultName)
         
-        self.objectSyncInfos = [ObjectSyncInfo(
-            objectType: objectType,
-//            subscriptionIsLocallyCachedKey: IceCreamKey.subscriptionIsLocallyCachedKey.value,
-            databaseZone: DatabaseZone(database: CKContainer.default().privateCloudDatabase, recordZone: CKRecordZone(zoneID: recordZoneID))
-            )]
+        let databaseZone = DatabaseZone(database: CKContainer.default().privateCloudDatabase,
+                                        recordZone: CKRecordZone(zoneID: recordZoneID), multiObjectSupport: false)
+        
+        databaseZones.insert(databaseZone)
+        
+        self.objectSyncInfos = [
+            ObjectSyncInfo(objectType: objectType,
+                            subscriptionIsLocallyCachedKey: "icecream.keys.subscriptionIsLocallyCachedKey",
+                            cloudKitSubscriptionID : "private_changes",
+                            databaseZone: databaseZone)
+        ]
 
 //        if usePublicDatabase {
 //            database = CKContainer.default().publicCloudDatabase
@@ -145,8 +141,8 @@ public final class ObjectSyncEngine {
                 
                 NotificationCenter.default.addObserver(weakSelf, selector: #selector(weakSelf.cleanUp), name: .UIApplicationWillTerminate, object: nil)
                 
-                if  weakSelf.objectSyncInfo.databaseZone.subscriptionIsLocallyCached { return }
-                weakSelf.objectSyncInfo.databaseZone.createDatabaseSubscription(forType: weakSelf.objectSyncInfo.name)
+                if  weakSelf.objectSyncInfo.subscriptionIsLocallyCached { return }
+                weakSelf.objectSyncInfo.createDatabaseSubscription(errorHandler: weakSelf.errorHandler)
                 
 //                if weakSelf.subscriptionIsLocallyCached { return }
 //                weakSelf.createDatabaseSubscription(forType: weakSelf.objectSyncInfo.name)
@@ -224,7 +220,7 @@ extension ObjectSyncEngine {
         let recordsToStore = objectsToStore.map{ self.objectSyncInfo.cloudKitRecord(from: $0) }
         let recordIDsToDelete = objectsToDelete.map{ self.objectSyncInfo.recordID(of: $0) }
         
-        objectSyncInfo.databaseZone.syncRecordsToCloudKit(objectSyncInfo: objectSyncInfo, recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete) { error in
+        objectSyncInfo.syncRecordsToCloudKit(errorHandler: errorHandler, recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete) { error in
             guard error == nil else { return }
             guard !objectsToDelete.isEmpty else { return }
             
@@ -267,9 +263,7 @@ extension ObjectSyncEngine {
         
         objectSyncInfo.database.add(modifyOp)
     }
-    
-
-    
+        
     fileprivate func startObservingRemoteChanges() {
         NotificationCenter.default.addObserver(forName: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, queue: OperationQueue.main, using: { [weak self](_) in
             guard let `self` = self else { return }
