@@ -125,7 +125,7 @@ struct DatabaseZone: Hashable {
         changesOp.recordChangedBlock = { record in
             /// The Cloud will return the modified record since the last zoneChangesToken, we need to do local cache here.
             /// Handle the record:
-            guard let objectType = ObjectSyncInfo.objectTypeFor(record: record) else { fatalError() }
+            guard let objectType = ObjectTypeRegister.entries[record] else { fatalError() }
             guard let object = CloudKitToObject.object(ofType: objectType, withRecord: record) else {
                 print("There is something wrong with the conversion from cloud record to local object")
                 return
@@ -148,7 +148,7 @@ struct DatabaseZone: Hashable {
         
         changesOp.recordWithIDWasDeletedBlock = { recordID, _ in
 
-                guard let objectType = ObjectSyncInfo.objectTypeFrom(recordID: recordID) else { return }
+                guard let objectType = ObjectTypeRegister.entries[recordID] else { return }
 
                 DispatchQueue.main.async {
                     let realm = try! Realm()
