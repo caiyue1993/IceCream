@@ -15,8 +15,8 @@ public enum Notifications: String, NotificationName {
 
 public enum IceCreamKey: String {
     /// Tokens
-    case databaseChangesTokenKey
-    case zoneChangesTokenKey
+//    case databaseChangesTokenKey
+//    case zoneChangesTokenKey
     
     /// Flags
     case subscriptionIsLocallyCachedKey
@@ -29,7 +29,6 @@ public enum IceCreamKey: String {
 public final class SyncEngine<SyncedObjectType: Object & CKRecordConvertible> {
     private let syncEngine: ObjectSyncEngine
     
-
     public init(usePublicDatabase: Bool = false) {
         
         syncEngine = ObjectSyncEngine(objectType: SyncedObjectType.self)
@@ -67,10 +66,15 @@ public final class ObjectSyncEngine {
         }
     }
     
-    private let objectSyncInfos: [ObjectSyncInfo]
+    private var objectSyncInfos: [ObjectSyncInfo]
     
     private var objectSyncInfo: ObjectSyncInfo {
-        return objectSyncInfos.first!
+        get {
+            return objectSyncInfos.first!
+        }
+        set {
+            objectSyncInfos = [newValue]
+        }
     }
 
     
@@ -89,12 +93,12 @@ public final class ObjectSyncEngine {
         let zoneName = "\(objectType.className())sZone"
         let recordZoneID = CKRecordZoneID(zoneName: zoneName, ownerName: CKCurrentUserDefaultName)
         
-        self.objectSyncInfos = [ObjectSyncInfo(objectType: objectType,
-                                             subscriptionIsLocallyCachedKey: IceCreamKey.subscriptionIsLocallyCachedKey.value,
-                                             recordZone: CKRecordZone(zoneID: recordZoneID),
-                                             database: CKContainer.default().privateCloudDatabase,
-                                             cloudKitSubscriptionID: "private_changes")]
-        
+        self.objectSyncInfos = [ObjectSyncInfo(
+            objectType: objectType,
+            subscriptionIsLocallyCachedKey: IceCreamKey.subscriptionIsLocallyCachedKey.value,
+            databaseZone: DatabaseZone(database: CKContainer.default().privateCloudDatabase, recordZone: CKRecordZone(zoneID: recordZoneID)),
+            cloudKitSubscriptionID: "private_changes"
+            )]
 
 //        if usePublicDatabase {
 //            database = CKContainer.default().publicCloudDatabase
@@ -124,10 +128,13 @@ public final class ObjectSyncEngine {
                 /// Apple suggests that we should fetch changes in database, *especially* the very first launch.
                 /// But actually, there **might** be some rare unknown and weird reason that the data is not synced between muilty devices.
                 /// So I suggests fetch changes in database everytime app launches.
-                weakSelf.fetchChangesInDatabase({
+                weakSelf.objectSyncInfo.databaseZone.fetchChangesInDatabase(notificationToken: weakSelf.notificationToken) {
                     print("First sync done!")
-                })
-                
+                }
+//                weakSelf.fetchChangesInDatabase() {
+//                    print("First sync done!")
+//                }
+//
                 weakSelf.resumeLongLivedOperationIfPossible()
                 
                 weakSelf.createCustomZone()
@@ -205,7 +212,8 @@ extension ObjectSyncEngine {
     
     // Manually sync data with CloudKit
     public func sync() {
-        self.fetchChangesInDatabase()
+        self.objectSyncInfo.databaseZone.fetchChangesInDatabase(notificationToken: notificationToken)
+//        self.fetchChangesInDatabase(for: self.objectSyncInfo)
     }
     
     // This method is commonly used when you want to push your datas to CloudKit manually
@@ -233,40 +241,40 @@ extension ObjectSyncEngine {
 /// Chat to the CloudKit API directly
 extension ObjectSyncEngine {
     
-    /// The changes token, for more please reference to https://developer.apple.com/videos/play/wwdc2016/231/
-    var databaseChangeToken: CKServerChangeToken? {
-        get {
-            /// For the very first time when launching, the token will be nil and the server will be giving everything on the Cloud to client
-            /// In other situation just get the unarchive the data object
-            guard let tokenData = UserDefaults.standard.object(forKey: IceCreamKey.databaseChangesTokenKey.value) as? Data else { return nil }
-            return NSKeyedUnarchiver.unarchiveObject(with: tokenData) as? CKServerChangeToken
-        }
-        set {
-            guard let n = newValue else {
-                UserDefaults.standard.removeObject(forKey: IceCreamKey.databaseChangesTokenKey.value)
-                return
-            }
-            let data = NSKeyedArchiver.archivedData(withRootObject: n)
-            UserDefaults.standard.set(data, forKey: IceCreamKey.databaseChangesTokenKey.value)
-        }
-    }
-    
-    var zoneChangesToken: CKServerChangeToken? {
-        get {
-            /// For the very first time when launching, the token will be nil and the server will be giving everything on the Cloud to client
-            /// In other situation just get the unarchive the data object
-            guard let tokenData = UserDefaults.standard.object(forKey: IceCreamKey.zoneChangesTokenKey.value) as? Data else { return nil }
-            return NSKeyedUnarchiver.unarchiveObject(with: tokenData) as? CKServerChangeToken
-        }
-        set {
-            guard let n = newValue else {
-                UserDefaults.standard.removeObject(forKey: IceCreamKey.zoneChangesTokenKey.value)
-                return
-            }
-            let data = NSKeyedArchiver.archivedData(withRootObject: n)
-            UserDefaults.standard.set(data, forKey: IceCreamKey.zoneChangesTokenKey.value)
-        }
-    }
+//    /// The changes token, for more please reference to https://developer.apple.com/videos/play/wwdc2016/231/
+//    var databaseChangeToken: CKServerChangeToken? {
+//        get {
+//            /// For the very first time when launching, the token will be nil and the server will be giving everything on the Cloud to client
+//            /// In other situation just get the unarchive the data object
+//            guard let tokenData = UserDefaults.standard.object(forKey: IceCreamKey.databaseChangesTokenKey.value) as? Data else { return nil }
+//            return NSKeyedUnarchiver.unarchiveObject(with: tokenData) as? CKServerChangeToken
+//        }
+//        set {
+//            guard let n = newValue else {
+//                UserDefaults.standard.removeObject(forKey: IceCreamKey.databaseChangesTokenKey.value)
+//                return
+//            }
+//            let data = NSKeyedArchiver.archivedData(withRootObject: n)
+//            UserDefaults.standard.set(data, forKey: IceCreamKey.databaseChangesTokenKey.value)
+//        }
+//    }
+//    
+//    var zoneChangesToken: CKServerChangeToken? {
+//        get {
+//            /// For the very first time when launching, the token will be nil and the server will be giving everything on the Cloud to client
+//            /// In other situation just get the unarchive the data object
+//            guard let tokenData = UserDefaults.standard.object(forKey: IceCreamKey.zoneChangesTokenKey.value) as? Data else { return nil }
+//            return NSKeyedUnarchiver.unarchiveObject(with: tokenData) as? CKServerChangeToken
+//        }
+//        set {
+//            guard let n = newValue else {
+//                UserDefaults.standard.removeObject(forKey: IceCreamKey.zoneChangesTokenKey.value)
+//                return
+//            }
+//            let data = NSKeyedArchiver.archivedData(withRootObject: n)
+//            UserDefaults.standard.set(data, forKey: IceCreamKey.zoneChangesTokenKey.value)
+//        }
+//    }
     
     /// Cuz we only need to do subscription once succeed
     var subscriptionIsLocallyCached: Bool {
@@ -291,138 +299,7 @@ extension ObjectSyncEngine {
     }
     */
     
-    /// Only update the changeToken when fetch process completes
-    func fetchChangesInDatabase(_ callback: (() -> Void)? = nil) {
-        
-        let changesOperation = CKFetchDatabaseChangesOperation(previousServerChangeToken: databaseChangeToken)
-        
-        /// For more, see the source code, it has the detailed explanation
-        changesOperation.fetchAllChanges = true
-        
-        changesOperation.changeTokenUpdatedBlock = { [weak self] newToken in
-            guard let `self` = self else { return }
-            self.databaseChangeToken = newToken
-        }
-        
-        /// Cuz we only have one custom zone, so we don't need to store the CKRecordZoneID temporarily
-        /*
-        changesOperation.recordZoneWithIDChangedBlock = { [weak self] zoneID in
-            guard let `self` = self else { return }
-            `self`.changedRecordZoneID = zoneID
-        }
-        */
-        changesOperation.fetchDatabaseChangesCompletionBlock = {
-            [weak self]
-            newToken, _, error in
-             guard let `self` = self else { return }
-            switch `self`.errorHandler.resultType(with: error) {
-            case .success:
-                `self`.databaseChangeToken = newToken
-                // Fetch the changes in zone level
-                `self`.fetchChangesInZone(callback)
-            case .retry(let timeToWait, _):
-                `self`.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
-                    `self`.fetchChangesInDatabase(callback)
-                })
-            case .recoverableError(let reason, _):
-                switch reason {
-                case .changeTokenExpired:
-                    /// The previousServerChangeToken value is too old and the client must re-sync from scratch
-                    `self`.databaseChangeToken = nil
-                    `self`.fetchChangesInDatabase(callback)
-                default:
-                    return
-                }
-            default:
-                return
-            }
-        }
-        objectSyncInfo.database.add(changesOperation)
-    }
     
-    private func fetchChangesInZone(_ callback: (() -> Void)? = nil) {
-        
-        let zoneChangesOptions = CKFetchRecordZoneChangesOptions()
-        zoneChangesOptions.previousServerChangeToken = zoneChangesToken
-        
-        let changesOp = CKFetchRecordZoneChangesOperation(recordZoneIDs: [objectSyncInfo.recordZoneID], optionsByRecordZoneID: [objectSyncInfo.recordZoneID: zoneChangesOptions])
-        changesOp.fetchAllChanges = true
-        
-        changesOp.recordZoneChangeTokensUpdatedBlock = { _, token, _ in
-            self.zoneChangesToken = token
-        }
-        
-        changesOp.recordChangedBlock = { [weak self]record in
-            /// The Cloud will return the modified record since the last zoneChangesToken, we need to do local cache here.
-            /// Handle the record:
-            guard let `self` = self else { return }
-            guard let object = CloudKitToObject.object(ofType: self.objectSyncInfo.T, withRecord: record) else {
-                print("There is something wrong with the conversion from cloud record to local object")
-                return
-            }
-
-            DispatchQueue.main.async {
-                let realm = try! Realm()
-
-                /// If your model class includes a primary key, you can have Realm intelligently update or add objects based off of their primary key values using Realm().add(_:update:).
-                /// https://realm.io/docs/swift/latest/#objects-with-primary-keys
-                realm.beginWrite()
-                realm.add(object, update: true)
-                if let token = `self`.notificationToken {
-                    try! realm.commitWrite(withoutNotifying: [token])
-                } else {
-                    try! realm.commitWrite()
-                }
-            }
-        }
-        
-        changesOp.recordWithIDWasDeletedBlock = { [weak self]recordId, _ in
-            guard let `self` = self else { return }
-            
-            DispatchQueue.main.async {
-                let realm = try! Realm()
-                guard let object = realm.object(ofType: self.objectSyncInfo.T, forPrimaryKey: recordId.recordName) else {
-                    // Not found in local
-                    return
-                }
-                CreamAsset.deleteCreamAssetFile(with: recordId.recordName)
-                realm.beginWrite()
-                realm.delete(object)
-                if let token = `self`.notificationToken {
-                    try! realm.commitWrite(withoutNotifying: [token])
-                } else {
-                    try! realm.commitWrite()
-                }
-            }
-        }
-        
-        changesOp.recordZoneFetchCompletionBlock = { [weak self](_,token, _, _, error) in
-            guard let `self` = self else { return }
-            switch `self`.errorHandler.resultType(with: error) {
-            case .success:
-                `self`.zoneChangesToken = token
-                callback?()
-                print("Sync successfully!")
-            case .retry(let timeToWait, _):
-                `self`.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
-                    `self`.fetchChangesInZone(callback)
-                })
-            case .recoverableError(let reason, _):
-                switch reason {
-                case .changeTokenExpired:
-                    /// The previousServerChangeToken value is too old and the client must re-sync from scratch
-                    `self`.zoneChangesToken = nil
-                    `self`.fetchChangesInZone(callback)
-                default:
-                    return
-                }
-            default:
-                return
-            }
-        }
-        
-        objectSyncInfo.database.add(changesOp)
-    }
  
     
     /// Create new custom zones
@@ -514,7 +391,8 @@ extension ObjectSyncEngine {
     fileprivate func startObservingRemoteChanges() {
         NotificationCenter.default.addObserver(forName: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, queue: OperationQueue.main, using: { [weak self](_) in
             guard let `self` = self else { return }
-            `self`.fetchChangesInDatabase()
+            `self`.objectSyncInfo.databaseZone.fetchChangesInDatabase(notificationToken: self.notificationToken)
+//            `self`.fetchChangesInDatabase()
         })
     }
     

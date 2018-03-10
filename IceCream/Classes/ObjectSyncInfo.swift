@@ -13,8 +13,8 @@ import Realm
 struct ObjectSyncInfo {
     let objectType: Object.Type
     let subscriptionIsLocallyCachedKey: String
-    let recordZone: CKRecordZone
-    let database: CKDatabase
+
+    var databaseZone: DatabaseZone
     
     /// Dangerous part:
     /// In most cases, you should not change the string value cause it is related to user settings.
@@ -31,8 +31,12 @@ struct ObjectSyncInfo {
         return objectType.self
     }
     
+    var database: CKDatabase {
+        return databaseZone.database
+    }
+    
     var recordZoneID: CKRecordZoneID {
-        return recordZone.zoneID
+        return databaseZone.recordZone.zoneID
     }
     
     var sharedSchema: RLMObjectSchema? {
@@ -96,5 +100,40 @@ struct ObjectSyncInfo {
         }
         return r
     }
+    
+    init(objectType: Object.Type, subscriptionIsLocallyCachedKey: String, databaseZone: DatabaseZone, cloudKitSubscriptionID: String) {
+        self.objectType = objectType
+        self.subscriptionIsLocallyCachedKey = subscriptionIsLocallyCachedKey
+        self.databaseZone = databaseZone
+        self.cloudKitSubscriptionID = cloudKitSubscriptionID
+        
+        let name = objectType.className()
+        ObjectSyncInfo.objectTypeRegister[name] = objectType
+    }
 }
 
+extension ObjectSyncInfo {
+    
+    private static var objectTypeRegister: [String : Object.Type] = [:]
+    static func objectTypeFor(record: CKRecord) -> Object.Type? {
+        let name = record.recordType
+        
+        return ObjectSyncInfo.objectTypeRegister[name]
+    }
+    
+    static func objectTypeFrom(recordID: CKRecordID) -> Object.Type? {
+        let name: String
+        
+        let splits = recordID.recordName.split(separator: ":")
+        if splits.count > 1, splits[0] == "IceCream" {
+            name = String(splits[1])
+        } else if recordID.zoneID.zoneName.hasSuffix("sZone") {
+            name = String(recordID.zoneID.zoneName.dropLast(5))
+        } else {
+            print("Unable to derive object type from recordID")
+            return nil
+        }
+        
+        return ObjectSyncInfo.objectTypeRegister[name]
+    }
+}

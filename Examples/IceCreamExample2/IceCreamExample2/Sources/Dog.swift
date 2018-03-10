@@ -12,7 +12,7 @@ import IceCream
 import CloudKit
 
 class Dog: Object {
-    @objc dynamic var id = NSUUID().uuidString
+    @objc dynamic var id = IceCream.id(typeName: "Dog", uuid: NSUUID().uuidString)
     @objc dynamic var name = ""
     @objc dynamic var age = 0
     @objc dynamic var isDeleted = false
@@ -26,5 +26,4 @@ class Dog: Object {
 }
 
 extension Dog: CKRecordConvertible {
-    
 }

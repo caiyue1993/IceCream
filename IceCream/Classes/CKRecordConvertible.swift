@@ -11,7 +11,6 @@ import RealmSwift
 import Realm
 
 public protocol CKRecordConvertible {
-
     var isDeleted: Bool { get }
 }
 

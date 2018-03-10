@@ -40,7 +40,7 @@ extension RealmObjectViewController {
     @IBAction func addButtonTapped(_ sender: Any) {
         let dog = Dog()
         let leaving4 = dog.id.count - 4
-        let dogName = "Dog \(dog.id.dropLast(leaving4))"
+        let dogName = "Dog \(dog.id.dropFirst(leaving4))"
         dog.name = dogName
         dog.age = RealmObjectViewController.dogNumber
         
