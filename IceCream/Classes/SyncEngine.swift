@@ -96,7 +96,7 @@ public final class ObjectSyncEngine {
         self.objectSyncInfos = [
             ObjectSyncInfo(objectType: objectType,
                             subscriptionIsLocallyCachedKey: "icecream.keys.subscriptionIsLocallyCachedKey",
-                            cloudKitSubscriptionID : "private_changes",
+                            cloudKitSubscriptionID : IceCreamConstant.cloudKitSubscriptionID,
                             databaseZone: databaseZone)
         ]
 

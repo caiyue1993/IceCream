@@ -14,6 +14,10 @@ public protocol CKRecordConvertible {
     var isDeleted: Bool { get }
 }
 
+public protocol CKRecordRecoverable {
+    
+}
+
 struct CloudKitToObject {
     
     static func object<O: Object>(ofType: O.Type, withRecord record: CKRecord) -> O? {

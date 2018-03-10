@@ -27,8 +27,6 @@ struct DatabaseZone: Hashable {
 
     private let databaseChangesTokenKey: String
     private let zoneChangesTokenKey: String
-//    private let subscriptionIsLocallyCachedKey: String
-//    let cloudKitSubscriptionID: String
 
     init(database: CKDatabase, recordZone: CKRecordZone, multiObjectSupport: Bool = true) {
         self.database = database
