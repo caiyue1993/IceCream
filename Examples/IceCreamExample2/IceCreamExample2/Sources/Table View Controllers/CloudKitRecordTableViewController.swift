@@ -138,7 +138,6 @@ extension CloudKitRecordTableViewController {
             guard self != nil else { return }
             
             self?.fetchAll(recordType: "Dog")
-
         })
     }
     

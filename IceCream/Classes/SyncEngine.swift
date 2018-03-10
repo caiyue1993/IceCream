@@ -14,9 +14,6 @@ public enum Notifications: String, NotificationName {
 }
 
 public enum IceCreamKey: String {
-    /// Tokens
-//    case databaseChangesTokenKey
-//    case zoneChangesTokenKey
     
     /// Flags
     case subscriptionIsLocallyCachedKey
@@ -134,7 +131,7 @@ public final class ObjectSyncEngine {
 //                weakSelf.fetchChangesInDatabase() {
 //                    print("First sync done!")
 //                }
-//
+
                 weakSelf.resumeLongLivedOperationIfPossible()
                 
                 weakSelf.createCustomZone()
@@ -241,41 +238,6 @@ extension ObjectSyncEngine {
 /// Chat to the CloudKit API directly
 extension ObjectSyncEngine {
     
-//    /// The changes token, for more please reference to https://developer.apple.com/videos/play/wwdc2016/231/
-//    var databaseChangeToken: CKServerChangeToken? {
-//        get {
-//            /// For the very first time when launching, the token will be nil and the server will be giving everything on the Cloud to client
-//            /// In other situation just get the unarchive the data object
-//            guard let tokenData = UserDefaults.standard.object(forKey: IceCreamKey.databaseChangesTokenKey.value) as? Data else { return nil }
-//            return NSKeyedUnarchiver.unarchiveObject(with: tokenData) as? CKServerChangeToken
-//        }
-//        set {
-//            guard let n = newValue else {
-//                UserDefaults.standard.removeObject(forKey: IceCreamKey.databaseChangesTokenKey.value)
-//                return
-//            }
-//            let data = NSKeyedArchiver.archivedData(withRootObject: n)
-//            UserDefaults.standard.set(data, forKey: IceCreamKey.databaseChangesTokenKey.value)
-//        }
-//    }
-//    
-//    var zoneChangesToken: CKServerChangeToken? {
-//        get {
-//            /// For the very first time when launching, the token will be nil and the server will be giving everything on the Cloud to client
-//            /// In other situation just get the unarchive the data object
-//            guard let tokenData = UserDefaults.standard.object(forKey: IceCreamKey.zoneChangesTokenKey.value) as? Data else { return nil }
-//            return NSKeyedUnarchiver.unarchiveObject(with: tokenData) as? CKServerChangeToken
-//        }
-//        set {
-//            guard let n = newValue else {
-//                UserDefaults.standard.removeObject(forKey: IceCreamKey.zoneChangesTokenKey.value)
-//                return
-//            }
-//            let data = NSKeyedArchiver.archivedData(withRootObject: n)
-//            UserDefaults.standard.set(data, forKey: IceCreamKey.zoneChangesTokenKey.value)
-//        }
-//    }
-    
     /// Cuz we only need to do subscription once succeed
     var subscriptionIsLocallyCached: Bool {
         get {
@@ -287,20 +249,6 @@ extension ObjectSyncEngine {
         }
     }
     
-    /*
-    var isVeryFirstLaunch: Bool {
-        get {
-            guard let flag = UserDefaults.standard.object(forKey: IceCreamConstants.isVeryFirstLaunchKey) as? Bool else { return true }
-            return flag
-        }
-        set {
-            UserDefaults.standard.set(newValue, forKey: IceCreamConstants.isVeryFirstLaunchKey)
-        }
-    }
-    */
-    
-    
- 
     
     /// Create new custom zones
     /// You can(but you shouldn't) invoke this method more times, but the CloudKit is smart and will handle that for you
@@ -325,27 +273,6 @@ extension ObjectSyncEngine {
         
         objectSyncInfo.database.add(modifyOp)
     }
- 
-    /// Check if custom zone already exists
-  /* fileprivate func checkCustomZoneExists(_ completion: ((Error?) -> ())? = nil) {
-        let checkZoneOp = CKFetchRecordZonesOperation(recordZoneIDs: [customZoneID])
-        checkZoneOp.fetchRecordZonesCompletionBlock = { dic, error in
-            switch self?.errorHandler.resultType(with: error) {
-            case .success?:
-                DispatchQueue.main.async {
-                    completion?(nil)
-                }
-            case .retry(let timeToWait)?:
-                ErrorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
-                    self?.checkCustomZoneExists(completion)
-                })
-            default:
-                return
-            }
-        }
-        privateDatabase.add(checkZoneOp)
-    }
-*/
     
     fileprivate func createDatabaseSubscription(forType recordType: String) {
         // The direct below is the subscribe way that Apple suggests in CloudKit Best Practices(https://developer.apple.com/videos/play/wwdc2016/231/) , but it doesn't work here in my place.
