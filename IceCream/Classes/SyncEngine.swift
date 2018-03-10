@@ -18,7 +18,7 @@ public final class SyncEngine<SyncedObjectType: Object & CKRecordConvertible> {
     
     public init(usePublicDatabase: Bool = false) {
         
-        syncEngine = ObjectSyncEngine(objectType: SyncedObjectType.self)
+        syncEngine = ObjectSyncEngine(objectType: SyncedObjectType.self, multiObjectSupport: false)
     
         syncEngine.start()
     }
@@ -77,8 +77,15 @@ public final class ObjectSyncEngine {
     private let errorHandler = ErrorHandler()
     
     /// We recommand process the initialization when app launches
-    public init(objectType: Object.Type) {
-        let zoneName = "\(objectType.className())sZone"
+    public init(objectType: Object.Type, multiObjectSupport: Bool = true) {
+        let zoneName: String
+        
+        if multiObjectSupport {
+            zoneName = "IceCream"
+        } else {
+            zoneName = "\(objectType.className())sZone"
+        }
+        
         let recordZoneID = CKRecordZoneID(zoneName: zoneName, ownerName: CKCurrentUserDefaultName)
         
         let databaseZone = DatabaseZone(database: CKContainer.default().privateCloudDatabase,
