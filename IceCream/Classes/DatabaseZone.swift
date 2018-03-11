@@ -93,7 +93,7 @@ struct DatabaseZone: Hashable {
     private let errorHandler = ErrorHandler()
     
     /// Only update the changeToken when fetch process completes
-    mutating func fetchChangesInDatabase(notificationToken: NotificationToken?, _ callback: (() -> Void)? = nil) {
+    mutating func fetchChangesInDatabase(notificationTokens: [NotificationToken], _ callback: (() -> Void)? = nil) {
         
         let changesOperation = CKFetchDatabaseChangesOperation(previousServerChangeToken: databaseChangeToken)
         
@@ -111,17 +111,17 @@ struct DatabaseZone: Hashable {
             case .success:
                 myself.databaseChangeToken = newToken
                 // Fetch the changes in zone level
-                myself.fetchChangesInZone(notificationToken: notificationToken, callback)
+                myself.fetchChangesInZone(notificationTokens: notificationTokens, callback)
             case .retry(let timeToWait, _):
                 myself.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
-                    myself.fetchChangesInDatabase(notificationToken: notificationToken, callback)
+                    myself.fetchChangesInDatabase(notificationTokens: notificationTokens, callback)
                 })
             case .recoverableError(let reason, _):
                 switch reason {
                 case .changeTokenExpired:
                     /// The previousServerChangeToken value is too old and the client must re-sync from scratch
                     myself.databaseChangeToken = nil
-                    myself.fetchChangesInDatabase(notificationToken: notificationToken, callback)
+                    myself.fetchChangesInDatabase(notificationTokens: notificationTokens, callback)
                 default:
                     return
                 }
@@ -133,7 +133,7 @@ struct DatabaseZone: Hashable {
         database.add(changesOperation)
     }
     
-    private mutating func fetchChangesInZone(notificationToken: NotificationToken?, _ callback: (() -> Void)? = nil) {
+    private mutating func fetchChangesInZone(notificationTokens: [NotificationToken], _ callback: (() -> Void)? = nil) {
         
         let zoneChangesOptions = CKFetchRecordZoneChangesOptions()
         zoneChangesOptions.previousServerChangeToken = zoneChangesToken
@@ -162,11 +162,7 @@ struct DatabaseZone: Hashable {
                 /// https://realm.io/docs/swift/latest/#objects-with-primary-keys
                 realm.beginWrite()
                 realm.add(object, update: true)
-                if let token = notificationToken {
-                    try! realm.commitWrite(withoutNotifying: [token])
-                } else {
-                    try! realm.commitWrite()
-                }
+                try! realm.commitWrite(withoutNotifying: notificationTokens)
             }
         }
         
@@ -185,11 +181,7 @@ struct DatabaseZone: Hashable {
                     CreamAsset.deleteCreamAssetFile(with: recordID.recordName)
                     realm.beginWrite()
                     realm.delete(object)
-                    if let token = notificationToken {
-                        try! realm.commitWrite(withoutNotifying: [token])
-                    } else {
-                        try! realm.commitWrite()
-                    }
+                    try! realm.commitWrite(withoutNotifying: notificationTokens)
                 }
         }
         
@@ -201,14 +193,14 @@ struct DatabaseZone: Hashable {
                 print("Sync successfully!")
             case .retry(let timeToWait, _):
                 myself.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
-                    myself.fetchChangesInZone(notificationToken: notificationToken, callback)
+                    myself.fetchChangesInZone(notificationTokens: notificationTokens, callback)
                 })
             case .recoverableError(let reason, _):
                 switch reason {
                 case .changeTokenExpired:
                     /// The previousServerChangeToken value is too old and the client must re-sync from scratch
                     myself.zoneChangesToken = nil
-                    myself.fetchChangesInZone(notificationToken: notificationToken, callback)
+                    myself.fetchChangesInZone(notificationTokens: notificationTokens, callback)
                 default:
                     return
                 }

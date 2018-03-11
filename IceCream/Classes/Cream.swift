@@ -2,9 +2,7 @@ import Foundation
 import RealmSwift
 
 extension Realm {
-    static func purgeDeletedObjects<T: Object>(ofType: T.Type, withoutNotifying token: NotificationToken? = nil) throws {
-        
-        let tokens = token != nil ? [token!] : []
+    static func purgeDeletedObjects<T: Object>(ofType: T.Type, withoutNotifying notificationTokens: [NotificationToken] = []) throws {
         
         do {
             let realm = try Realm()
@@ -16,7 +14,7 @@ extension Realm {
             
             realm.beginWrite()
             realm.delete(objects)
-            try realm.commitWrite(withoutNotifying: tokens)
+            try realm.commitWrite(withoutNotifying: notificationTokens)
             
         } catch(let error) {
             throw(error)

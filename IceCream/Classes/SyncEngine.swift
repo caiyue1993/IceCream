@@ -16,8 +16,7 @@ public enum Notifications: String, NotificationName {
 public final class SyncEngine<SyncedObjectType: Object & CKRecordConvertible> {
     private let syncEngine: ObjectSyncEngine
     
-    public init(usePublicDatabase: Bool = false) {
-        
+    public init() {
         syncEngine = ObjectSyncEngine(objectType: SyncedObjectType.self, multiObjectSupport: false)
     
         syncEngine.start()
@@ -65,14 +64,10 @@ public final class ObjectSyncEngine {
     }
 
     private var databaseZones = Set<DatabaseZone>()
-    
-//    public static var customZoneID: CKRecordZoneID = CKRecordZoneID(zoneName: "IceCream", ownerName: CKCurrentUserDefaultName)
 
     /// Notifications are delivered as long as a reference is held to the returned notification token. You should keep a strong reference to this token on the class registering for updates, as notifications are automatically unregistered when the notification token is deallocated.
     /// For more, reference is here: https://realm.io/docs/swift/latest/#notifications
-    private var notificationToken: NotificationToken?
-    
-//    fileprivate var changedRecordZoneID: CKRecordZoneID?
+    private var notificationTokens: [NotificationToken] = []
     
     private let errorHandler = ErrorHandler()
     
@@ -128,7 +123,7 @@ public final class ObjectSyncEngine {
                 /// Apple suggests that we should fetch changes in database, *especially* the very first launch.
                 /// But actually, there **might** be some rare unknown and weird reason that the data is not synced between muilty devices.
                 /// So I suggests fetch changes in database everytime app launches.
-                weakSelf.objectSyncInfo.databaseZone.fetchChangesInDatabase(notificationToken: weakSelf.notificationToken) {
+                weakSelf.objectSyncInfo.databaseZone.fetchChangesInDatabase(notificationTokens: weakSelf.notificationTokens) {
                     print("First sync done!")
                 }
 //                weakSelf.fetchChangesInDatabase() {
@@ -167,7 +162,7 @@ public final class ObjectSyncEngine {
     private func registerLocalDatabase() {
         Realm.query { realm in
             let objects = realm.objects(objectSyncInfo.T)
-            notificationToken = objects.observe({ [weak self](changes) in
+            let notificationToken = objects.observe({ [weak self](changes) in
                 guard let `self` = self else { return }
                 
                 switch changes {
@@ -198,12 +193,14 @@ public final class ObjectSyncEngine {
                     break
                 }
             })
+            
+            notificationTokens.append(notificationToken)
         }
     }
     
     @objc func cleanUp() {
         do {
-            try Realm.purgeDeletedObjects(ofType: objectSyncInfo.T, withoutNotifying: notificationToken)
+            try Realm.purgeDeletedObjects(ofType: objectSyncInfo.T, withoutNotifying: notificationTokens)
         } catch {
             // Error handles here
         }
@@ -215,7 +212,7 @@ extension ObjectSyncEngine {
     
     // Manually sync data with CloudKit
     public func sync() {
-        self.objectSyncInfo.databaseZone.fetchChangesInDatabase(notificationToken: notificationToken)
+        self.objectSyncInfo.databaseZone.fetchChangesInDatabase(notificationTokens: notificationTokens)
 //        self.fetchChangesInDatabase(for: self.objectSyncInfo)
     }
     
@@ -244,9 +241,6 @@ extension ObjectSyncEngine {
 /// Chat to the CloudKit API directly
 extension ObjectSyncEngine {
     
-
-    
-    
     /// Create new custom zones
     /// You can(but you shouldn't) invoke this method more times, but the CloudKit is smart and will handle that for you
     fileprivate func createCustomZone(_ completion: ((Error?) -> ())? = nil) {
@@ -274,7 +268,7 @@ extension ObjectSyncEngine {
     fileprivate func startObservingRemoteChanges() {
         NotificationCenter.default.addObserver(forName: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, queue: OperationQueue.main, using: { [weak self](_) in
             guard let `self` = self else { return }
-            `self`.objectSyncInfo.databaseZone.fetchChangesInDatabase(notificationToken: self.notificationToken)
+            `self`.objectSyncInfo.databaseZone.fetchChangesInDatabase(notificationTokens: self.notificationTokens)
 //            `self`.fetchChangesInDatabase()
         })
     }
