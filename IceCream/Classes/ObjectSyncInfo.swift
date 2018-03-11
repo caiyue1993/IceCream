@@ -21,7 +21,7 @@ public struct ObjectSyncInfo {
     /// The right way is remove old subscription first and then save new subscription.
     let cloudKitSubscriptionID: String
   
-    var databaseZone: DatabaseZone
+    private var databaseZone: DatabaseZone
 
     var name: String {
         return objectType.className()
@@ -31,7 +31,7 @@ public struct ObjectSyncInfo {
         return objectType.self
     }
     
-    var database: CKDatabase {
+    private var database: CKDatabase {
         return databaseZone.database
     }
     
@@ -39,7 +39,7 @@ public struct ObjectSyncInfo {
         return databaseZone.recordZone.zoneID
     }
     
-    var sharedSchema: RLMObjectSchema? {
+    private var sharedSchema: RLMObjectSchema? {
         return T.sharedSchema()
     }
     

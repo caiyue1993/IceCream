@@ -211,4 +211,34 @@ struct DatabaseZone: Hashable {
         
         database.add(changesOp)
     }
+    
+    /// Create new custom zones
+    /// You can(but you shouldn't) invoke this method more times, but the CloudKit is smart and will handle that for you
+    func createCustomZone(_ completion: ((Error?) -> ())? = nil) {
+        let newCustomZone = CKRecordZone(zoneID: self.recordZoneID)
+        let modifyOp = CKModifyRecordZonesOperation(recordZonesToSave: [newCustomZone], recordZoneIDsToDelete: nil)
+        modifyOp.modifyRecordZonesCompletionBlock = { (_, _, error) in
+            switch self.errorHandler.resultType(with: error) {
+            case .success:
+                DispatchQueue.main.async {
+                    completion?(nil)
+                }
+            case .retry(let timeToWait, _):
+                self.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
+                    self.createCustomZone(completion)
+                })
+            default:
+                return
+            }
+        }
+        
+        database.add(modifyOp)
+    }
+
+    mutating func startObservingRemoteChanges(notificationTokens: [NotificationToken]) {
+        var myself = self
+        NotificationCenter.default.addObserver(forName: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, queue: OperationQueue.main, using: { (_) in
+            myself.fetchChangesInDatabase(notificationTokens: notificationTokens)
+        })
+    }
 }

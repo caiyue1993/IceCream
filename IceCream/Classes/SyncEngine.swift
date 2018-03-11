@@ -123,18 +123,30 @@ public final class ObjectSyncEngine {
                 /// Apple suggests that we should fetch changes in database, *especially* the very first launch.
                 /// But actually, there **might** be some rare unknown and weird reason that the data is not synced between muilty devices.
                 /// So I suggests fetch changes in database everytime app launches.
-                weakSelf.objectSyncInfo.databaseZone.fetchChangesInDatabase(notificationTokens: weakSelf.notificationTokens) {
-                    print("First sync done!")
+                weakSelf.databaseZones.forEach {
+                    var databaseZone = $0
+                    databaseZone.fetchChangesInDatabase(notificationTokens: weakSelf.notificationTokens) {
+                        print("First sync of \(databaseZone)")
+                    }
                 }
-//                weakSelf.fetchChangesInDatabase() {
+                
+//                weakSelf.objectSyncInfo.databaseZone.fetchChangesInDatabase(notificationTokens: weakSelf.notificationTokens) {
 //                    print("First sync done!")
 //                }
 
+
                 weakSelf.resumeLongLivedOperationIfPossible()
                 
-                weakSelf.createCustomZone()
+                weakSelf.databaseZones.forEach {
+                    var databaseZone = $0
+                    databaseZone.createCustomZone()
+                    
+                    databaseZone.startObservingRemoteChanges(notificationTokens: weakSelf.notificationTokens)
+                }
                 
-                weakSelf.startObservingRemoteChanges()
+//                weakSelf.createCustomZone()
+                
+//                weakSelf.startObservingRemoteChanges()
                 
                 /// 2. Register to local database
                 DispatchQueue.main.async {
@@ -212,8 +224,11 @@ extension ObjectSyncEngine {
     
     // Manually sync data with CloudKit
     public func sync() {
-        self.objectSyncInfo.databaseZone.fetchChangesInDatabase(notificationTokens: notificationTokens)
-//        self.fetchChangesInDatabase(for: self.objectSyncInfo)
+        self.databaseZones.forEach {
+            var databaseZone = $0
+            databaseZone.fetchChangesInDatabase(notificationTokens: notificationTokens)
+        }
+//        self.objectSyncInfo.databaseZone.fetchChangesInDatabase(notificationTokens: notificationTokens)
     }
     
     // This method is commonly used when you want to push your datas to CloudKit manually
@@ -241,37 +256,8 @@ extension ObjectSyncEngine {
 /// Chat to the CloudKit API directly
 extension ObjectSyncEngine {
     
-    /// Create new custom zones
-    /// You can(but you shouldn't) invoke this method more times, but the CloudKit is smart and will handle that for you
-    fileprivate func createCustomZone(_ completion: ((Error?) -> ())? = nil) {
-        let newCustomZone = CKRecordZone(zoneID: objectSyncInfo.recordZoneID)
-        let modifyOp = CKModifyRecordZonesOperation(recordZonesToSave: [newCustomZone], recordZoneIDsToDelete: nil)
-        modifyOp.modifyRecordZonesCompletionBlock = { [weak self](_, _, error) in
-            guard let `self` = self else { return }
-            switch `self`.errorHandler.resultType(with: error) {
-            case .success:
-                DispatchQueue.main.async {
-                    completion?(nil)
-                }
-            case .retry(let timeToWait, _):
-                `self`.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
-                     `self`.createCustomZone(completion)
-                })
-            default:
-                return
-            }
-        }
         
-        objectSyncInfo.database.add(modifyOp)
-    }
-        
-    fileprivate func startObservingRemoteChanges() {
-        NotificationCenter.default.addObserver(forName: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, queue: OperationQueue.main, using: { [weak self](_) in
-            guard let `self` = self else { return }
-            `self`.objectSyncInfo.databaseZone.fetchChangesInDatabase(notificationTokens: self.notificationTokens)
-//            `self`.fetchChangesInDatabase()
-        })
-    }
+
     
 }
 
