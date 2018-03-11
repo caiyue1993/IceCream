@@ -66,29 +66,38 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1B4-zm-f7e">
-                                <rect key="frame" x="0.0" y="20" width="375" height="30"/>
-                                <state key="normal" title="Add Dog Object"/>
-                                <connections>
-                                    <action selector="addButtonTapped:" destination="ywL-7w-bIk" eventType="touchUpInside" id="tUE-7I-N9q"/>
-                                </connections>
-                            </button>
-                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hcH-iD-6rf">
-                                <rect key="frame" x="0.0" y="58" width="375" height="560"/>
-                                <connections>
-                                    <segue destination="b9H-gZ-a8r" kind="embed" id="dwZ-5f-bEE"/>
-                                </connections>
-                            </containerView>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="3Jw-ut-WNQ">
+                                <rect key="frame" x="0.0" y="20" width="375" height="598"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1B4-zm-f7e">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="14"/>
+                                        <state key="normal" title="Add Dog Object"/>
+                                        <connections>
+                                            <action selector="addDogButtonTapped:" destination="ywL-7w-bIk" eventType="touchUpInside" id="rba-hX-hFq"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4MS-Cd-fKc" userLabel="Add Cat Object">
+                                        <rect key="frame" x="0.0" y="22" width="375" height="30"/>
+                                        <state key="normal" title="Add Cat Object"/>
+                                        <connections>
+                                            <action selector="addCatButtonTapped:" destination="ywL-7w-bIk" eventType="touchUpInside" id="Jhx-sa-xKf"/>
+                                        </connections>
+                                    </button>
+                                    <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hcH-iD-6rf">
+                                        <rect key="frame" x="0.0" y="60" width="375" height="538"/>
+                                        <connections>
+                                            <segue destination="b9H-gZ-a8r" kind="embed" id="dwZ-5f-bEE"/>
+                                        </connections>
+                                    </containerView>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="qWt-u3-3wO" firstAttribute="trailing" secondItem="1B4-zm-f7e" secondAttribute="trailing" id="Ir4-DN-v7Y"/>
-                            <constraint firstItem="qWt-u3-3wO" firstAttribute="bottom" secondItem="hcH-iD-6rf" secondAttribute="bottom" id="SKw-fR-UjY"/>
-                            <constraint firstItem="qWt-u3-3wO" firstAttribute="trailing" secondItem="hcH-iD-6rf" secondAttribute="trailing" id="Uiw-Aj-hWn"/>
-                            <constraint firstItem="1B4-zm-f7e" firstAttribute="leading" secondItem="qWt-u3-3wO" secondAttribute="leading" id="WSW-PV-07c"/>
-                            <constraint firstItem="hcH-iD-6rf" firstAttribute="leading" secondItem="qWt-u3-3wO" secondAttribute="leading" id="bhF-Op-F5D"/>
-                            <constraint firstItem="1B4-zm-f7e" firstAttribute="top" secondItem="qWt-u3-3wO" secondAttribute="top" id="hDh-l8-C0E"/>
-                            <constraint firstItem="hcH-iD-6rf" firstAttribute="top" secondItem="1B4-zm-f7e" secondAttribute="bottom" constant="8" id="qM5-R6-dZa"/>
+                            <constraint firstItem="3Jw-ut-WNQ" firstAttribute="top" secondItem="qWt-u3-3wO" secondAttribute="top" id="QLd-HV-l4j"/>
+                            <constraint firstItem="3Jw-ut-WNQ" firstAttribute="trailing" secondItem="qWt-u3-3wO" secondAttribute="trailing" id="UQq-Bb-bJV"/>
+                            <constraint firstItem="3Jw-ut-WNQ" firstAttribute="leading" secondItem="qWt-u3-3wO" secondAttribute="leading" id="mJf-DT-0Vh"/>
+                            <constraint firstItem="3Jw-ut-WNQ" firstAttribute="bottom" secondItem="qWt-u3-3wO" secondAttribute="bottom" id="w4H-bN-Apj"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="qWt-u3-3wO"/>
                     </view>
@@ -96,14 +105,14 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZPV-HA-AQV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="24.800000000000001" y="-379.16041979010498"/>
+            <point key="canvasLocation" x="-138" y="-403"/>
         </scene>
         <!--Realm Object Table View Controller-->
         <scene sceneID="8wk-cp-bgQ">
             <objects>
                 <tableViewController id="b9H-gZ-a8r" customClass="RealmObjectTableViewController" customModule="IceCreamExample2" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="qXY-im-hkK">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="560"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="538"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <connections>

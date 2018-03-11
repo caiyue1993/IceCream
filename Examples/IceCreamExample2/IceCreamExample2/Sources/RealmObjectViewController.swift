@@ -11,7 +11,8 @@ import RealmSwift
 
 class RealmObjectViewController: UIViewController {
     static var dogNumber = 1
-    
+    static var catNumber = 1
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -37,18 +38,27 @@ class RealmObjectViewController: UIViewController {
 }
 
 extension RealmObjectViewController {
-    @IBAction func addButtonTapped(_ sender: Any) {
-        let dog = Dog()
-        let leaving4 = dog.id.count - 4
-        let dogName = "Dog \(dog.id.dropFirst(leaving4))"
-        dog.name = dogName
-        dog.age = RealmObjectViewController.dogNumber
+    @IBAction func addDogButtonTapped(_ sender: Any) {
+        let dog = Dog(name: "Dog", age: RealmObjectViewController.dogNumber)
         
         RealmObjectViewController.dogNumber += 1
         
         let realm = try! Realm()
         try! realm.write {
             realm.add(dog)
+        }
+    }
+}
+
+extension RealmObjectViewController {
+    @IBAction func addCatButtonTapped(_ sender: Any) {
+        let cat = Cat(name: "Cat", age: RealmObjectViewController.catNumber)
+        
+        RealmObjectViewController.catNumber += 1
+        
+        let realm = try! Realm()
+        try! realm.write {
+            realm.add(cat)
         }
     }
 }

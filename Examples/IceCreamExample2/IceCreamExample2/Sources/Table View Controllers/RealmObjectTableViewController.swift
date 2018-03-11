@@ -12,7 +12,11 @@ import RealmSwift
 class RealmObjectTableViewController: UITableViewController {
 
     var dogs: Results<Dog>?
-    var notificationToken: NotificationToken?
+    var cats: Results<Cat>?
+
+    var dogsNotificationToken: NotificationToken?
+    var catsNotificationToken: NotificationToken?
+
 }
 
 extension RealmObjectTableViewController {
@@ -41,7 +45,7 @@ extension RealmObjectTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return numberOfRows
+        return numberOfRows(inSection: section)
     }
 
     /*
@@ -83,20 +87,40 @@ extension RealmObjectTableViewController {
 extension RealmObjectTableViewController {
     
     var numberOfSections: Int {
-        return 1
+        return 2
     }
     
-    var numberOfRows: Int {
-        return dogs?.count ?? 0
+    func numberOfRows(inSection section: Int) -> Int {
+        switch section {
+        case 0:
+            return dogs?.count ?? 0
+            
+        case 1:
+            return cats?.count ?? 0
+            
+        default:
+            return 0
+        }
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = UITableViewCell()
-        
         let row = indexPath.row
-        if let dog = dogs?[row] {
-            cell.textLabel?.text = dog.name
+
+        let section = indexPath.section
+        
+        switch section {
+        case 0:
+            if let dog = dogs?[row] {
+                cell.textLabel?.text = dog.name
+            }
+        case 1:
+            if let cat = cats?[row] {
+                cell.textLabel?.text = cat.name
+            }
+        default:
+            break
         }
         
         return cell
@@ -107,22 +131,39 @@ extension RealmObjectTableViewController {
         if editingStyle == .delete {
             // Delete the row from the data source
             let row = indexPath.row
-            if let dog = dogs?[row] {
-                let realm = try! Realm()
-                try! realm.write {
-                    dog.isDeleted = true
+            let section = indexPath.section
+
+            switch section {
+            case 0:
+                if let dog = dogs?[row] {
+                    let realm = try! Realm()
+                    try! realm.write {
+                        dog.isDeleted = true
+                    }
                 }
+                
+            case 1:
+                if let cat = cats?[row] {
+                    let realm = try! Realm()
+                    try! realm.write {
+                        cat.isDeleted = true
+                    }
+                }
+            default:
+                break
             }
+
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         }
      }
 
     func setup() {
+        
         let realm = try! Realm()
         
         dogs = realm.objects(Dog.self)
-        notificationToken = dogs?.observe { [weak self] changes in
+        dogsNotificationToken = dogs?.observe { [weak self] changes in
             guard let tableView = self?.tableView else { return }
             switch changes {
             case .initial:
@@ -142,6 +183,40 @@ extension RealmObjectTableViewController {
                 // An error occurred while opening the Realm file on the background worker thread
                 fatalError("\(error)")
             }
+        }
+        
+        cats = realm.objects(Cat.self)
+        catsNotificationToken = cats?.observe { [weak self] changes in
+            guard let tableView = self?.tableView else { return }
+            switch changes {
+            case .initial:
+                // Results are now populated and can be accessed without blocking the UI
+                tableView.reloadData()
+            case .update(_, let deletions, let insertions, let modifications):
+                // Query results have changed, so apply them to the UITableView
+                tableView.beginUpdates()
+                tableView.insertRows(at: insertions.map({ IndexPath(row: $0, section: 1) }),
+                                     with: .automatic)
+                tableView.deleteRows(at: deletions.map({ IndexPath(row: $0, section: 1)}),
+                                     with: .automatic)
+                tableView.reloadRows(at: modifications.map({ IndexPath(row: $0, section: 1) }),
+                                     with: .automatic)
+                tableView.endUpdates()
+            case .error(let error):
+                // An error occurred while opening the Realm file on the background worker thread
+                fatalError("\(error)")
+            }
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        switch section {
+        case 0:
+            return "Dogs"
+        case 1:
+            return "Cats"
+        default:
+            return ""
         }
     }
 }
