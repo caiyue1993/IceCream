@@ -102,7 +102,7 @@ public struct ObjectSyncInfo {
     }
     
     // Cuz we only need to do subscription once succeed
-    var subscriptionIsLocallyCached: Bool {
+    private var subscriptionIsLocallyCached: Bool {
         get {
             guard let flag = UserDefaults.standard.object(forKey: subscriptionIsLocallyCachedKey) as? Bool  else { return false }
             return flag
@@ -113,6 +113,9 @@ public struct ObjectSyncInfo {
     }
     
     public mutating func createDatabaseSubscription(errorHandler: ErrorHandler) {
+        
+        if subscriptionIsLocallyCached { return }
+        
         // The direct below is the subscribe way that Apple suggests in CloudKit Best Practices(https://developer.apple.com/videos/play/wwdc2016/231/) , but it doesn't work here in my place.
         /*
          let subscription = CKDatabaseSubscription(subscriptionID: IceCreamConstants.cloudSubscriptionID)

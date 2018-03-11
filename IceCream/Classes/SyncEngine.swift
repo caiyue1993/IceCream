@@ -155,7 +155,6 @@ public final class ObjectSyncEngine {
                 
                 NotificationCenter.default.addObserver(weakSelf, selector: #selector(weakSelf.cleanUp), name: .UIApplicationWillTerminate, object: nil)
                 
-                if  weakSelf.objectSyncInfo.subscriptionIsLocallyCached { return }
                 weakSelf.objectSyncInfo.createDatabaseSubscription(errorHandler: weakSelf.errorHandler)
                 
 //                if weakSelf.subscriptionIsLocallyCached { return }
