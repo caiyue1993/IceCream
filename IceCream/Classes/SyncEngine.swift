@@ -86,7 +86,8 @@ public final class ObjectSyncEngine: NotificationTokenStore {
         
         return true
     }
-    private var objectSyncInfos: [ObjectSyncInfo]
+    
+    private var objectSyncInfos: [ObjectSyncInfo] = []
     
     var notificationTokens: [NotificationToken] {
         let notificationTokens = objectSyncInfos
@@ -96,15 +97,6 @@ public final class ObjectSyncEngine: NotificationTokenStore {
         
         return notificationTokens
     }
-    
-//    private var objectSyncInfo: ObjectSyncInfo {
-//        get {
-//            return objectSyncInfos.first!
-//        }
-//        set {
-//            objectSyncInfos = [newValue]
-//        }
-//    }
 
     private var databaseZones: [DatabaseZone] = []
 
@@ -115,38 +107,47 @@ public final class ObjectSyncEngine: NotificationTokenStore {
     private let errorHandler = ErrorHandler()
     
     /// We recommand process the initialization when app launches
-    public init(objectType: Object.Type, multiObjectSupport: Bool = true) {
-        let zoneName: String
+    public convenience init(objectType: Object.Type, multiObjectSupport: Bool = true) {
+        self.init(objectTypes: [objectType], multiObjectSupport: multiObjectSupport)
+    }
+    
+    public init(objectTypes: [Object.Type], multiObjectSupport: Bool = true) {
         
-        
-        if multiObjectSupport {
-            zoneName = "IceCream"
-        } else {
-            zoneName = "\(objectType.className())sZone"
+        let multiObjectSupport = multiObjectSupport || (objectTypes.count > 1)
+    
+        self.objectSyncInfos = objectTypes.map { objectType in
+            let zoneName: String
+            
+            if multiObjectSupport {
+                zoneName = "IceCream"
+            } else {
+                zoneName = "\(objectType.className())sZone"
+            }
+            
+            let recordZoneID = CKRecordZoneID(zoneName: zoneName, ownerName: CKCurrentUserDefaultName)
+            
+            let database = CKContainer.default().privateCloudDatabase
+            let databaseZone = DatabaseZone(database: database,
+                                            recordZone: CKRecordZone(zoneID: recordZoneID),
+                                            multiObjectSupport: false)
+            
+            databaseZones.append(databaseZone)
+            
+            let cloudKitSubscriptionID: String
+            
+            if multiObjectSupport {
+                cloudKitSubscriptionID = "icecream.subscription.\(database.databaseScope.string).\(zoneName).\(objectType.className()).\(subscriptionVersion)"
+            } else {
+                cloudKitSubscriptionID = "private_changes"
+            }
+            
+            let objectSyncInfo = ObjectSyncInfo(objectType: objectType,
+                               cloudKitSubscriptionID : cloudKitSubscriptionID,
+                               databaseZone: databaseZone)
+            
+            return objectSyncInfo
         }
         
-        let recordZoneID = CKRecordZoneID(zoneName: zoneName, ownerName: CKCurrentUserDefaultName)
-        
-        let database = CKContainer.default().privateCloudDatabase
-        let databaseZone = DatabaseZone(database: database,
-                                        recordZone: CKRecordZone(zoneID: recordZoneID),
-                                        multiObjectSupport: false)
-
-        databaseZones.append(databaseZone)
-        
-        let cloudKitSubscriptionID: String
-        
-        if multiObjectSupport {
-            cloudKitSubscriptionID = "icecream.subscription.\(database.databaseScope.string).\(zoneName).\(objectType.className()).\(subscriptionVersion)"
-        } else {
-            cloudKitSubscriptionID = "private_changes"
-        }
-        
-        self.objectSyncInfos = [
-            ObjectSyncInfo(objectType: objectType,
-                            cloudKitSubscriptionID : cloudKitSubscriptionID,
-                            databaseZone: databaseZone)
-        ]
 
 //        if usePublicDatabase {
 //            database = CKContainer.default().publicCloudDatabase
