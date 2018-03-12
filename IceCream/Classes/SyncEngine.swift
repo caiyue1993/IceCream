@@ -36,7 +36,8 @@ public struct IceCreamConstant {
     public static let cloudKitSubscriptionID = "private_changes"
 }
 
-public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecoverable> {
+
+public final class SyncEngine<It: IteratorProtocol> where It.Element: Object & CKRecordConvertible & CKRecordRecoverable {
     
     /// Notifications are delivered as long as a reference is held to the returned notification token. You should keep a strong reference to this token on the class registering for updates, as notifications are automatically unregistered when the notification token is deallocated.
     /// For more, reference is here: https://realm.io/docs/swift/latest/#notifications
