@@ -12,7 +12,7 @@ import CloudKit
 struct ObjectTypeRegister {
     static var entries = ObjectTypeRegister()
     
-    private var _entries: [String : Object.Type] = [:]
+    internal var _entries: [String : Object.Type] = [:]
     
     subscript(_ name: String) ->  Object.Type? {
         get {

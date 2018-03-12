@@ -9,10 +9,16 @@ import Foundation
 import CloudKit
 import RealmSwift
 
-struct DatabaseZone: Hashable {
+protocol NotificationTokenStore {
+    var notificationTokens: [NotificationToken] { get }
+}
+
+class DatabaseZone: Hashable {
     let database: CKDatabase
     let recordZone: CKRecordZone
-
+    
+    var notificationTokenStore: NotificationTokenStore? = nil
+    
     var hashValue: Int {
         return database.hashValue ^ recordZone.hashValue
     }
@@ -36,17 +42,7 @@ struct DatabaseZone: Hashable {
             databaseChangesTokenKey = "icecream.keys.databaseChangesTokenKey"
             zoneChangesTokenKey = "icecream.keys.zoneChangesTokenKey"
         } else {
-            let databaseScope: String
-            switch database.databaseScope {
-            case .private:
-                databaseScope = "private"
-                
-            case .public:
-                databaseScope = "public"
-
-            case .shared:
-                databaseScope = "shared"
-            }
+            let databaseScope = database.databaseScope.string
             
             let zoneName = recordZone.zoneID.zoneName
             
@@ -93,35 +89,34 @@ struct DatabaseZone: Hashable {
     private let errorHandler = ErrorHandler()
     
     /// Only update the changeToken when fetch process completes
-    mutating func fetchChangesInDatabase(notificationTokens: [NotificationToken], _ callback: (() -> Void)? = nil) {
+    func fetchChangesInDatabase(_ callback: (() -> Void)? = nil) {
         
         let changesOperation = CKFetchDatabaseChangesOperation(previousServerChangeToken: databaseChangeToken)
         
         /// For more, see the source code, it has the detailed explanation
         changesOperation.fetchAllChanges = true
         
-        var myself = self
         changesOperation.changeTokenUpdatedBlock = { newToken in
-            myself.databaseChangeToken = newToken
+            self.databaseChangeToken = newToken
         }
         
         changesOperation.fetchDatabaseChangesCompletionBlock = {
             newToken, _, error in
-            switch myself.errorHandler.resultType(with: error) {
+            switch self.errorHandler.resultType(with: error) {
             case .success:
-                myself.databaseChangeToken = newToken
+                self.databaseChangeToken = newToken
                 // Fetch the changes in zone level
-                myself.fetchChangesInZone(notificationTokens: notificationTokens, callback)
+                self.fetchChangesInZone(callback)
             case .retry(let timeToWait, _):
-                myself.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
-                    myself.fetchChangesInDatabase(notificationTokens: notificationTokens, callback)
+                self.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
+                    self.fetchChangesInDatabase(callback)
                 })
             case .recoverableError(let reason, _):
                 switch reason {
                 case .changeTokenExpired:
                     /// The previousServerChangeToken value is too old and the client must re-sync from scratch
-                    myself.databaseChangeToken = nil
-                    myself.fetchChangesInDatabase(notificationTokens: notificationTokens, callback)
+                    self.databaseChangeToken = nil
+                    self.fetchChangesInDatabase(callback)
                 default:
                     return
                 }
@@ -133,7 +128,7 @@ struct DatabaseZone: Hashable {
         database.add(changesOperation)
     }
     
-    private mutating func fetchChangesInZone(notificationTokens: [NotificationToken], _ callback: (() -> Void)? = nil) {
+    private func fetchChangesInZone(_ callback: (() -> Void)? = nil) {
         
         let zoneChangesOptions = CKFetchRecordZoneChangesOptions()
         zoneChangesOptions.previousServerChangeToken = zoneChangesToken
@@ -141,9 +136,8 @@ struct DatabaseZone: Hashable {
         let changesOp = CKFetchRecordZoneChangesOperation(recordZoneIDs: [recordZoneID], optionsByRecordZoneID: [recordZoneID: zoneChangesOptions])
         changesOp.fetchAllChanges = true
         
-        var myself = self
         changesOp.recordZoneChangeTokensUpdatedBlock = { _, token, _ in
-            myself.zoneChangesToken = token
+            self.zoneChangesToken = token
         }
         
         changesOp.recordChangedBlock = { record in
@@ -162,7 +156,7 @@ struct DatabaseZone: Hashable {
                 /// https://realm.io/docs/swift/latest/#objects-with-primary-keys
                 realm.beginWrite()
                 realm.add(object, update: true)
-                try! realm.commitWrite(withoutNotifying: notificationTokens)
+                try! realm.commitWrite(withoutNotifying: self.notificationTokenStore?.notificationTokens ?? [])
             }
         }
         
@@ -181,26 +175,26 @@ struct DatabaseZone: Hashable {
                     CreamAsset.deleteCreamAssetFile(with: recordID.recordName)
                     realm.beginWrite()
                     realm.delete(object)
-                    try! realm.commitWrite(withoutNotifying: notificationTokens)
+                    try! realm.commitWrite(withoutNotifying: self.notificationTokenStore?.notificationTokens ?? [])
                 }
         }
         
         changesOp.recordZoneFetchCompletionBlock = { (_,token, _, _, error) in
-            switch myself.errorHandler.resultType(with: error) {
+            switch self.errorHandler.resultType(with: error) {
             case .success:
-                myself.zoneChangesToken = token
+                self.zoneChangesToken = token
                 callback?()
                 print("Sync successfully!")
             case .retry(let timeToWait, _):
-                myself.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
-                    myself.fetchChangesInZone(notificationTokens: notificationTokens, callback)
+                self.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
+                    self.fetchChangesInZone(callback)
                 })
             case .recoverableError(let reason, _):
                 switch reason {
                 case .changeTokenExpired:
                     /// The previousServerChangeToken value is too old and the client must re-sync from scratch
-                    myself.zoneChangesToken = nil
-                    myself.fetchChangesInZone(notificationTokens: notificationTokens, callback)
+                    self.zoneChangesToken = nil
+                    self.fetchChangesInZone(callback)
                 default:
                     return
                 }
@@ -235,10 +229,4 @@ struct DatabaseZone: Hashable {
         database.add(modifyOp)
     }
 
-    mutating func startObservingRemoteChanges(notificationTokens: [NotificationToken]) {
-        var myself = self
-        NotificationCenter.default.addObserver(forName: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, queue: OperationQueue.main, using: { (_) in
-            myself.fetchChangesInDatabase(notificationTokens: notificationTokens)
-        })
-    }
 }

@@ -10,9 +10,9 @@ import RealmSwift
 import CloudKit
 import Realm
 
-public struct ObjectSyncInfo {
+class ObjectSyncInfo {
+    
     let objectType: Object.Type
-    let subscriptionIsLocallyCachedKey: String
     
     /// Dangerous part:
     /// In most cases, you should not change the string value cause it is related to user settings.
@@ -22,6 +22,8 @@ public struct ObjectSyncInfo {
     let cloudKitSubscriptionID: String
   
     private var databaseZone: DatabaseZone
+
+    var notificationToken: NotificationToken? = nil
 
     var name: String {
         return objectType.className()
@@ -101,65 +103,31 @@ public struct ObjectSyncInfo {
         return r
     }
     
-    // Cuz we only need to do subscription once succeed
-    private var subscriptionIsLocallyCached: Bool {
-        get {
-            guard let flag = UserDefaults.standard.object(forKey: subscriptionIsLocallyCachedKey) as? Bool  else { return false }
-            return flag
-        }
-        set {
-            UserDefaults.standard.set(newValue, forKey: subscriptionIsLocallyCachedKey)
-        }
-    }
     
-    public mutating func createDatabaseSubscription(errorHandler: ErrorHandler) {
-        
-        if subscriptionIsLocallyCached { return }
-        
-        // The direct below is the subscribe way that Apple suggests in CloudKit Best Practices(https://developer.apple.com/videos/play/wwdc2016/231/) , but it doesn't work here in my place.
-        /*
-         let subscription = CKDatabaseSubscription(subscriptionID: IceCreamConstants.cloudSubscriptionID)
-         
-         let notificationInfo = CKNotificationInfo()
-         notificationInfo.shouldSendContentAvailable = true // Silent Push
-         
-         subscription.notificationInfo = notificationInfo
-         
-         let createOp = CKModifySubscriptionsOperation(subscriptionsToSave: [subscription], subscriptionIDsToDelete: [])
-         createOp.modifySubscriptionsCompletionBlock = { _, _, error in
-         guard error == nil else { return }
-         self.subscriptionIsLocallyCached = true
-         }
-         createOp.qualityOfService = .utility
-         privateDatabase.add(createOp)
-         */
+    func createDatabaseSubscription(errorHandler: ErrorHandler) {
         
         let recordType = name
-        /// So I use the @Guilherme Rambo's plan: https://github.com/insidegui/NoteTaker
-        let subscription = CKQuerySubscription(recordType: recordType, predicate: NSPredicate(value: true), subscriptionID: cloudKitSubscriptionID, options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion])
+        let subscription = CKQuerySubscription(recordType: recordType,
+                                               predicate: NSPredicate(value: true),
+                                               subscriptionID: cloudKitSubscriptionID,
+                                               options: [.firesOnRecordCreation,
+                                                         .firesOnRecordUpdate,
+                                                         .firesOnRecordDeletion])
+        
         let notificationInfo = CKNotificationInfo()
         notificationInfo.shouldSendContentAvailable = true // Silent Push
+        notificationInfo.alertBody = nil //"BOO"
+        
         subscription.notificationInfo = notificationInfo
         
-        var myself = self
-        database.save(subscription) { (_, error) in
-            switch errorHandler.resultType(with: error) {
-            case .success:
-                print("Register remote successfully!")
-                myself.subscriptionIsLocallyCached = true
-            case .retry(let timeToWait, _):
-                errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
-                    myself.createDatabaseSubscription(errorHandler: errorHandler)
-                })
-            default:
-                return
-            }
+        SubscriptionManager.shared.renew(subscription: subscription, for: database) { errors in
+            print(errors ?? "")
         }
     }
 
     /// Sync local data to CloudKit
     /// For more about the savePolicy: https://developer.apple.com/documentation/cloudkit/ckrecordsavepolicy
-    mutating func syncRecordsToCloudKit(errorHandler: ErrorHandler, recordsToStore: [CKRecord], recordIDsToDelete: [CKRecordID], completion: ((Error?) -> ())? = nil) {
+    func syncRecordsToCloudKit(errorHandler: ErrorHandler, recordsToStore: [CKRecord], recordIDsToDelete: [CKRecordID], completion: ((Error?) -> ())? = nil) {
         let modifyOpe = CKModifyRecordsOperation(recordsToSave: recordsToStore, recordIDsToDelete: recordIDsToDelete)
         
         if #available(iOS 11.0, *) {
@@ -180,10 +148,8 @@ public struct ObjectSyncInfo {
         // If you want to handle partial failures, set .isAtomic to false and implement CKOperationResultType .fail(reason: .partialFailure) where appropriate
         modifyOpe.isAtomic = true
         
-        var myself = self
         modifyOpe.modifyRecordsCompletionBlock = {
             (_, _, error) in
-            
             
             switch errorHandler.resultType(with: error) {
             case .success:
@@ -193,19 +159,18 @@ public struct ObjectSyncInfo {
                     /// Cause we will get a error when there is very empty in the cloudKit dashboard
                     /// which often happen when users first launch your app.
                     /// So, we put the subscription process here when we sure there is a record type in CloudKit.
-                    if myself.subscriptionIsLocallyCached { return }
-                    myself.createDatabaseSubscription(errorHandler: errorHandler)
+                    self.createDatabaseSubscription(errorHandler: errorHandler)
                 }
             case .retry(let timeToWait, _):
                 errorHandler.retryOperationIfPossible(retryAfter: timeToWait) {
-                    myself.syncRecordsToCloudKit(errorHandler: errorHandler, recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete, completion: completion)
+                    self.syncRecordsToCloudKit(errorHandler: errorHandler, recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete, completion: completion)
                 }
             case .chunk:
                 /// CloudKit says maximum number of items in a single request is 400.
                 /// So I think 300 should be a fine by them.
                 let chunkedRecords = recordsToStore.chunkItUp(by: 300)
                 for chunk in chunkedRecords {
-                    myself.syncRecordsToCloudKit(errorHandler: errorHandler, recordsToStore: chunk, recordIDsToDelete: recordIDsToDelete, completion: completion)
+                    self.syncRecordsToCloudKit(errorHandler: errorHandler, recordsToStore: chunk, recordIDsToDelete: recordIDsToDelete, completion: completion)
                 }
             default:
                 return
@@ -215,9 +180,70 @@ public struct ObjectSyncInfo {
         database.add(modifyOpe)
     }
 
-    init(objectType: Object.Type, subscriptionIsLocallyCachedKey: String, cloudKitSubscriptionID: String, databaseZone: DatabaseZone) {
+    /// When you commit a write transaction to a Realm, all other instances of that Realm will be notified, and be updated automatically.
+    /// For more: https://realm.io/docs/swift/latest/#writes
+    
+    func registerLocalDatabase(errorHandler: ErrorHandler) {
+        Realm.query { realm in
+            let objects = realm.objects(self.T)
+             self.notificationToken = objects.observe({ (changes) in
+                
+                switch changes {
+                case .initial(let collection):
+                    print("Inited:" + "\(collection)")
+                    break
+                case .update(let collection, let deletions, let insertions, let modifications):
+                    print("collections:" + "\(collection)")
+                    print("deletions:" + "\(deletions)")
+                    print("insertions:" + "\(insertions)")
+                    print("modifications:" + "\(modifications)")
+                    
+                    let objectsToStore = (insertions + modifications)
+                        .filter { $0 < collection.count }
+                        .map { i -> (Object & CKRecordConvertible)? in return collection[i] as? Object & CKRecordConvertible }
+                        .filter { $0 != nil }.map { $0! }
+                        .filter{ !$0.isDeleted }
+                    
+                    let objectsToDelete = modifications
+                        .filter { $0 < collection.count }
+                        .map { i -> (Object & CKRecordConvertible)? in return collection[i] as? Object & CKRecordConvertible }
+                        .filter { $0 != nil }.map { $0! }
+                        .filter { $0.isDeleted }
+                    
+                    self.syncObjectsToCloudKit(errorHandler: errorHandler, objectsToStore: objectsToStore, objectsToDelete: objectsToDelete)
+                    
+                case .error(_):
+                    break
+                }
+                
+            })
+        }
+    }
+    
+    // This method is commonly used when you want to push your datas to CloudKit manually
+    // In most cases, you don't need this
+    private func syncObjectsToCloudKit(errorHandler: ErrorHandler, objectsToStore: [Object & CKRecordConvertible], objectsToDelete: [Object & CKRecordConvertible] = []) {
+        guard objectsToStore.count > 0 || objectsToDelete.count > 0 else { return }
+        
+        let recordsToStore = objectsToStore.map{ self.cloudKitRecord(from: $0) }
+        let recordIDsToDelete = objectsToDelete.map{ self.recordID(of: $0) }
+        
+        syncRecordsToCloudKit(errorHandler: errorHandler, recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete) { error in
+            guard error == nil else { return }
+            guard !objectsToDelete.isEmpty else { return }
+            
+            let realm = try! Realm()
+            try! realm.write {
+                realm.delete(objectsToDelete as [Object])
+            }
+            
+            print("Completeed deletion of \(objectsToDelete.count) objects")
+        }
+    }
+    
+
+    init(objectType: Object.Type, cloudKitSubscriptionID: String, databaseZone: DatabaseZone) {
         self.objectType = objectType
-        self.subscriptionIsLocallyCachedKey = subscriptionIsLocallyCachedKey
         self.cloudKitSubscriptionID = cloudKitSubscriptionID
         self.databaseZone = databaseZone
 

@@ -1,30 +1,34 @@
 //
 //  AppDelegate.swift
-//  IceCreamExample2
+//  IceCreamNotificationTest
 //
-//  Created by Andrew Eades on 07/03/2018.
+//  Created by Andrew Eades on 11/03/2018.
 //  Copyright © 2018 Andrew Eades. All rights reserved.
 //
 
 import UIKit
-import IceCream
 import UserNotifications
 import CloudKit
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
 
-    var syncEngine: ObjectSyncEngine?
-}
 
-extension AppDelegate {
-    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
-        setup(application: application)
+        UNUserNotificationCenter.current().delegate = self
         
+        UNUserNotificationCenter.current().delegate = self
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound], completionHandler: { authorized, error in
+            if authorized {
+                DispatchQueue.main.async {
+                    application.registerForRemoteNotifications()
+                }
+            }
+        })
+
         return true
     }
 
@@ -49,15 +53,11 @@ extension AppDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
+
+
 }
 
 extension AppDelegate {
-    func setup(application: UIApplication) {
-        syncEngine = ObjectSyncEngine(objectType: Dog.self, multiObjectSupport: true)
-        syncEngine?.start()
-        
-        application.registerForRemoteNotifications()
-    }
     
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         print("Error: \(error)")
@@ -65,12 +65,30 @@ extension AppDelegate {
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         print("Success: didRegisterForRemoteNotificationsWithDeviceToken")
+        
+//        let subscription = CKQuerySubscription(recordType: "Dog", predicate: NSPredicate(format: "TRUEPREDICATE"), options: [.firesOnRecordCreation, .firesOnRecordDeletion, .firesOnRecordUpdate])
+//
+//        let info = CKNotificationInfo()
+////        info.alertBody = "A new notification has been posted!"
+////        info.shouldBadge = true
+////        info.soundName = "default"
+//        info.shouldSendContentAvailable = true
+//        subscription.notificationInfo = info
+//
+//        let database = CKContainer(identifier: "iCloud.com.intrepidfrog.IceCreamExample2").privateCloudDatabase
+//        database.save(subscription, completionHandler: { subscription, error in
+//            if error == nil {
+//                // Subscription saved successfully
+//                print("yes")
+//            } else {
+//                // An error occurred
+//                print("\(error)")
+//            }
+//        })
     }
     
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-
-        _ = syncEngine?.handleRemoteNotification()
-        
-        completionHandler(.newData)
-    }
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+    
+            completionHandler([.alert, .sound])
+        }
 }

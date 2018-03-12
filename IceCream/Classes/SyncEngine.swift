@@ -8,6 +8,21 @@
 import Foundation
 import RealmSwift
 import CloudKit
+import UserNotifications
+
+
+extension CKDatabaseScope {
+    var string: String {
+        switch self {
+        case .private:
+            return "private"
+        case .public:
+            return "public"
+        case .shared:
+            return "shared"
+        }
+    }
+}
 
 public enum Notifications: String, NotificationName {
     case cloudKitDataDidChangeRemotely
@@ -23,8 +38,11 @@ public final class SyncEngine<SyncedObjectType: Object & CKRecordConvertible> {
     }
 }
 
-public final class ObjectSyncEngine {
+public final class ObjectSyncEngine: NotificationTokenStore {
     
+//    let subscriptionVersion = "1.1"
+    let subscriptionVersion = "2.1"
+
     private lazy var syncedObjects: [String : ObjectSyncInfo] = {
         var syncedObjects = [String: ObjectSyncInfo]()
         self.objectSyncInfos.forEach {
@@ -40,9 +58,11 @@ public final class ObjectSyncEngine {
         return zoneID
     }
     
-    public func handleRemoteNotification(userInfo: [AnyHashable : Any]) -> Bool {
+    func handleRemoteNotification(userInfo: [AnyHashable : Any]) -> Bool {
         let notification = CKNotification(fromRemoteNotificationDictionary: userInfo)
 
+        print("handleRemoteNotification: \(String(describing: notification.subscriptionID))")
+        
         if syncedObjects.contains(where: { entry in return entry.value.cloudKitSubscriptionID == notification.subscriptionID}) {
             NotificationCenter.default.post(name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, userInfo: userInfo)
     
@@ -52,28 +72,52 @@ public final class ObjectSyncEngine {
         }
     }
     
+    public func handleRemoteNotification() -> Bool {
+        
+        print("handleRemoteNotification")
+        
+    //    if syncedObjects.contains(where: { entry in return entry.value.name == recordName}) {
+            NotificationCenter.default.post(name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, userInfo: nil)
+            
+//            return true
+//        } else {
+//            return false
+//        }
+        
+        return true
+    }
     private var objectSyncInfos: [ObjectSyncInfo]
     
-    private var objectSyncInfo: ObjectSyncInfo {
-        get {
-            return objectSyncInfos.first!
-        }
-        set {
-            objectSyncInfos = [newValue]
-        }
+    var notificationTokens: [NotificationToken] {
+        let notificationTokens = objectSyncInfos
+        .map { o ->  NotificationToken? in o.notificationToken }
+        .filter { $0 != nil }
+        .map { $0! }
+        
+        return notificationTokens
     }
+    
+//    private var objectSyncInfo: ObjectSyncInfo {
+//        get {
+//            return objectSyncInfos.first!
+//        }
+//        set {
+//            objectSyncInfos = [newValue]
+//        }
+//    }
 
-    private var databaseZones = Set<DatabaseZone>()
+    private var databaseZones: [DatabaseZone] = []
 
     /// Notifications are delivered as long as a reference is held to the returned notification token. You should keep a strong reference to this token on the class registering for updates, as notifications are automatically unregistered when the notification token is deallocated.
     /// For more, reference is here: https://realm.io/docs/swift/latest/#notifications
-    private var notificationTokens: [NotificationToken] = []
+//    private var notificationTokens: [NotificationToken] = []
     
     private let errorHandler = ErrorHandler()
     
     /// We recommand process the initialization when app launches
     public init(objectType: Object.Type, multiObjectSupport: Bool = true) {
         let zoneName: String
+        
         
         if multiObjectSupport {
             zoneName = "IceCream"
@@ -83,15 +127,24 @@ public final class ObjectSyncEngine {
         
         let recordZoneID = CKRecordZoneID(zoneName: zoneName, ownerName: CKCurrentUserDefaultName)
         
-        let databaseZone = DatabaseZone(database: CKContainer.default().privateCloudDatabase,
-                                        recordZone: CKRecordZone(zoneID: recordZoneID), multiObjectSupport: false)
+        let database = CKContainer.default().privateCloudDatabase
+        let databaseZone = DatabaseZone(database: database,
+                                        recordZone: CKRecordZone(zoneID: recordZoneID),
+                                        multiObjectSupport: false)
+
+        databaseZones.append(databaseZone)
         
-        databaseZones.insert(databaseZone)
+        let cloudKitSubscriptionID: String
+        
+        if multiObjectSupport {
+            cloudKitSubscriptionID = "icecream.subscription.\(database.databaseScope.string).\(zoneName).\(objectType.className()).\(subscriptionVersion)"
+        } else {
+            cloudKitSubscriptionID = "private_changes"
+        }
         
         self.objectSyncInfos = [
             ObjectSyncInfo(objectType: objectType,
-                            subscriptionIsLocallyCachedKey: "icecream.keys.subscriptionIsLocallyCachedKey",
-                            cloudKitSubscriptionID : IceCreamConstant.cloudKitSubscriptionID,
+                            cloudKitSubscriptionID : cloudKitSubscriptionID,
                             databaseZone: databaseZone)
         ]
 
@@ -111,6 +164,10 @@ public final class ObjectSyncEngine {
     public func start() {
         print("Object Sync Engine started.")
         
+        for databaseZone in databaseZones {
+            databaseZone.notificationTokenStore = self
+        }
+        
         /// Check iCloud status so that we can go on
         CKContainer.default().accountStatus { [weak self] (status, error) in
             if status == CKAccountStatus.available {
@@ -123,43 +180,32 @@ public final class ObjectSyncEngine {
                 /// Apple suggests that we should fetch changes in database, *especially* the very first launch.
                 /// But actually, there **might** be some rare unknown and weird reason that the data is not synced between muilty devices.
                 /// So I suggests fetch changes in database everytime app launches.
-                weakSelf.databaseZones.forEach {
-                    var databaseZone = $0
-                    databaseZone.fetchChangesInDatabase(notificationTokens: weakSelf.notificationTokens) {
+                for databaseZone in weakSelf.databaseZones {
+                    databaseZone.fetchChangesInDatabase() {
                         print("First sync of \(databaseZone)")
                     }
                 }
-                
-//                weakSelf.objectSyncInfo.databaseZone.fetchChangesInDatabase(notificationTokens: weakSelf.notificationTokens) {
-//                    print("First sync done!")
-//                }
-
 
                 weakSelf.resumeLongLivedOperationIfPossible()
                 
-                weakSelf.databaseZones.forEach {
-                    var databaseZone = $0
+                for databaseZone in weakSelf.databaseZones {
                     databaseZone.createCustomZone()
-                    
-                    databaseZone.startObservingRemoteChanges(notificationTokens: weakSelf.notificationTokens)
                 }
-                
-//                weakSelf.createCustomZone()
-                
-//                weakSelf.startObservingRemoteChanges()
+
+                weakSelf.startObservingRemoteChanges()
                 
                 /// 2. Register to local database
                 DispatchQueue.main.async {
-                    weakSelf.registerLocalDatabase()
+                    for objectSyncInfo in weakSelf.objectSyncInfos {
+                        objectSyncInfo.registerLocalDatabase(errorHandler: weakSelf.errorHandler)
+                    }
                 }
                 
                 NotificationCenter.default.addObserver(weakSelf, selector: #selector(weakSelf.cleanUp), name: .UIApplicationWillTerminate, object: nil)
                 
-                weakSelf.objectSyncInfo.createDatabaseSubscription(errorHandler: weakSelf.errorHandler)
-                
-//                if weakSelf.subscriptionIsLocallyCached { return }
-//                weakSelf.createDatabaseSubscription(forType: weakSelf.objectSyncInfo.name)
-                
+                for objectSyncInfo in weakSelf.objectSyncInfos {
+                    objectSyncInfo.createDatabaseSubscription(errorHandler: weakSelf.errorHandler)
+                }
             } else {
                 /// Handle when user account is not available
                 print("Easy, my boy. You haven't logged into iCloud account on your device/simulator yet.")
@@ -167,51 +213,24 @@ public final class ObjectSyncEngine {
         }
     }
     
-    /// When you commit a write transaction to a Realm, all other instances of that Realm will be notified, and be updated automatically.
-    /// For more: https://realm.io/docs/swift/latest/#writes
-
-    private func registerLocalDatabase() {
-        Realm.query { realm in
-            let objects = realm.objects(objectSyncInfo.T)
-            let notificationToken = objects.observe({ [weak self](changes) in
-                guard let `self` = self else { return }
-                
-                switch changes {
-                case .initial(let collection):
-                    print("Inited:" + "\(collection)")
-                    break
-                case .update(let collection, let deletions, let insertions, let modifications):
-                    print("collections:" + "\(collection)")
-                    print("deletions:" + "\(deletions)")
-                    print("insertions:" + "\(insertions)")
-                    print("modifications:" + "\(modifications)")
-                    
-                    let objectsToStore = (insertions + modifications)
-                        .filter { $0 < collection.count }
-                        .map { i -> (Object & CKRecordConvertible)? in return collection[i] as? Object & CKRecordConvertible }
-                        .filter { $0 != nil }.map { $0! }
-                        .filter{ !$0.isDeleted }
-                    
-                    let objectsToDelete = modifications
-                        .filter { $0 < collection.count }
-                        .map { i -> (Object & CKRecordConvertible)? in return collection[i] as? Object & CKRecordConvertible }
-                        .filter { $0 != nil }.map { $0! }
-                        .filter { $0.isDeleted }
-                    
-                    `self`.syncObjectsToCloudKit(objectSyncInfo: &self.objectSyncInfo, objectsToStore: objectsToStore, objectsToDelete: objectsToDelete)
-                    
-                case .error(_):
-                    break
-                }
-            })
-            
-            notificationTokens.append(notificationToken)
+    
+    func startObservingRemoteChanges() {
+        NotificationCenter.default.addObserver(forName: Notifications.cloudKitDataDidChangeRemotely.name,
+                                               object: nil,
+                                               queue: OperationQueue.main)
+        { (_) in
+            for databaseZone in self.databaseZones {
+                databaseZone.fetchChangesInDatabase()
+            }
         }
     }
     
     @objc func cleanUp() {
+
         do {
-            try Realm.purgeDeletedObjects(ofType: objectSyncInfo.T, withoutNotifying: notificationTokens)
+            try objectSyncInfos.forEach {
+                try Realm.purgeDeletedObjects(ofType: $0.T, withoutNotifying: self.notificationTokens)
+            }
         } catch {
             // Error handles here
         }
@@ -223,41 +242,11 @@ extension ObjectSyncEngine {
     
     // Manually sync data with CloudKit
     public func sync() {
-        self.databaseZones.forEach {
-            var databaseZone = $0
-            databaseZone.fetchChangesInDatabase(notificationTokens: notificationTokens)
-        }
-//        self.objectSyncInfo.databaseZone.fetchChangesInDatabase(notificationTokens: notificationTokens)
-    }
-    
-    // This method is commonly used when you want to push your datas to CloudKit manually
-    // In most cases, you don't need this
-    public func syncObjectsToCloudKit(objectSyncInfo: inout ObjectSyncInfo, objectsToStore: [Object & CKRecordConvertible], objectsToDelete: [Object & CKRecordConvertible] = []) {
-        guard objectsToStore.count > 0 || objectsToDelete.count > 0 else { return }
-        
-        let recordsToStore = objectsToStore.map{ self.objectSyncInfo.cloudKitRecord(from: $0) }
-        let recordIDsToDelete = objectsToDelete.map{ self.objectSyncInfo.recordID(of: $0) }
-        
-        objectSyncInfo.syncRecordsToCloudKit(errorHandler: errorHandler, recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete) { error in
-            guard error == nil else { return }
-            guard !objectsToDelete.isEmpty else { return }
-            
-            let realm = try! Realm()
-            try! realm.write {
-                realm.delete(objectsToDelete as [Object])
-            }
-            
-            print("Completeed deletion of \(objectsToDelete.count) objects")
+
+        for databaseZone in databaseZones {
+            databaseZone.fetchChangesInDatabase()
         }
     }
-}
-
-/// Chat to the CloudKit API directly
-extension ObjectSyncEngine {
-    
-        
-
-    
 }
 
 /// Long-lived Manipulation

@@ -10,10 +10,6 @@ import RealmSwift
 
 /// This file is for setting some develop configs for IceCream framework.
 
-public struct IceCreamConstant {
-    public static let cloudKitSubscriptionID = "private_changes"
-}
-
 public class IceCream {
     
     public static let shared = IceCream()
