@@ -53,7 +53,7 @@ extension AppDelegate {
 
 extension AppDelegate {
     func setup(application: UIApplication) {
-        syncEngine = ObjectSyncEngine(objectTypes: [Dog.self, Cat.self], multiObjectSupport: true)
+        syncEngine = ObjectSyncEngine(privateObjectTypes: [Dog.self], publicObjectTypes: [Cat.self])
         syncEngine?.start()
         
         application.registerForRemoteNotifications()
@@ -69,7 +69,7 @@ extension AppDelegate {
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
 
-        _ = syncEngine?.handleRemoteNotification()
+        _ = syncEngine?.handleRemoteNotification(userInfo: userInfo)
         
         completionHandler(.newData)
     }

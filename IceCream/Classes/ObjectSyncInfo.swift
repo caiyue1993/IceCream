@@ -21,7 +21,7 @@ class ObjectSyncInfo {
     /// The right way is remove old subscription first and then save new subscription.
     let cloudKitSubscriptionID: String
   
-    private var databaseZone: DatabaseZone
+    var databaseZone: DatabaseZone
 
     var notificationToken: NotificationToken? = nil
 
@@ -31,6 +31,10 @@ class ObjectSyncInfo {
     
     var T: Object.Type {
         return objectType.self
+    }
+    
+    var databaseScope: CKDatabaseScope {
+        return database.databaseScope
     }
     
     private var database: CKDatabase {
@@ -53,16 +57,6 @@ class ObjectSyncInfo {
         guard let primaryKeyProperty = sharedSchema.primaryKeyProperty else {
             fatalError("You should set a primary key on your Realm object")
         }
-        
-        //        guard let zoneID: CKRecordZoneID = ObjectSyncEngine.zoneID(forRecordType: Self.recordType) else {
-        //            fatalError("\(Self.recordType) has not been registered for syncing.")
-        //        }
-        
-        //        if self is StoredInPublicDatabase {
-        //            zoneID = CKRecordZone.default().zoneID
-        //        } else {
-        //            zoneID = NewSyncEngine.customZoneID
-        //        }
         
         if let primaryValueString = object[primaryKeyProperty.name] as? String {
             return CKRecordID(recordName: primaryValueString, zoneID: recordZoneID)
