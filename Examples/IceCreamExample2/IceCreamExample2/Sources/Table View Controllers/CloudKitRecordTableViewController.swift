@@ -10,30 +10,45 @@ import UIKit
 import CloudKit
 import IceCream
 
-class CloudKitRecordTableViewController: UITableViewController {
+protocol ObjectDescriptionDelegate {
+    var objectTypeName: String { get }
+    var zoneName: String { get }
+    var database: CKDatabase? { get }
+    
 
-    private var records: [CKRecord] = []
+}
+
+protocol CloudKitRecordTableViewControllerProtocol  {
+    var objectDescriptionDelegate: ObjectDescriptionDelegate? { get set }
+    var records: [CKRecord] { get set }
+}
+
+class CloudKitRecordTableViewController: UITableViewController, CloudKitRecordTableViewControllerProtocol {
+    var objectDescriptionDelegate: ObjectDescriptionDelegate? = nil
+
+    var records: [CKRecord] = []
+    
 }
 
 extension CloudKitRecordTableViewController {
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setup()
-        
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
-
+        
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        let recordZoneID = CKRecordZoneID(zoneName: "IceCream", ownerName: CKCurrentUserDefaultName)
-        fetchAll(recordType: "Dog", recordZoneID: recordZoneID)
+        guard let zoneName = objectDescriptionDelegate?.zoneName else { return }
+        guard let objectTypeName = objectDescriptionDelegate?.objectTypeName else { return }
+
+        let recordZoneID = CKRecordZoneID(zoneName: zoneName, ownerName: CKCurrentUserDefaultName)
+        fetchAll(recordType: objectTypeName, recordZoneID: recordZoneID)
     }
 
     override func didReceiveMemoryWarning() {
@@ -136,10 +151,13 @@ extension CloudKitRecordTableViewController {
 
     private func startObservingRemoteChanges() {
         NotificationCenter.default.addObserver(forName: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, queue: OperationQueue.main, using: { [weak self](_) in
-            guard self != nil else { return }
-            
-            let recordZoneID = CKRecordZoneID(zoneName: "IceCream", ownerName: CKCurrentUserDefaultName)
-            self?.fetchAll(recordType: "Dog", recordZoneID: recordZoneID)
+            guard let weakSelf = self else { return }
+            guard let zoneName = weakSelf.objectDescriptionDelegate?.zoneName else { return }
+            guard let objectTypeName = weakSelf.objectDescriptionDelegate?.objectTypeName else { return }
+
+            let recordZoneID = CKRecordZoneID(zoneName: zoneName, ownerName: CKCurrentUserDefaultName)
+
+            self?.fetchAll(recordType: objectTypeName, recordZoneID: recordZoneID)
         })
     }
     
@@ -158,7 +176,7 @@ extension CloudKitRecordTableViewController {
         
         let query = CKQuery(recordType: recordType, predicate: predicate)
         
-        CKContainer.default().privateCloudDatabase.perform(query, inZoneWith: recordZoneID) { records, error in
+        objectDescriptionDelegate?.database?.perform(query, inZoneWith: recordZoneID) { records, error in
             guard error == nil, let fetchedRecords = records else {
                 fetchCompletedWith([])
                 return
@@ -168,3 +186,50 @@ extension CloudKitRecordTableViewController {
         }
     }
 }
+
+
+class PrivateCloudKitRecordTableViewController: CloudKitRecordTableViewController, ObjectDescriptionDelegate {
+    var objectTypeName: String = "Dog"
+    
+    var zoneName: String = "IceCream"
+    
+    var database: CKDatabase? = CKContainer.default().privateCloudDatabase
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        objectDescriptionDelegate = self
+        
+        setup()
+        
+        // Uncomment the following line to preserve selection between presentations
+        // self.clearsSelectionOnViewWillAppear = false
+        
+        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+        // self.navigationItem.rightBarButtonItem = self.editButtonItem
+    }
+}
+
+class PublicCloudKitRecordTableViewController: CloudKitRecordTableViewController, ObjectDescriptionDelegate {
+    var objectTypeName: String = "Cat"
+    
+    var zoneName: String = "_defaultZone"
+    
+    var database: CKDatabase? = CKContainer.default().publicCloudDatabase
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        objectDescriptionDelegate = self
+        
+        setup()
+        
+        // Uncomment the following line to preserve selection between presentations
+        // self.clearsSelectionOnViewWillAppear = false
+        
+        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+        // self.navigationItem.rightBarButtonItem = self.editButtonItem
+    }
+}
+
