@@ -46,6 +46,9 @@ class Dog: Animal {
         self.id = IceCream.id(typeName: "Dog", uuid: UUID().uuidString)
         let leaving4 = self.id.count - 4
         self.name = "\(name) \(self.id.dropFirst(leaving4))"
+        let data = UIImageJPEGRepresentation(UIImage(named: self.age % 2 == 1 ? "smile_dog" : "tongue_dog")!, 1.0) as Data!
+        
+        self.avatar = CreamAsset.create(id: id, propName: Dog.AVATAR_KEY, data: data!)
     }
 }
 

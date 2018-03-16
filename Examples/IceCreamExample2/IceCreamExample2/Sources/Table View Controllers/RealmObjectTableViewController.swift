@@ -9,6 +9,11 @@
 import UIKit
 import RealmSwift
 
+enum Section: Int {
+    case dog = 0
+    case cat
+}
+
 class RealmObjectTableViewController: UITableViewController {
 
     var dogs: Results<Dog>?
@@ -92,10 +97,10 @@ extension RealmObjectTableViewController {
     
     func numberOfRows(inSection section: Int) -> Int {
         switch section {
-        case 0:
+        case Section.dog.rawValue:
             return dogs?.count ?? 0
             
-        case 1:
+        case Section.cat.rawValue:
             return cats?.count ?? 0
             
         default:
@@ -111,11 +116,18 @@ extension RealmObjectTableViewController {
         let section = indexPath.section
         
         switch section {
-        case 0:
+        case Section.dog.rawValue:
             if let dog = dogs?[row] {
                 cell.textLabel?.text = dog.name
+                
+                if let data = dog.avatar?.storedData() {
+                    cell.imageView?.image = UIImage(data: data)
+                } else {
+                    cell.imageView?.image = UIImage(named: "dog_placeholder")
+                }
             }
-        case 1:
+            
+        case Section.cat.rawValue:
             if let cat = cats?[row] {
                 cell.textLabel?.text = cat.name
             }
@@ -134,7 +146,7 @@ extension RealmObjectTableViewController {
             let section = indexPath.section
 
             switch section {
-            case 0:
+            case Section.dog.rawValue:
                 if let dog = dogs?[row] {
                     let realm = try! Realm()
                     try! realm.write {
@@ -142,7 +154,7 @@ extension RealmObjectTableViewController {
                     }
                 }
                 
-            case 1:
+            case Section.cat.rawValue:
                 if let cat = cats?[row] {
                     let realm = try! Realm()
                     try! realm.write {
@@ -211,9 +223,10 @@ extension RealmObjectTableViewController {
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
-        case 0:
+        case Section.dog.rawValue:
             return "Dogs"
-        case 1:
+            
+        case Section.cat.rawValue:
             return "Cats"
         default:
             return ""

@@ -67,7 +67,7 @@ class ViewController: UIViewController {
       dog.age = dogs.count + 1
 
       let data = UIImageJPEGRepresentation(UIImage(named: dog.age % 2 == 1 ? "smile_dog" : "tongue_dog")!, 1.0) as Data!
-        dog.avatar = CreamAsset.create(objectTypeName: Dog.className(), propName: Dog.AVATAR_KEY, data: data!)
+        dog.avatar = CreamAsset.create(id: dog.id, propName: Dog.AVATAR_KEY, data: data!)
       try! realm.write {
         realm.add(dog)
       }
@@ -105,7 +105,7 @@ extension ViewController: UITableViewDelegate {
             let dog = `self`.dogs[ip.row]
             try! `self`.realm.write {
                 if let imageData = UIImageJPEGRepresentation(UIImage(named: dog.age % 2 == 0 ? "smile_dog" : "tongue_dog")!, 1.0) {
-                    dog.avatar = CreamAsset.create(objectTypeName: Dog.className(), propName: Dog.AVATAR_KEY, data: imageData)
+                    dog.avatar = CreamAsset.create(id: dog.id, propName: Dog.AVATAR_KEY, data: imageData)
                 }
             }
         }

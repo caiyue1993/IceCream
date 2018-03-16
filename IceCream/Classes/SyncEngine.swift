@@ -299,13 +299,22 @@ extension ObjectSyncEngine {
         let cloudKitNotification = CKNotification(fromRemoteNotificationDictionary: userInfo)
         
         guard let subscriptionID = cloudKitNotification.subscriptionID else { return }
-        
-        let splits = subscriptionID.split(separator: ".")
-        guard splits.count >= 6 else { return }
-        
-        let databaseScope = splits[2]
-        let objectTypeName = String(splits[4])
-        
+      
+        let databaseScope: Substring
+        let objectTypeName: String
+
+        if subscriptionID == "private_changes" {
+            print("Hack to maintain support of original example")
+            databaseScope = "private"
+            objectTypeName = "Dog"
+        } else {
+            let splits = subscriptionID.split(separator: ".")
+            guard splits.count >= 6 else { return }
+            
+            databaseScope = splits[2]
+            objectTypeName = String(splits[4])
+        }
+
         guard let objectSyncInfo = self.syncedObjects[objectTypeName] else { return }
 
         switch databaseScope {

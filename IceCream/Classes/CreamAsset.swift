@@ -64,8 +64,8 @@ public class CreamAsset: Object {
                       data: assetData)
   }
 
-  public static func create(objectTypeName: String, propName: String, data: Data) -> CreamAsset? {
-    return CreamAsset(objectID: objectTypeName,
+  public static func create(id: String, propName: String, data: Data) -> CreamAsset? {
+    return CreamAsset(objectID: id,
                       propName: propName,
                            data: data)
   }
