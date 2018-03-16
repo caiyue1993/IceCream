@@ -32,7 +32,8 @@ extension CloudKitRecordTableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        fetchAll(recordType: "Dog")
+        let recordZoneID = CKRecordZoneID(zoneName: "IceCream", ownerName: CKCurrentUserDefaultName)
+        fetchAll(recordType: "Dog", recordZoneID: recordZoneID)
     }
 
     override func didReceiveMemoryWarning() {
@@ -137,12 +138,13 @@ extension CloudKitRecordTableViewController {
         NotificationCenter.default.addObserver(forName: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, queue: OperationQueue.main, using: { [weak self](_) in
             guard self != nil else { return }
             
-            self?.fetchAll(recordType: "Dog")
+            let recordZoneID = CKRecordZoneID(zoneName: "IceCream", ownerName: CKCurrentUserDefaultName)
+            self?.fetchAll(recordType: "Dog", recordZoneID: recordZoneID)
         })
     }
     
-    private func fetchAll(recordType: String) {
-        self.fetchChanges(recordType: recordType) { records in
+    private func fetchAll(recordType: String, recordZoneID: CKRecordZoneID) {
+        self.fetchChanges(recordType: recordType, recordZoneID: recordZoneID) { records in
             self.records = records
             
             DispatchQueue.main.async {
@@ -151,27 +153,18 @@ extension CloudKitRecordTableViewController {
         }
     }
     
-    private func fetchChanges(recordType: String, fetchCompletionBlock fetchCompletedWith: @escaping ([CKRecord]) -> Void) {
+    private func fetchChanges(recordType: String, recordZoneID: CKRecordZoneID, fetchCompletionBlock fetchCompletedWith: @escaping ([CKRecord]) -> Void) {
         let predicate = NSPredicate(value: true)
-        
-        var fetchedRecords: [CKRecord] = []
         
         let query = CKQuery(recordType: recordType, predicate: predicate)
         
-        let op = CKQueryOperation(query: query)
-        
-        op.database = CKContainer.default().privateCloudDatabase
-        
-        op.recordFetchedBlock = { record in
-            fetchedRecords.append(record)
-        }
-        
-        op.queryCompletionBlock = { cursor, error in
-            guard error == nil else { return }
+        CKContainer.default().privateCloudDatabase.perform(query, inZoneWith: recordZoneID) { records, error in
+            guard error == nil, let fetchedRecords = records else {
+                fetchCompletedWith([])
+                return
+            }
             
             fetchCompletedWith(fetchedRecords)
         }
-        
-        OperationQueue.main.addOperation(op)
     }
 }

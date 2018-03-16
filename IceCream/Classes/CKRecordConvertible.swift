@@ -55,5 +55,3 @@ struct CloudKitToObject {
     }
 }
 
-public protocol StoredInPublicDatabase {
-}
