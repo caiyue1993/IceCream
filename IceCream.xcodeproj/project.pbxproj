@@ -18,7 +18,23 @@
 		6743F72D202B0F9400912163 /* Notification+Name.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F725202B0F9400912163 /* Notification+Name.swift */; };
 		67FE320F202B505000125432 /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67FE320E202B505000125432 /* Realm.framework */; };
 		67FE3211202B505600125432 /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67FE3210202B505600125432 /* RealmSwift.framework */; };
+		A17F1DDC204FEA8200A62832 /* RealmSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 67FE3210202B505600125432 /* RealmSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		A17F1DDD204FEA8200A62832 /* Realm.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 67FE320E202B505000125432 /* Realm.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A17F1DDB204FEA7700A62832 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				A17F1DDC204FEA8200A62832 /* RealmSwift.framework in CopyFiles */,
+				A17F1DDD204FEA8200A62832 /* Realm.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		6743F712202B0F0F00912163 /* IceCream.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IceCream.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -34,6 +50,13 @@
 		6743F725202B0F9400912163 /* Notification+Name.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Notification+Name.swift"; sourceTree = "<group>"; };
 		67FE320E202B505000125432 /* Realm.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Realm.framework; path = Carthage/Build/iOS/Realm.framework; sourceTree = "<group>"; };
 		67FE3210202B505600125432 /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealmSwift.framework; path = Carthage/Build/iOS/RealmSwift.framework; sourceTree = "<group>"; };
+		A100D4DC204FE06500784EB8 /* IceCreamTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IceCreamTests.swift; sourceTree = "<group>"; };
+		A100D4DE204FE06500784EB8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A100D4E5204FE09F00784EB8 /* IceCreamTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IceCreamTests.swift; sourceTree = "<group>"; };
+		A100D4ED204FE34400784EB8 /* IceCreamTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IceCreamTests.swift; sourceTree = "<group>"; };
+		A100D4EF204FE34400784EB8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A17F1DCE204FE9B400A62832 /* IceCreamTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IceCreamTests.swift; sourceTree = "<group>"; };
+		A17F1DD0204FE9B400A62832 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,7 +75,11 @@
 		6743F708202B0F0F00912163 = {
 			isa = PBXGroup;
 			children = (
+				A100D4E5204FE09F00784EB8 /* IceCreamTests.swift */,
 				6743F714202B0F0F00912163 /* IceCream */,
+				A100D4DB204FE06500784EB8 /* IceCreamTests */,
+				A100D4EC204FE34400784EB8 /* IceCreamTests */,
+				A17F1DCD204FE9B400A62832 /* IceCreamTests */,
 				6743F713202B0F0F00912163 /* Products */,
 				67FE320D202B505000125432 /* Frameworks */,
 			);
@@ -80,13 +107,13 @@
 			isa = PBXGroup;
 			children = (
 				6743F71E202B0F9400912163 /* .gitkeep */,
-				6743F71F202B0F9400912163 /* SyncEngine.swift */,
-				6743F720202B0F9400912163 /* ErrorHandler.swift */,
-				6743F721202B0F9400912163 /* Cream.swift */,
-				6743F722202B0F9400912163 /* Manifest.swift */,
-				6743F723202B0F9400912163 /* CreamAsset.swift */,
 				6743F724202B0F9400912163 /* CKRecordConvertible.swift */,
+				6743F721202B0F9400912163 /* Cream.swift */,
+				6743F723202B0F9400912163 /* CreamAsset.swift */,
+				6743F720202B0F9400912163 /* ErrorHandler.swift */,
+				6743F722202B0F9400912163 /* Manifest.swift */,
 				6743F725202B0F9400912163 /* Notification+Name.swift */,
+				6743F71F202B0F9400912163 /* SyncEngine.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -98,6 +125,33 @@
 				67FE320E202B505000125432 /* Realm.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A100D4DB204FE06500784EB8 /* IceCreamTests */ = {
+			isa = PBXGroup;
+			children = (
+				A100D4DC204FE06500784EB8 /* IceCreamTests.swift */,
+				A100D4DE204FE06500784EB8 /* Info.plist */,
+			);
+			path = IceCreamTests;
+			sourceTree = "<group>";
+		};
+		A100D4EC204FE34400784EB8 /* IceCreamTests */ = {
+			isa = PBXGroup;
+			children = (
+				A100D4ED204FE34400784EB8 /* IceCreamTests.swift */,
+				A100D4EF204FE34400784EB8 /* Info.plist */,
+			);
+			path = IceCreamTests;
+			sourceTree = "<group>";
+		};
+		A17F1DCD204FE9B400A62832 /* IceCreamTests */ = {
+			isa = PBXGroup;
+			children = (
+				A17F1DCE204FE9B400A62832 /* IceCreamTests.swift */,
+				A17F1DD0204FE9B400A62832 /* Info.plist */,
+			);
+			path = IceCreamTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -123,6 +177,7 @@
 				6743F70F202B0F0F00912163 /* Headers */,
 				6743F710202B0F0F00912163 /* Resources */,
 				67FE3212202B50A200125432 /* ShellScript */,
+				A17F1DDB204FEA7700A62832 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -139,6 +194,7 @@
 		6743F709202B0F0F00912163 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0920;
 				LastUpgradeCheck = 0920;
 				ORGANIZATIONNAME = "蔡越";
 				TargetAttributes = {

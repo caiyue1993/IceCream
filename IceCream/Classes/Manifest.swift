@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import RealmSwift
 
 /// This file is for setting some develop configs for IceCream framework.
 
@@ -18,6 +19,9 @@ public class IceCream {
     /// The default value is true.
     public var enableLogging: Bool = true
     
+    public static func id(typeName name: String, uuid id: String) -> String {
+        return "IceCream:\(name):\(id)"
+    }
 }
 
 /// If you want to know more,
