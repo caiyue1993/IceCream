@@ -83,7 +83,7 @@ public final class ObjectSyncEngine: NotificationTokenStore {
         return notificationTokens
     }
 
-    private var databaseZones: [DatabaseZone] = []
+    private var databaseZones: Set<DatabaseZone> = Set<DatabaseZone>()
     private var privateDatabaseZones: [DatabaseZone] {
         return databaseZones.filter { $0.database.databaseScope == .private }
     }
@@ -122,7 +122,7 @@ public final class ObjectSyncEngine: NotificationTokenStore {
                                             recordZone: CKRecordZone(zoneID: recordZoneID),
                                             multiObjectSupport: multiObjectSupport)
             
-            databaseZones.append(databaseZone)
+            databaseZones.insert(databaseZone)
             
             let cloudKitSubscriptionID: String
             
@@ -151,7 +151,7 @@ public final class ObjectSyncEngine: NotificationTokenStore {
                                             recordZone: CKRecordZone(zoneID: recordZoneID),
                                             multiObjectSupport: true)
             
-            databaseZones.append(databaseZone)
+            databaseZones.insert(databaseZone)
             
             let cloudKitSubscriptionID: String
             
