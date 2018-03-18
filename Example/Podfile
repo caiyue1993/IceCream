@@ -1,8 +1,7 @@
 use_frameworks!
 
 target 'IceCream_Example' do
-  pod 'IceCream', :path => '../../'
-  pod 'RxRealm'
+  pod 'IceCream', :path => '../'
   pod 'Realm'
   pod 'RealmSwift'
 end

@@ -8,6 +8,7 @@
 
 import UIKit
 import RealmSwift
+import IceCream
 
 enum Section: Int {
     case dog = 0
@@ -21,7 +22,6 @@ class RealmObjectTableViewController: UITableViewController {
 
     var dogsNotificationToken: NotificationToken?
     var catsNotificationToken: NotificationToken?
-
 }
 
 extension RealmObjectTableViewController {
@@ -118,7 +118,7 @@ extension RealmObjectTableViewController {
         switch section {
         case Section.dog.rawValue:
             if let dog = dogs?[row] {
-                cell.textLabel?.text = dog.name
+                cell.textLabel?.text = "\(dog.name) aged \(dog.age)"
                 
                 if let data = dog.avatar?.storedData() {
                     cell.imageView?.image = UIImage(data: data)
@@ -129,7 +129,7 @@ extension RealmObjectTableViewController {
             
         case Section.cat.rawValue:
             if let cat = cats?[row] {
-                cell.textLabel?.text = cat.name
+                cell.textLabel?.text = "\(cat.name) aged \(cat.age)"
             }
         default:
             break
@@ -169,7 +169,7 @@ extension RealmObjectTableViewController {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         }
      }
-
+    
     func setup() {
         
         let realm = try! Realm()
@@ -230,6 +230,87 @@ extension RealmObjectTableViewController {
             return "Cats"
         default:
             return ""
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView,
+                   editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        
+        let deleteAction = UITableViewRowAction(style: .destructive, title: "Delete") { [weak self] (_, ip) in
+            guard let `self` = self else { return }
+            
+            let section = indexPath.section
+            let row = indexPath.row
+            let animal: Animal?
+
+            switch section {
+            case Section.dog.rawValue:
+                animal = `self`.dogs?[row]
+                
+            default:
+                animal = `self`.cats?[row]
+            }
+            
+            let realm = try! Realm()
+            try! realm.write {
+                animal?.isDeleted = true
+            }
+        }
+        
+        let ageAction = UITableViewRowAction(style: .normal, title: "Plus") { [weak self](_, indexPath) in
+            guard let `self` = self else { return }
+            
+            let section = indexPath.section
+            let row = indexPath.row
+            let animal: Animal?
+            
+            switch section {
+            case Section.dog.rawValue:
+                animal = `self`.dogs?[row]
+            
+            default:
+                animal = `self`.cats?[row]
+            }
+            
+            guard animal != nil else { return }
+            
+            let realm = try! Realm()
+            try! realm.write {
+                animal?.age += 1
+            }
+        }
+        
+        let changeImageAction = UITableViewRowAction(style: .normal, title: "Change Img") { [weak self](_, ip) in
+            guard ip.section == Section.dog.rawValue else { return }
+            guard let `self` = self else { return }
+            guard let dog = `self`.dogs?[ip.row] else { return }
+            
+            let realm = try! Realm()
+            try! realm.write {
+                if let imageData = UIImageJPEGRepresentation(UIImage(named: dog.age % 2 == 0 ? "smile_dog" : "tongue_dog")!, 1.0) {
+                    dog.avatar = CreamAsset.create(id: dog.id, propName: Dog.AVATAR_KEY, data: imageData)
+                }
+            }
+        }
+        changeImageAction.backgroundColor = .blue
+        
+        let emptyImageAction = UITableViewRowAction(style: .normal, title: "Nil Img") { [weak self](_, ip) in
+            guard ip.section == Section.dog.rawValue else { return }
+            guard let `self` = self else { return }
+            guard let dog = `self`.dogs?[ip.row] else { return }
+            let realm = try! Realm()
+            try! realm.write {
+                dog.avatar = nil
+            }
+        }
+        emptyImageAction.backgroundColor = .purple
+
+        switch indexPath.section {
+        case Section.dog.rawValue:
+            return [deleteAction, ageAction, changeImageAction, emptyImageAction]
+
+        default:
+            return [deleteAction, ageAction]
         }
     }
 }
