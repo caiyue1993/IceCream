@@ -20,7 +20,9 @@ class DatabaseZone: Hashable {
     var notificationTokenStore: NotificationTokenStore? = nil
     
     var hashValue: Int {
-        return database.hashValue ^ recordZone.hashValue
+        let id = "\(database.databaseScope.string):\(recordZone.zoneID.zoneName)"
+
+        return id.hashValue
     }
     
     static func ==(lhs: DatabaseZone, rhs: DatabaseZone) -> Bool {
