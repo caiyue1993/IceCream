@@ -64,8 +64,8 @@ public class CreamAsset: Object {
                       data: assetData)
   }
 
-  public static func create(object: CKRecordConvertible, propName: String, data: Data) -> CreamAsset? {
-    return CreamAsset(objectID: object.recordID.recordName,
+  public static func create(id: String, propName: String, data: Data) -> CreamAsset? {
+    return CreamAsset(objectID: id,
                       propName: propName,
                            data: data)
   }
