@@ -53,7 +53,7 @@ extension AppDelegate {
 
 extension AppDelegate {
     func setup(application: UIApplication) {
-        syncEngine = ObjectSyncEngine(privateObjectTypes: [Dog.self], publicObjectTypes: [Cat.self])
+        syncEngine = ObjectSyncEngine(publicObjectTypes: [Cat.self, Dog.self])
         syncEngine?.start()
         
         application.registerForRemoteNotifications()

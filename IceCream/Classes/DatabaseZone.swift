@@ -17,16 +17,20 @@ class DatabaseZone: Hashable {
     let database: CKDatabase
     let recordZone: CKRecordZone
     
+    private var id: String {
+        let id = "\(database.databaseScope.string):\(recordZone.zoneID.zoneName)"
+
+        return id
+    }
+    
     var notificationTokenStore: NotificationTokenStore? = nil
     
     var hashValue: Int {
-        let id = "\(database.databaseScope.string):\(recordZone.zoneID.zoneName)"
-
         return id.hashValue
     }
     
     static func ==(lhs: DatabaseZone, rhs: DatabaseZone) -> Bool {
-        return lhs.database == rhs.database && lhs.recordZone == rhs.recordZone
+        return lhs.id == rhs.id
     }
     
     var recordZoneID: CKRecordZoneID {
