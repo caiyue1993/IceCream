@@ -71,18 +71,16 @@ extension Dog: CKRecordConvertible {
     // Yep, leave it blank!    
 }
 
-extension Dog: CKRecordRecoverable {
-    typealias O = Dog
-}
 ```
 Is that easy? Protocol Extensions do this trick.
 
 3. Start the Engine!
 ```swift
-var syncEngine: SyncEngine<Dog>?
+var syncEngine: ObjectSyncEngine?
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
     ...
-    syncEngine = SyncEngine<Dog>()
+    syncEngine = ObjectSyncEngine(privateObjectTypes: [Dog.self])
+    syncEngine.start()
     application.registerForRemoteNotifications()
     ...
 }
