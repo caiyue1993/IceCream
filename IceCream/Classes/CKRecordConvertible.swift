@@ -20,12 +20,12 @@ public protocol CKRecordConvertible {
 }
 
 public protocol CKRecordRecoverable {
-    associatedtype O: Object
+    
 }
 
-extension CKRecordRecoverable {
-    func parseFromRecord(record: CKRecord) -> O? {
-        let o = O()
+extension CKRecordRecoverable where Self: Object {
+    func parseFromRecord(record: CKRecord) -> Self? {
+        let o = Self()
         for prop in o.objectSchema.properties {
             var recordValue: Any?
             switch prop.type {
