@@ -72,7 +72,7 @@ extension Dog: CKRecordConvertible {
 }
 
 extension Dog: CKRecordRecoverable {
-    typealias O = Dog
+    // Leave it blank, too.
 }
 ```
 Is that easy? Protocol Extensions do this trick.
@@ -182,7 +182,7 @@ IceCream is available through [CocoaPods](http://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod 'IceCream', '~> 1.3.0'
+pod 'IceCream', '~> 1.3.1'
 ```
 
 ## Make it better
