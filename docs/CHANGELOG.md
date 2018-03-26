@@ -1,7 +1,21 @@
 # Change Log
 
 -----
-## [1.3.0 - Decentralized is the Future]
+## [1.3.2 - Faster](https://github.com/caiyue1993/IceCream/releases/tag/1.3.2)
+
+#### Fix 
+
+* Static Framework Support. [#47](https://github.com/caiyue1993/IceCream/pull/47) 
+
+-----
+## [1.3.1 - Lean Code](https://github.com/caiyue1993/IceCream/releases/tag/1.3.1)
+
+#### Fix 
+
+* Use where clause to refactor code. [#46](https://github.com/caiyue1993/IceCream/pull/46) 
+
+-----
+## [1.3.0 - Decentralized is the Future](https://github.com/caiyue1993/IceCream/releases/tag/1.3.0)
 
 #### Add
 
@@ -9,10 +23,10 @@
 
 #### Fix 
 
-* CreamAsset behaves better. [32](https://github.com/caiyue1993/IceCream/pull/32) 
+* CreamAsset behaves better. [#32](https://github.com/caiyue1993/IceCream/pull/32) 
 
 -----
-## [1.2.1 - Make yourself at home]
+## [1.2.1 - Make yourself at home](https://github.com/caiyue1993/IceCream/releases/tag/1.2.1)
 
 #### Add
 
