@@ -185,7 +185,7 @@ it, simply add the following line to your Podfile:
 pod 'IceCream', '~> 1.3.2'
 ```
 
-> If you want build IceCream as Static Framework, CocoaPods 1.4.0+ is required.
+> If you want build IceCream as static framework, CocoaPods 1.4.0+ is required.
 
 ## Make it better
 
