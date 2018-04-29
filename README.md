@@ -156,7 +156,7 @@ Then, run the following command to build the frameworks:
 $ carthage update
 ```
 
-Normally you'll get IceCream, Realm and RealmSwift frameworks. You need to set up your Xcode project manually to add these 3 frameworks.
+Normally you'll get **IceCream**, **Realm** and **RealmSwift** frameworks. You need to set up your Xcode project manually to add these 3 frameworks.
 
 On your application targets’ **General** settings tab, in the **Linked Frameworks and Libraries** section, drag and drop each framework to use from the `Carthage/Build` folder on disk.
 
@@ -182,7 +182,7 @@ IceCream is available through [CocoaPods](http://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod 'IceCream', '~> 1.3.2'
+pod 'IceCream', '~> 1.3.3'
 ```
 
 > If you want build IceCream as static framework, CocoaPods 1.4.0+ is required.
