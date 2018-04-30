@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		63DE641320975EBB00048278 /* Queuer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DE641220975EBB00048278 /* Queuer.swift */; };
 		6743F717202B0F0F00912163 /* IceCream.h in Headers */ = {isa = PBXBuildFile; fileRef = 6743F715202B0F0F00912163 /* IceCream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6743F726202B0F9400912163 /* .gitkeep in Resources */ = {isa = PBXBuildFile; fileRef = 6743F71E202B0F9400912163 /* .gitkeep */; };
 		6743F727202B0F9400912163 /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F71F202B0F9400912163 /* SyncEngine.swift */; };
@@ -21,6 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		63DE641220975EBB00048278 /* Queuer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Queuer.swift; sourceTree = "<group>"; };
 		6743F712202B0F0F00912163 /* IceCream.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IceCream.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6743F715202B0F0F00912163 /* IceCream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IceCream.h; sourceTree = "<group>"; };
 		6743F716202B0F0F00912163 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -87,6 +89,7 @@
 				6743F723202B0F9400912163 /* CreamAsset.swift */,
 				6743F724202B0F9400912163 /* CKRecordConvertible.swift */,
 				6743F725202B0F9400912163 /* Notification+Name.swift */,
+				63DE641220975EBB00048278 /* Queuer.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -206,6 +209,7 @@
 				6743F72D202B0F9400912163 /* Notification+Name.swift in Sources */,
 				6743F729202B0F9400912163 /* Cream.swift in Sources */,
 				6743F728202B0F9400912163 /* ErrorHandler.swift in Sources */,
+				63DE641320975EBB00048278 /* Queuer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -289,20 +289,9 @@ extension SyncEngine {
                 print("There is something wrong with the converson from cloud record to local object")
                 return
             }
-
-            DispatchQueue.main.async {
-                let realm = try! Realm()
-
-                /// If your model class includes a primary key, you can have Realm intelligently update or add objects based off of their primary key values using Realm().add(_:update:).
-                /// https://realm.io/docs/swift/latest/#objects-with-primary-keys
-                realm.beginWrite()
+            RealmQueuer.shared.appendOperation({ realm in
                 realm.add(object, update: true)
-                if let token = `self`.notificationToken {
-                    try! realm.commitWrite(withoutNotifying: [token])
-                } else {
-                    try! realm.commitWrite()
-                }
-            }
+            })
         }
         
         changesOp.recordWithIDWasDeletedBlock = { [weak self]recordId, _ in
@@ -315,13 +304,9 @@ extension SyncEngine {
                     return
                 }
                 CreamAsset.deleteCreamAssetFile(with: recordId.recordName)
-                realm.beginWrite()
-                realm.delete(object)
-                if let token = `self`.notificationToken {
-                    try! realm.commitWrite(withoutNotifying: [token])
-                } else {
-                    try! realm.commitWrite()
-                }
+                RealmQueuer.shared.appendOperation({ realm in
+                    realm.delete(object)
+                })
             }
         }
         
