@@ -49,10 +49,11 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
     
     private let errorHandler = ErrorHandler()
     
-    private let realmQueuer = RealmQueuer()
+    private let realmQueuer: RealmQueueable
     
     /// We recommand process the initialization when app launches
-    public init() {
+    public init(realmQueuer: RealmQueueable = RealmQueuer()) {
+        self.realmQueuer = realmQueuer
         /// Check iCloud status so that we can go on
         CKContainer.default().accountStatus { [weak self] (status, error) in
             guard let `self` = self else { return }
@@ -294,7 +295,7 @@ extension SyncEngine {
             `self`.realmQueuer.appendOperation({ realm in
                 realm.add(object, update: true)
             })
-            `self`.realmQueuer.execute()
+            `self`.realmQueuer.execute(customRealm: nil, notificationToken: `self`.notificationToken)
         }
         
         changesOp.recordWithIDWasDeletedBlock = { [weak self]recordId, _ in
@@ -310,7 +311,7 @@ extension SyncEngine {
                 `self`.realmQueuer.appendOperation({ realm in
                     realm.delete(object)
                 })
-                `self`.realmQueuer.execute()
+                `self`.realmQueuer.execute(customRealm: realm, notificationToken: `self`.notificationToken)
             }
         }
         

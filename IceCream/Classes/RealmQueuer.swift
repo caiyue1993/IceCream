@@ -1,22 +1,27 @@
 import Foundation
 import RealmSwift
 
-class RealmQueuer {
+public protocol RealmQueueable {
+    func appendOperation(_ operation: @escaping (Realm) -> Void)
+    func execute(customRealm: Realm?, notificationToken: NotificationToken?)
+}
+
+public class RealmQueuer: RealmQueueable {
     let delay: TimeInterval
     var operations: [(Realm) -> Void] = [(Realm) -> Void]()
     fileprivate let throttler: Throttler
     private let realm = try! Realm()
 
-    init(delay: TimeInterval = 0.5) {
+    public init(delay: TimeInterval = 0.5) {
         self.delay = delay
         throttler = Throttler(seconds: delay)
     }
 
-    func appendOperation(_ operation: @escaping (Realm) -> Void) {
+    public func appendOperation(_ operation: @escaping (Realm) -> Void) {
         operations.append(operation)
     }
 
-    func execute(customRealm: Realm? = nil, notificationToken: NotificationToken? = nil) {
+    public func execute(customRealm: Realm? = nil, notificationToken: NotificationToken?) {
         throttler.throttle { [weak self] in
             guard let `self` = self else { return }
             let definedRealm = customRealm ?? `self`.realm
