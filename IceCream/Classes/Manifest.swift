@@ -17,7 +17,16 @@ public class IceCream {
     /// If you don't want to see them in your console, just set `enableLogging` property to false.
     /// The default value is true.
     public var enableLogging: Bool = true
+    /// Subscription method enables setting a different CloudKit subscription method for all the SyncEngine's you use
+    /// There's Apple recommended way and default alternative way
+    /// Alternative way didn't work for all cases so if you have problems not receiving silent pushes try Apple subscription method
+    public var subscriptionMethod: SubscriptionMethod = .alternative
     
+}
+
+public enum SubscriptionMethod {
+    case appleSuggested
+    case alternative
 }
 
 /// If you want to know more,
