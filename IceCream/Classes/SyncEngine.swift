@@ -49,6 +49,7 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
     
     private let errorHandler = ErrorHandler()
     
+    
     /// We recommand process the initialization when app launches
     public init() {
         /// Check iCloud status so that we can go on
@@ -401,41 +402,42 @@ extension SyncEngine {
     
     fileprivate func createDatabaseSubscription() {
         // The direct below is the subscribe way that Apple suggests in CloudKit Best Practices(https://developer.apple.com/videos/play/wwdc2016/231/) , but it doesn't work here in my place.
-        /*
-        let subscription = CKDatabaseSubscription(subscriptionID: IceCreamConstants.cloudSubscriptionID)
-
-        let notificationInfo = CKNotificationInfo()
-        notificationInfo.shouldSendContentAvailable = true // Silent Push
-         
-        subscription.notificationInfo = notificationInfo
-
-        let createOp = CKModifySubscriptionsOperation(subscriptionsToSave: [subscription], subscriptionIDsToDelete: [])
-        createOp.modifySubscriptionsCompletionBlock = { _, _, error in
-            guard error == nil else { return }
-            self.subscriptionIsLocallyCached = true
-        }
-        createOp.qualityOfService = .utility
-        privateDatabase.add(createOp)
-         */
         
-        /// So I use the @Guilherme Rambo's plan: https://github.com/insidegui/NoteTaker
-        let subscription = CKQuerySubscription(recordType: T.recordType, predicate: NSPredicate(value: true), subscriptionID: IceCreamConstant.cloudKitSubscriptionID, options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion])
-        let notificationInfo = CKNotificationInfo()
-        notificationInfo.shouldSendContentAvailable = true // Silent Push
-        subscription.notificationInfo = notificationInfo
-        
-        privateDatabase.save(subscription) { [weak self](_, error) in
-            guard let `self` = self else { return }
-            switch `self`.errorHandler.resultType(with: error) {
-            case .success:
-                print("Register remote successfully!")
-                `self`.subscriptionIsLocallyCached = true
-            case .retry(let timeToWait, _):
-                `self`.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
-                    `self`.createDatabaseSubscription()
-                })
-            default:
-                return
+        if case .appleSuggested = IceCream.shared.subscriptionMethod {
+            let subscription = CKDatabaseSubscription(subscriptionID: IceCreamConstant.cloudKitSubscriptionID)
+            
+            let notificationInfo = CKNotificationInfo()
+            notificationInfo.shouldSendContentAvailable = true // Silent Push
+            
+            subscription.notificationInfo = notificationInfo
+            
+            let createOp = CKModifySubscriptionsOperation(subscriptionsToSave: [subscription], subscriptionIDsToDelete: [])
+            createOp.modifySubscriptionsCompletionBlock = { _, _, error in
+                guard error == nil else { return }
+                self.subscriptionIsLocallyCached = true
+            }
+            createOp.qualityOfService = .utility
+            privateDatabase.add(createOp)
+        }else {
+            /// So I use the @Guilherme Rambo's plan: https://github.com/insidegui/NoteTaker
+            let subscription = CKQuerySubscription(recordType: T.recordType, predicate: NSPredicate(value: true), subscriptionID: IceCreamConstant.cloudKitSubscriptionID, options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion])
+            let notificationInfo = CKNotificationInfo()
+            notificationInfo.shouldSendContentAvailable = true // Silent Push
+            subscription.notificationInfo = notificationInfo
+            
+            privateDatabase.save(subscription) { [weak self](_, error) in
+                guard let `self` = self else { return }
+                switch `self`.errorHandler.resultType(with: error) {
+                case .success:
+                    print("Register remote successfully!")
+                    `self`.subscriptionIsLocallyCached = true
+                case .retry(let timeToWait, _):
+                    `self`.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
+                        `self`.createDatabaseSubscription()
+                    })
+                default:
+                    return
+                }
             }
         }
     }
