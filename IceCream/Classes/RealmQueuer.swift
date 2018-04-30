@@ -1,9 +1,7 @@
 import Foundation
 import RealmSwift
 
-class RealmQueuer {
-    static let shared = RealmQueuer()
-    
+class RealmQueuer {    
     let delay: TimeInterval
     var operations: [(Realm) -> Void] = [(Realm) -> Void]()
     fileprivate let throttler: Throttler

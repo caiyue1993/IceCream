@@ -49,6 +49,8 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
     
     private let errorHandler = ErrorHandler()
     
+    private let realmQueuer = RealmQueuer()
+    
     /// We recommand process the initialization when app launches
     public init() {
         /// Check iCloud status so that we can go on
@@ -289,9 +291,10 @@ extension SyncEngine {
                 print("There is something wrong with the converson from cloud record to local object")
                 return
             }
-            RealmQueuer.shared.appendOperation({ realm in
+            `self`.realmQueuer.appendOperation({ realm in
                 realm.add(object, update: true)
             })
+            `self`.realmQueuer.execute()
         }
         
         changesOp.recordWithIDWasDeletedBlock = { [weak self]recordId, _ in
@@ -304,9 +307,10 @@ extension SyncEngine {
                     return
                 }
                 CreamAsset.deleteCreamAssetFile(with: recordId.recordName)
-                RealmQueuer.shared.appendOperation({ realm in
+                `self`.realmQueuer.appendOperation({ realm in
                     realm.delete(object)
                 })
+                `self`.realmQueuer.execute()
             }
         }
         
