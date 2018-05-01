@@ -293,7 +293,9 @@ extension SyncEngine {
                 print("There is something wrong with the converson from cloud record to local object")
                 return
             }
-            `self`.dataSource.add(object: object)
+            DispatchQueue.main.async {
+                `self`.dataSource.add(object: object)
+            }
         }
 
         changesOp.recordWithIDWasDeletedBlock = { [weak self]recordId, _ in
