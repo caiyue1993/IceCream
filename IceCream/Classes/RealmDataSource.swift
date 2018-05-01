@@ -62,6 +62,8 @@ class Debouncer: NSObject {
     }
 
     @objc func fireNow() {
-        self.callback?()
+        DispatchQueue.main.async {
+            self.callback?()
+        }
     }
 }

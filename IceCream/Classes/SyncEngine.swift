@@ -293,9 +293,7 @@ extension SyncEngine {
                 print("There is something wrong with the converson from cloud record to local object")
                 return
             }
-            DispatchQueue.main.async {
-                `self`.dataSource.add(object: object)
-            }
+            `self`.dataSource.add(object: object)
         }
 
         changesOp.recordWithIDWasDeletedBlock = { [weak self]recordId, _ in
@@ -303,8 +301,8 @@ extension SyncEngine {
 
             DispatchQueue.main.async {
                 CreamAsset.deleteCreamAssetFile(with: recordId.recordName)
-                `self`.dataSource.delete(key: recordId.recordName)
             }
+            `self`.dataSource.delete(key: recordId.recordName)
         }
 
         changesOp.recordZoneFetchCompletionBlock = { [weak self](_,token, _, _, error) in
