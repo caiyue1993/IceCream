@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		41767BFD209863BA00178513 /* MasterSyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41767BFC209863BA00178513 /* MasterSyncEngine.swift */; };
 		6743F717202B0F0F00912163 /* IceCream.h in Headers */ = {isa = PBXBuildFile; fileRef = 6743F715202B0F0F00912163 /* IceCream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6743F726202B0F9400912163 /* .gitkeep in Resources */ = {isa = PBXBuildFile; fileRef = 6743F71E202B0F9400912163 /* .gitkeep */; };
 		6743F727202B0F9400912163 /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F71F202B0F9400912163 /* SyncEngine.swift */; };
@@ -21,6 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		41767BFC209863BA00178513 /* MasterSyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterSyncEngine.swift; sourceTree = "<group>"; };
 		6743F712202B0F0F00912163 /* IceCream.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IceCream.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6743F715202B0F0F00912163 /* IceCream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IceCream.h; sourceTree = "<group>"; };
 		6743F716202B0F0F00912163 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -87,6 +89,7 @@
 				6743F723202B0F9400912163 /* CreamAsset.swift */,
 				6743F724202B0F9400912163 /* CKRecordConvertible.swift */,
 				6743F725202B0F9400912163 /* Notification+Name.swift */,
+				41767BFC209863BA00178513 /* MasterSyncEngine.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -199,6 +202,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				41767BFD209863BA00178513 /* MasterSyncEngine.swift in Sources */,
 				6743F72C202B0F9400912163 /* CKRecordConvertible.swift in Sources */,
 				6743F72A202B0F9400912163 /* Manifest.swift in Sources */,
 				6743F727202B0F9400912163 /* SyncEngine.swift in Sources */,
