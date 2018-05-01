@@ -34,7 +34,7 @@ public class RealmDataSource<T:Object> {
             realm.beginWrite()
         }
         realm.add(additions, update: true)
-        let objectsToDelete = deletions.compactMap(realm.object(ofType: T.self, forPrimaryKey: $0))
+        let objectsToDelete = deletions.compactMap { realm.object(ofType: T.self, forPrimaryKey: $0) }
         realm.delete(objectsToDelete)
         if realm.isInWriteTransaction {
             if let token = notificationToken {
