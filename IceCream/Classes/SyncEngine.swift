@@ -65,7 +65,7 @@ public final class SyncEngine: SyncEngineSourceDelegate {
         for syncEngine in self.syncSources {
             syncEngine.SyncEngineSourceDelegate = self
         }
-        assert(self.syncSources.count == syncEngines.count, "One of the proviced sync engines does not match required protocol SyncEnginable")
+        assert(self.syncSources.count == syncSources.count, "One of the proviced sync engines does not match required protocol SyncEnginable")
         /// Check iCloud status so that we can go on
         CKContainer.default().accountStatus { [weak self] (status, error) in
             guard let `self` = self else { return }
