@@ -106,7 +106,6 @@
 				6743F6E5202B0CB600912163 /* Frameworks */,
 				6743F6E6202B0CB600912163 /* Resources */,
 				4EB0B0FAB57077CF96674EF8 /* [CP] Embed Pods Frameworks */,
-				1EEEA57037849FB794E951B7 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -172,21 +171,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		1EEEA57037849FB794E951B7 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-IceCream_Example/Pods-IceCream_Example-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		3E357FD277955B6923F73F16 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;

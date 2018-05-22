@@ -36,7 +36,7 @@ public struct IceCreamConstant {
     public static let cloudKitSubscriptionID = "private_changes"
 }
 
-public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecoverable> {
+public final class SyncEngine<T: Sequence> where T.Element: Object & CKRecordConvertible & CKRecordRecoverable {
     
     /// Notifications are delivered as long as a reference is held to the returned notification token. You should keep a strong reference to this token on the class registering for updates, as notifications are automatically unregistered when the notification token is deallocated.
     /// For more, reference is here: https://realm.io/docs/swift/latest/#notifications
@@ -93,10 +93,10 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
     /// For more: https://realm.io/docs/swift/latest/#writes
 
     private func registerLocalDatabase() {
-        let objects = Cream<T>().realm.objects(T.self)
+        let objects = Cream<T.Element>().realm.objects(T.Element.self)
         notificationToken = objects.observe({ [weak self](changes) in
             guard let `self` = self else { return }
-            
+
             switch changes {
             case .initial(let collection):
                 print("Inited:" + "\(collection)")
@@ -106,12 +106,12 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
                 print("deletions:" + "\(deletions)")
                 print("insertions:" + "\(insertions)")
                 print("modifications:" + "\(modifications)")
-                
+
                 let objectsToStore = (insertions + modifications).filter { $0 < collection.count }.map { collection[$0] }.filter{ !$0.isDeleted }
                 let objectsToDelete = modifications.filter { $0 < collection.count }.map{ collection[$0] }.filter { $0.isDeleted }
-                
+
                 `self`.syncObjectsToCloudKit(objectsToStore: objectsToStore, objectsToDelete: objectsToDelete)
-                
+
             case .error(_):
                 break
             }
@@ -119,7 +119,7 @@ public final class SyncEngine<T: Object & CKRecordConvertible & CKRecordRecovera
     }
     
     @objc func cleanUp() {
-        let cream = Cream<T>()
+        let cream = Cream<T.Element>()
         do {
             try cream.deletePreviousSoftDeleteObjects(notNotifying: notificationToken)
         } catch {
@@ -138,7 +138,7 @@ extension SyncEngine {
     
     // This method is commonly used when you want to push your datas to CloudKit manually
     // In most cases, you don't need this
-    public func syncObjectsToCloudKit(objectsToStore: [T], objectsToDelete: [T] = []) {
+    public func syncObjectsToCloudKit(objectsToStore: [T.Element], objectsToDelete: [T.Element] = []) {
         guard objectsToStore.count > 0 || objectsToDelete.count > 0 else { return }
         
         let recordsToStore = objectsToStore.map{ $0.record }
@@ -274,7 +274,7 @@ extension SyncEngine {
         let zoneChangesOptions = CKFetchRecordZoneChangesOptions()
         zoneChangesOptions.previousServerChangeToken = zoneChangesToken
         
-        let changesOp = CKFetchRecordZoneChangesOperation(recordZoneIDs: [T.customZoneID], optionsByRecordZoneID: [T.customZoneID: zoneChangesOptions])
+        let changesOp = CKFetchRecordZoneChangesOperation(recordZoneIDs: [T.Element.customZoneID], optionsByRecordZoneID: [T.Element.customZoneID: zoneChangesOptions])
         changesOp.fetchAllChanges = true
         
         changesOp.recordZoneChangeTokensUpdatedBlock = { _, token, _ in
@@ -285,7 +285,7 @@ extension SyncEngine {
             /// The Cloud will return the modified record since the last zoneChangesToken, we need to do local cache here.
             /// Handle the record:
             guard let `self` = self else { return }
-            guard let object = T().parseFromRecord(record: record)  else {
+            guard let object = T.Element().parseFromRecord(record: record)  else {
                 print("There is something wrong with the converson from cloud record to local object")
                 return
             }
@@ -310,7 +310,7 @@ extension SyncEngine {
             
             DispatchQueue.main.async {
                 let realm = try! Realm()
-                guard let object = realm.object(ofType: T.self, forPrimaryKey: recordId.recordName) else {
+                guard let object = realm.object(ofType: T.Element.self, forPrimaryKey: recordId.recordName) else {
                     // Not found in local
                     return
                 }
@@ -357,7 +357,7 @@ extension SyncEngine {
     /// Create new custom zones
     /// You can(but you shouldn't) invoke this method more times, but the CloudKit is smart and will handle that for you
     fileprivate func createCustomZone(_ completion: ((Error?) -> ())? = nil) {
-        let newCustomZone = CKRecordZone(zoneID: T.customZoneID)
+        let newCustomZone = CKRecordZone(zoneID: T.Element.customZoneID)
         let modifyOp = CKModifyRecordZonesOperation(recordZonesToSave: [newCustomZone], recordZoneIDsToDelete: nil)
         modifyOp.modifyRecordZonesCompletionBlock = { [weak self](_, _, error) in
             guard let `self` = self else { return }
@@ -419,7 +419,7 @@ extension SyncEngine {
          */
         
         /// So I use the @Guilherme Rambo's plan: https://github.com/insidegui/NoteTaker
-        let subscription = CKQuerySubscription(recordType: T.recordType, predicate: NSPredicate(value: true), subscriptionID: IceCreamConstant.cloudKitSubscriptionID, options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion])
+        let subscription = CKQuerySubscription(recordType: T.Element.recordType, predicate: NSPredicate(value: true), subscriptionID: IceCreamConstant.cloudKitSubscriptionID, options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion])
         let notificationInfo = CKNotificationInfo()
         notificationInfo.shouldSendContentAvailable = true // Silent Push
         subscription.notificationInfo = notificationInfo
