@@ -14,11 +14,11 @@ import CloudKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    var syncEngine: SyncEngine<Dog>?
+    var syncEngine: SyncEngine<[Dog]>?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
-        syncEngine = SyncEngine<Dog>()
+        syncEngine = SyncEngine<[Dog]>()
         application.registerForRemoteNotifications()
         
         window = UIWindow(frame: UIScreen.main.bounds)
