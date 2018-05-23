@@ -36,18 +36,6 @@ public struct IceCreamConstant {
     public static let cloudKitSubscriptionID = "private_changes"
 }
 
-protocol SyncSourcing: class {
-    func registerLocalDatabase()
-    func cleanUp()
-    var customZoneID: CKRecordZoneID { get }
-    var zoneChangesToken: CKServerChangeToken? { get set }
-    var recordType: String { get }
-    func add(record: CKRecord)
-    func delete(recordID: CKRecordID)
-    var isCustomZoneCreated: Bool { get }
-    var SyncEngineSourceDelegate: SyncEngineSourceDelegate? { get set }
-}
-
 public final class SyncEngine: SyncEngineSourceDelegate {
 
     /// Notifications are delivered as long as a reference is held to the returned notification token. You should keep a strong reference to this token on the class registering for updates, as notifications are automatically unregistered when the notification token is deallocated.
@@ -59,16 +47,14 @@ public final class SyncEngine: SyncEngineSourceDelegate {
 
     private let errorHandler = ErrorHandler()
 
-    private let syncSources: [SyncSourcing]
+    private let syncSources: [Syncable]
 
     /// We recommand process the initialization when app launches
-    public init(syncSources: [AnyObject]) {
-        // Added this so SyncEnginable could be internal and not private
-        self.syncSources = syncSources.compactMap { $0 as? SyncSourcing }
-        for syncEngine in self.syncSources {
+    public init(syncSources: [Syncable]) {
+        self.syncSources = syncSources
+        for syncEngine in syncSources {
             syncEngine.SyncEngineSourceDelegate = self
         }
-        assert(self.syncSources.count == syncSources.count, "One of the proviced sync engines does not match required protocol SyncEnginable")
         /// Check iCloud status so that we can go on
         CKContainer.default().accountStatus { [weak self] (status, error) in
             guard let `self` = self else { return }
@@ -144,7 +130,7 @@ public final class SyncEngine: SyncEngineSourceDelegate {
 
     /// Sync local data to CloudKit
     /// For more about the savePolicy: https://developer.apple.com/documentation/cloudkit/ckrecordsavepolicy
-    func syncRecordsToCloudKit(recordsToStore: [CKRecord], recordIDsToDelete: [CKRecordID], completion: ((Error?) -> ())? = nil) {
+    public func syncRecordsToCloudKit(recordsToStore: [CKRecord], recordIDsToDelete: [CKRecordID], completion: ((Error?) -> ())? = nil) {
         let modifyOpe = CKModifyRecordsOperation(recordsToSave: recordsToStore, recordIDsToDelete: recordIDsToDelete)
 
         if #available(iOS 11.0, *) {

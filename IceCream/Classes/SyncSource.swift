@@ -9,11 +9,11 @@ import Foundation
 import RealmSwift
 import CloudKit
 
-protocol SyncEngineSourceDelegate: class {
+public protocol SyncEngineSourceDelegate: class {
     func syncRecordsToCloudKit(recordsToStore: [CKRecord], recordIDsToDelete: [CKRecordID], completion: ((Error?) -> ())?)
 }
 
-public final class SyncSource<T: Object & CKRecordConvertible & CKRecordRecoverable>: SyncSourcing {
+public final class SyncSource<T: Object & CKRecordConvertible & CKRecordRecoverable>: Syncable {
 
     /// Notifications are delivered as long as a reference is held to the returned notification token. You should keep a strong reference to this token on the class registering for updates, as notifications are automatically unregistered when the notification token is deallocated.
     /// For more, reference is here: https://realm.io/docs/swift/latest/#notifications
@@ -21,7 +21,7 @@ public final class SyncSource<T: Object & CKRecordConvertible & CKRecordRecovera
 
     private let errorHandler = ErrorHandler()
 
-    weak var SyncEngineSourceDelegate: SyncEngineSourceDelegate?
+    weak public var SyncEngineSourceDelegate: SyncEngineSourceDelegate?
 
     /// We recommand process the initialization when app launches
     public init() { }
@@ -30,11 +30,11 @@ public final class SyncSource<T: Object & CKRecordConvertible & CKRecordRecovera
 // MARK: - Zone information
 
 extension SyncSource {
-    var customZoneID: CKRecordZoneID {
+    public var customZoneID: CKRecordZoneID {
         return T.customZoneID
     }
 
-    var zoneChangesToken: CKServerChangeToken? {
+    public var zoneChangesToken: CKServerChangeToken? {
         get {
             /// For the very first time when launching, the token will be nil and the server will be giving everything on the Cloud to client
             /// In other situation just get the unarchive the data object
@@ -51,11 +51,11 @@ extension SyncSource {
         }
     }
 
-    var recordType: String {
+    public var recordType: String {
         return T.recordType
     }
 
-    var isCustomZoneCreated: Bool {
+    public var isCustomZoneCreated: Bool {
         get {
             guard let flag = UserDefaults.standard.object(forKey: T.className() + IceCreamKey.hasCustomZoneCreatedKey.value) as? Bool else { return false }
             return flag
@@ -69,7 +69,7 @@ extension SyncSource {
 // MARK: - Realm database methods
 
 extension SyncSource {
-    func add(record: CKRecord) {
+    public func add(record: CKRecord) {
         guard let object = T().parseFromRecord(record: record)  else {
             print("There is something wrong with the converson from cloud record to local object")
             return
@@ -90,7 +90,7 @@ extension SyncSource {
         }
     }
 
-    func delete(recordID: CKRecordID) {
+    public func delete(recordID: CKRecordID) {
         DispatchQueue.main.async {
             let realm = try! Realm()
             guard let object = realm.object(ofType: T.self, forPrimaryKey: recordID.recordName) else {
@@ -110,7 +110,7 @@ extension SyncSource {
 
     /// When you commit a write transaction to a Realm, all other instances of that Realm will be notified, and be updated automatically.
     /// For more: https://realm.io/docs/swift/latest/#writes
-    func registerLocalDatabase() {
+    public func registerLocalDatabase() {
         let objects = Cream<T>().realm.objects(T.self)
         notificationToken = objects.observe({ [weak self](changes) in
             guard let `self` = self else { return }
@@ -135,7 +135,7 @@ extension SyncSource {
         })
     }
 
-    func cleanUp() {
+    public func cleanUp() {
         let cream = Cream<T>()
         do {
             try cream.deletePreviousSoftDeleteObjects(notNotifying: notificationToken)
