@@ -1,8 +1,8 @@
 //
-//  SyncEngine.swift
+//  SyncSource.swift
 //  IceCream
 //
-//  Created by 蔡越 on 08/11/2017.
+//  Created by David Collado on 1/5/18.
 //
 
 import Foundation

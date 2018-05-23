@@ -1,5 +1,8 @@
-//  Created by David Collado on 1/5/18.
-//  Copyright © 2018 蔡越. All rights reserved.
+//
+//  SyncEngine.swift
+//  IceCream
+//
+//  Created by 蔡越 on 08/11/2017.
 //
 
 import Foundation
