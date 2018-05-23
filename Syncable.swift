@@ -18,7 +18,7 @@ public protocol Syncable: class {
     var zoneChangesToken: CKServerChangeToken? { get set }
    
     var isCustomZoneCreated: Bool { get }
-    var SyncEngineSourceDelegate: SyncEngineSourceDelegate? { get set }
+    var delegate: SyncEngineSourceDelegate? { get set }
     
     func registerLocalDatabase()
     func cleanUp()

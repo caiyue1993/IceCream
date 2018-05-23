@@ -52,8 +52,8 @@ public final class SyncEngine: SyncEngineSourceDelegate {
     /// We recommand process the initialization when app launches
     public init(syncSources: [Syncable]) {
         self.syncSources = syncSources
-        for syncEngine in syncSources {
-            syncEngine.SyncEngineSourceDelegate = self
+        for source in syncSources {
+            source.delegate = self
         }
         /// Check iCloud status so that we can go on
         CKContainer.default().accountStatus { [weak self] (status, error) in

@@ -21,8 +21,8 @@ public final class SyncSource<T: Object & CKRecordConvertible & CKRecordRecovera
 
     private let errorHandler = ErrorHandler()
 
-    weak public var SyncEngineSourceDelegate: SyncEngineSourceDelegate?
-
+    weak public var delegate: SyncEngineSourceDelegate?
+    
     /// We recommand process the initialization when app launches
     public init() { }
 }
@@ -156,6 +156,6 @@ extension SyncSource {
         let recordsToStore = objectsToStore.map{ $0.record }
         let recordIDsToDelete = objectsToDelete.map{ $0.recordID }
 
-        SyncEngineSourceDelegate?.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete, completion: nil)
+        delegate?.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete, completion: nil)
     }
 }
