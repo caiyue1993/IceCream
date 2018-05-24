@@ -17,7 +17,7 @@ public final class SyncSource<T: Object & CKRecordConvertible & CKRecordRecovera
 
     private let errorHandler = ErrorHandler()
     
-    public var sync: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecordID]) -> ())?
+    public var pipeToEngine: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecordID]) -> ())?
     
     /// We recommand process the initialization when app launches
     public init() { }
@@ -152,6 +152,6 @@ extension SyncSource {
         let recordsToStore = objectsToStore.map{ $0.record }
         let recordIDsToDelete = objectsToDelete.map{ $0.recordID }
         
-        sync?(recordsToStore, recordIDsToDelete)
+        pipeToEngine?(recordsToStore, recordIDsToDelete)
     }
 }

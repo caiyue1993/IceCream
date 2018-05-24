@@ -53,7 +53,7 @@ public final class SyncEngine {
     public init(sources: [Syncable]) {
         self.sources = sources
         for source in sources {
-            source.sync = { [weak self] recordsToStore, recordIDsToDelete in
+            source.pipeToEngine = { [weak self] recordsToStore, recordIDsToDelete in
                 guard let `self` = self else { return }
                 `self`.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete)
             }
