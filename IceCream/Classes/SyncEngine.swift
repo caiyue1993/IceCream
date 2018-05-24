@@ -228,30 +228,30 @@ extension SyncEngine {
 
         changesOp.recordZoneChangeTokensUpdatedBlock = { [weak self] zoneId, token, _ in
             guard let `self` = self else { return }
-            guard let recordSyncEngine = `self`.sources.first(where: { $0.customZoneID == zoneId }) else { return }
-            recordSyncEngine.zoneChangesToken = token
+            guard let source = `self`.sources.first(where: { $0.customZoneID == zoneId }) else { return }
+            source.zoneChangesToken = token
         }
 
         changesOp.recordChangedBlock = { [weak self] record in
             /// The Cloud will return the modified record since the last zoneChangesToken, we need to do local cache here.
             /// Handle the record:
             guard let `self` = self else { return }
-            guard let recordSyncEngine = `self`.sources.first(where: { $0.recordType == record.recordType }) else { return }
-            recordSyncEngine.add(record: record)
+            guard let source = `self`.sources.first(where: { $0.recordType == record.recordType }) else { return }
+            source.add(record: record)
         }
 
         changesOp.recordWithIDWasDeletedBlock = { [weak self] recordId, _ in
             guard let `self` = self else { return }
-            guard let recordSyncEngine = `self`.sources.first(where: { $0.customZoneID == recordId.zoneID }) else { return }
-            recordSyncEngine.delete(recordID: recordId)
+            guard let source = `self`.sources.first(where: { $0.customZoneID == recordId.zoneID }) else { return }
+            source.delete(recordID: recordId)
         }
 
         changesOp.recordZoneFetchCompletionBlock = { [weak self](zoneId ,token, _, _, error) in
             guard let `self` = self else { return }
             switch `self`.errorHandler.resultType(with: error) {
             case .success:
-                guard let recordSyncEngine = `self`.sources.first(where: { $0.customZoneID == zoneId }) else { return }
-                recordSyncEngine.zoneChangesToken = token
+                guard let source = `self`.sources.first(where: { $0.customZoneID == zoneId }) else { return }
+                source.zoneChangesToken = token
                 callback?()
                 print("Sync successfully!")
             case .retry(let timeToWait, _):
@@ -262,8 +262,8 @@ extension SyncEngine {
                 switch reason {
                 case .changeTokenExpired:
                     /// The previousServerChangeToken value is too old and the client must re-sync from scratch
-                    guard let recordSyncEngine = `self`.sources.first(where: { $0.customZoneID == zoneId }) else { return }
-                    recordSyncEngine.zoneChangesToken = nil
+                    guard let source = `self`.sources.first(where: { $0.customZoneID == zoneId }) else { return }
+                    source.zoneChangesToken = nil
                     `self`.fetchChangesInZones(callback)
                 default:
                     return
