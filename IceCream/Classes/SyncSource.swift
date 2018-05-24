@@ -9,10 +9,6 @@ import Foundation
 import RealmSwift
 import CloudKit
 
-public protocol SyncEngineSourceDelegate: class {
-    func syncRecordsToCloudKit(recordsToStore: [CKRecord], recordIDsToDelete: [CKRecordID], completion: ((Error?) -> ())?)
-}
-
 public final class SyncSource<T: Object & CKRecordConvertible & CKRecordRecoverable>: Syncable {
 
     /// Notifications are delivered as long as a reference is held to the returned notification token. You should keep a strong reference to this token on the class registering for updates, as notifications are automatically unregistered when the notification token is deallocated.
@@ -20,8 +16,8 @@ public final class SyncSource<T: Object & CKRecordConvertible & CKRecordRecovera
     private var notificationToken: NotificationToken?
 
     private let errorHandler = ErrorHandler()
-
-    weak public var delegate: SyncEngineSourceDelegate?
+    
+    public var sync: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecordID]) -> ())?
     
     /// We recommand process the initialization when app launches
     public init() { }
@@ -155,7 +151,7 @@ extension SyncSource {
 
         let recordsToStore = objectsToStore.map{ $0.record }
         let recordIDsToDelete = objectsToDelete.map{ $0.recordID }
-
-        delegate?.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete, completion: nil)
+        
+        sync?(recordsToStore, recordIDsToDelete)
     }
 }

@@ -44,16 +44,19 @@ public final class SyncEngine {
 
     /// Indicates the private database in default container
     private let privateDatabase = CKContainer.default().privateCloudDatabase
-
+    
     private let errorHandler = ErrorHandler()
-
+    
     private let sources: [Syncable]
 
     /// We recommend processing the initialization when app launches
     public init(sources: [Syncable]) {
         self.sources = sources
         for source in sources {
-            source.delegate = self
+            source.sync = { [weak self] recordsToStore, recordIDsToDelete in
+                guard let `self` = self else { return }
+                `self`.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete)
+            }
         }
         /// Check iCloud status so that we can go on
         CKContainer.default().accountStatus { [weak self] (status, error) in
@@ -95,7 +98,7 @@ public final class SyncEngine {
 
     // Manually sync data with CloudKit
     public func sync() {
-        self.fetchChangesInDatabase()
+        fetchChangesInDatabase()
     }
 
     /// Create new custom zones
@@ -131,7 +134,7 @@ public final class SyncEngine {
 
 /// Chat to the CloudKit API directly
 extension SyncEngine {
-
+    
     /// The changes token, for more please reference to https://developer.apple.com/videos/play/wwdc2016/231/
     var databaseChangeToken: CKServerChangeToken? {
         get {
@@ -333,7 +336,8 @@ extension SyncEngine {
     }
 }
 
-extension SyncEngine: SyncEngineSourceDelegate {
+
+extension SyncEngine {
     /// Sync local data to CloudKit
     /// For more about the savePolicy: https://developer.apple.com/documentation/cloudkit/ckrecordsavepolicy
     public func syncRecordsToCloudKit(recordsToStore: [CKRecord], recordIDsToDelete: [CKRecordID], completion: ((Error?) -> ())? = nil) {

@@ -18,10 +18,11 @@ public protocol Syncable: class {
     var zoneChangesToken: CKServerChangeToken? { get set }
    
     var isCustomZoneCreated: Bool { get }
-    var delegate: SyncEngineSourceDelegate? { get set }
     
     func registerLocalDatabase()
     func cleanUp()
     func add(record: CKRecord)
     func delete(recordID: CKRecordID)
+    
+    var sync: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecordID]) -> ())? { get set }
 }
