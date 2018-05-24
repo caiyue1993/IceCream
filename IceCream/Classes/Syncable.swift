@@ -9,7 +9,7 @@ import Foundation
 import CloudKit
 
 /// Since `sync` is an informal version of `synchronize`, so we choose the `syncable` word for
-/// the ability to put objects into sync.
+/// the ability to put objects into synchronization.
 public protocol Syncable: class {
     
     var recordType: String { get }
@@ -25,4 +25,15 @@ public protocol Syncable: class {
     func delete(recordID: CKRecordID)
     
     var pipeToEngine: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecordID]) -> ())? { get set }
+}
+
+extension Syncable {
+    public var pipeToEngine: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecordID]) -> ())? {
+        get {
+            return pipeToEngine
+        }
+        set {
+            pipeToEngine = newValue
+        }
+    }
 }

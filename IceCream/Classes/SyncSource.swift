@@ -9,7 +9,7 @@ import Foundation
 import RealmSwift
 import CloudKit
 
-public final class SyncSource<T: Object & CKRecordConvertible & CKRecordRecoverable>: Syncable {
+public final class SyncSource<T> where T: Object & CKRecordConvertible & CKRecordRecoverable {
 
     /// Notifications are delivered as long as a reference is held to the returned notification token. You should keep a strong reference to this token on the class registering for updates, as notifications are automatically unregistered when the notification token is deallocated.
     /// For more, reference is here: https://realm.io/docs/swift/latest/#notifications
@@ -17,15 +17,13 @@ public final class SyncSource<T: Object & CKRecordConvertible & CKRecordRecovera
 
     private let errorHandler = ErrorHandler()
     
-    public var pipeToEngine: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecordID]) -> ())?
-    
-    /// We recommand process the initialization when app launches
+    /// We recommend processing the initialization when app launches
     public init() { }
 }
 
 // MARK: - Zone information
 
-extension SyncSource {
+extension SyncSource: Syncable {
     public var customZoneID: CKRecordZoneID {
         return T.customZoneID
     }
@@ -60,20 +58,16 @@ extension SyncSource {
             UserDefaults.standard.set(newValue, forKey: T.className() + IceCreamKey.hasCustomZoneCreatedKey.value)
         }
     }
-}
-
-// MARK: - Realm database methods
-
-extension SyncSource {
+    
     public func add(record: CKRecord) {
         guard let object = T().parseFromRecord(record: record)  else {
             print("There is something wrong with the converson from cloud record to local object")
             return
         }
-
+        
         DispatchQueue.main.async {
             let realm = try! Realm()
-
+            
             /// If your model class includes a primary key, you can have Realm intelligently update or add objects based off of their primary key values using Realm().add(_:update:).
             /// https://realm.io/docs/swift/latest/#objects-with-primary-keys
             realm.beginWrite()
@@ -85,7 +79,7 @@ extension SyncSource {
             }
         }
     }
-
+    
     public func delete(recordID: CKRecordID) {
         DispatchQueue.main.async {
             let realm = try! Realm()
@@ -103,14 +97,14 @@ extension SyncSource {
             }
         }
     }
-
+    
     /// When you commit a write transaction to a Realm, all other instances of that Realm will be notified, and be updated automatically.
     /// For more: https://realm.io/docs/swift/latest/#writes
     public func registerLocalDatabase() {
         let objects = Cream<T>().realm.objects(T.self)
         notificationToken = objects.observe({ [weak self](changes) in
             guard let `self` = self else { return }
-
+            
             switch changes {
             case .initial(let collection):
                 print("Inited:" + "\(collection)")
@@ -120,17 +114,23 @@ extension SyncSource {
                 print("deletions:" + "\(deletions)")
                 print("insertions:" + "\(insertions)")
                 print("modifications:" + "\(modifications)")
-
+                
                 let objectsToStore = (insertions + modifications).filter { $0 < collection.count }.map { collection[$0] }.filter{ !$0.isDeleted }
                 let objectsToDelete = modifications.filter { $0 < collection.count }.map{ collection[$0] }.filter { $0.isDeleted }
-                `self`.syncObjectsToCloudKit(objectsToStore: objectsToStore, objectsToDelete: objectsToDelete)
-
+                
+                guard objectsToStore.count > 0 || objectsToDelete.count > 0 else { return }
+                
+                let recordsToStore = objectsToStore.map{ $0.record }
+                let recordIDsToDelete = objectsToDelete.map{ $0.recordID }
+                
+                `self`.pipeToEngine?(recordsToStore, recordIDsToDelete)
+                
             case .error(_):
                 break
             }
         })
     }
-
+    
     public func cleanUp() {
         let cream = Cream<T>()
         do {
@@ -141,17 +141,3 @@ extension SyncSource {
     }
 }
 
-// MARK: - Public methods
-
-extension SyncSource {
-    // This method is commonly used when you want to push your datas to CloudKit manually
-    // In most cases, you don't need this
-    public func syncObjectsToCloudKit(objectsToStore: [T], objectsToDelete: [T] = []) {
-        guard objectsToStore.count > 0 || objectsToDelete.count > 0 else { return }
-
-        let recordsToStore = objectsToStore.map{ $0.record }
-        let recordIDsToDelete = objectsToDelete.map{ $0.recordID }
-        
-        pipeToEngine?(recordsToStore, recordIDsToDelete)
-    }
-}
