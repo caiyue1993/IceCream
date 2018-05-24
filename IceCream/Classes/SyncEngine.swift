@@ -62,7 +62,7 @@ public final class SyncEngine {
         CKContainer.default().accountStatus { [weak self] (status, error) in
             guard let `self` = self else { return }
             if status == CKAccountStatus.available {
-
+                
                 /// 1. Fetch changes in the Cloud
                 /// Apple suggests that we should fetch changes in database, *especially* the very first launch.
                 /// But actually, there **might** be some rare unknown and weird reason that the data is not synced between muilty devices.
@@ -73,10 +73,10 @@ public final class SyncEngine {
 
                 `self`.resumeLongLivedOperationIfPossible()
 
-                `self`.createCustomZones(nil)
-
+                `self`.createCustomZones()
+                
                 `self`.startObservingRemoteChanges()
-
+                
                 /// 2. Register to local database
                 DispatchQueue.main.async {
                     for source in `self`.sources {
@@ -85,7 +85,7 @@ public final class SyncEngine {
                 }
 
                 NotificationCenter.default.addObserver(self, selector: #selector(self.cleanUp), name: .UIApplicationWillTerminate, object: nil)
-
+                
                 if `self`.subscriptionIsLocallyCached { return }
                 `self`.createDatabaseSubscription()
 
@@ -94,11 +94,6 @@ public final class SyncEngine {
                 print("Easy, my boy. You haven't logged into iCloud account on your device/simulator yet.")
             }
         }
-    }
-
-    // Manually sync data with CloudKit
-    public func sync() {
-        fetchChangesInDatabase()
     }
 
     /// Create new custom zones
@@ -168,7 +163,7 @@ extension SyncEngine {
     private func fetchChangesInDatabase(_ callback: (() -> Void)? = nil) {
 
         let changesOperation = CKFetchDatabaseChangesOperation(previousServerChangeToken: databaseChangeToken)
-
+        
         /// For more, see the source code, it has the detailed explanation
         changesOperation.fetchAllChanges = true
 
@@ -336,7 +331,7 @@ extension SyncEngine {
     }
 }
 
-
+// MARK: Public Method
 extension SyncEngine {
     /// Sync local data to CloudKit
     /// For more about the savePolicy: https://developer.apple.com/documentation/cloudkit/ckrecordsavepolicy
@@ -395,6 +390,11 @@ extension SyncEngine {
         }
         
         privateDatabase.add(modifyOpe)
+    }
+    
+    // Manually sync data with CloudKit
+    public func sync() {
+        fetchChangesInDatabase()
     }
 }
 
