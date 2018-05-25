@@ -47,13 +47,13 @@ public final class SyncEngine {
     
     private let errorHandler = ErrorHandler()
     
-    private let sources: [Syncable]
+    private let syncObjects: [Syncable]
 
     /// We recommend processing the initialization when app launches
-    public init(sources: [Syncable]) {
-        self.sources = sources
-        for source in sources {
-            source.pipeToEngine = { [weak self] recordsToStore, recordIDsToDelete in
+    public init(syncObjects: [Syncable]) {
+        self.syncObjects = syncObjects
+        for syncObject in syncObjects {
+            syncObject.pipeToEngine = { [weak self] recordsToStore, recordIDsToDelete in
                 guard let `self` = self else { return }
                 `self`.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete)
             }
@@ -80,8 +80,8 @@ public final class SyncEngine {
                 
                 /// 2. Register to local database
                 DispatchQueue.main.async {
-                    for source in `self`.sources {
-                        source.registerLocalDatabase()
+                    for syncObject in `self`.syncObjects {
+                        syncObject.registerLocalDatabase()
                     }
                 }
                 
@@ -101,7 +101,7 @@ public final class SyncEngine {
     /// Create new custom zones
     /// You can(but you shouldn't) invoke this method more times, but the CloudKit is smart and will handle that for you
     private func createCustomZones(_ completion: ((Error?) -> ())? = nil) {
-        let zonesToCreate = sources.filter { !$0.isCustomZoneCreated }.map { CKRecordZone(zoneID: $0.customZoneID) }
+        let zonesToCreate = syncObjects.filter { !$0.isCustomZoneCreated }.map { CKRecordZone(zoneID: $0.customZoneID) }
         let modifyOp = CKModifyRecordZonesOperation(recordZonesToSave: zonesToCreate, recordZoneIDsToDelete: nil)
         modifyOp.modifyRecordZonesCompletionBlock = { [weak self](_, _, error) in
             guard let `self` = self else { return }
@@ -123,8 +123,8 @@ public final class SyncEngine {
     }
 
     @objc func cleanUp() {
-        for source in sources {
-            source.cleanUp()
+        for syncObject in syncObjects {
+            syncObject.cleanUp()
         }
     }
 }
@@ -211,11 +211,11 @@ extension SyncEngine {
     }
 
     private var zoneIds: [CKRecordZoneID] {
-        return sources.map { $0.customZoneID }
+        return syncObjects.map { $0.customZoneID }
     }
 
     private var zoneIdOptions: [CKRecordZoneID: CKFetchRecordZoneChangesOptions] {
-        return sources.reduce([CKRecordZoneID: CKFetchRecordZoneChangesOptions]()) { (dict, syncEngine) -> [CKRecordZoneID: CKFetchRecordZoneChangesOptions] in
+        return syncObjects.reduce([CKRecordZoneID: CKFetchRecordZoneChangesOptions]()) { (dict, syncEngine) -> [CKRecordZoneID: CKFetchRecordZoneChangesOptions] in
             var dict = dict
             let zoneChangesOptions = CKFetchRecordZoneChangesOptions()
             zoneChangesOptions.previousServerChangeToken = syncEngine.zoneChangesToken
@@ -230,30 +230,30 @@ extension SyncEngine {
         
         changesOp.recordZoneChangeTokensUpdatedBlock = { [weak self] zoneId, token, _ in
             guard let `self` = self else { return }
-            guard let source = `self`.sources.first(where: { $0.customZoneID == zoneId }) else { return }
-            source.zoneChangesToken = token
+            guard let syncObject = `self`.syncObjects.first(where: { $0.customZoneID == zoneId }) else { return }
+            syncObject.zoneChangesToken = token
         }
 
         changesOp.recordChangedBlock = { [weak self] record in
             /// The Cloud will return the modified record since the last zoneChangesToken, we need to do local cache here.
             /// Handle the record:
             guard let `self` = self else { return }
-            guard let source = `self`.sources.first(where: { $0.recordType == record.recordType }) else { return }
-            source.add(record: record)
+            guard let syncObject = `self`.syncObjects.first(where: { $0.recordType == record.recordType }) else { return }
+            syncObject.add(record: record)
         }
 
         changesOp.recordWithIDWasDeletedBlock = { [weak self] recordId, _ in
             guard let `self` = self else { return }
-            guard let source = `self`.sources.first(where: { $0.customZoneID == recordId.zoneID }) else { return }
-            source.delete(recordID: recordId)
+            guard let syncObject = `self`.syncObjects.first(where: { $0.customZoneID == recordId.zoneID }) else { return }
+            syncObject.delete(recordID: recordId)
         }
 
         changesOp.recordZoneFetchCompletionBlock = { [weak self](zoneId ,token, _, _, error) in
             guard let `self` = self else { return }
             switch `self`.errorHandler.resultType(with: error) {
             case .success:
-                guard let source = `self`.sources.first(where: { $0.customZoneID == zoneId }) else { return }
-                source.zoneChangesToken = token
+                guard let syncObject = `self`.syncObjects.first(where: { $0.customZoneID == zoneId }) else { return }
+                syncObject.zoneChangesToken = token
                 callback?()
                 print("Sync successfully!")
             case .retry(let timeToWait, _):
@@ -264,8 +264,8 @@ extension SyncEngine {
                 switch reason {
                 case .changeTokenExpired:
                     /// The previousServerChangeToken value is too old and the client must re-sync from scratch
-                    guard let source = `self`.sources.first(where: { $0.customZoneID == zoneId }) else { return }
-                    source.zoneChangesToken = nil
+                    guard let syncObject = `self`.syncObjects.first(where: { $0.customZoneID == zoneId }) else { return }
+                    syncObject.zoneChangesToken = nil
                     `self`.fetchChangesInZones(callback)
                 default:
                     return
