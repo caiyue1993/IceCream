@@ -10,17 +10,16 @@ import RealmSwift
 import CloudKit
 
 public final class SyncSource<T> where T: Object & CKRecordConvertible & CKRecordRecoverable {
-
-    /// Notifications are delivered as long as a reference is held to the returned notification token. You should keep a strong reference to this token on the class registering for updates, as notifications are automatically unregistered when the notification token is deallocated.
+    
+    /// Notifications are delivered as long as a reference is held to the returned notification token. We should keep a strong reference to this token on the class registering for updates, as notifications are automatically unregistered when the notification token is deallocated.
     /// For more, reference is here: https://realm.io/docs/swift/latest/#notifications
     private var notificationToken: NotificationToken?
-
+    
     private let errorHandler = ErrorHandler()
     
     public var pipeToEngine: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecordID]) -> ())?
     
-    /// We recommend processing the initialization when app launches
-    public init() { }
+    public init() {}
 }
 
 // MARK: - Zone information
@@ -62,7 +61,7 @@ extension SyncSource: Syncable {
     }
     
     public func add(record: CKRecord) {
-        guard let object = T().parseFromRecord(record: record)  else {
+        guard let object = T().parseFromRecord(record: record) else {
             print("There is something wrong with the converson from cloud record to local object")
             return
         }
@@ -86,7 +85,7 @@ extension SyncSource: Syncable {
         DispatchQueue.main.async {
             let realm = try! Realm()
             guard let object = realm.object(ofType: T.self, forPrimaryKey: recordID.recordName) else {
-                // Not found in local
+                // Not found in local realm database
                 return
             }
             CreamAsset.deleteCreamAssetFile(with: recordID.recordName)

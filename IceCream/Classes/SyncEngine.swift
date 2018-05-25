@@ -58,6 +58,7 @@ public final class SyncEngine {
                 `self`.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete)
             }
         }
+        
         /// Check iCloud status so that we can go on
         CKContainer.default().accountStatus { [weak self] (status, error) in
             guard let `self` = self else { return }
@@ -83,9 +84,10 @@ public final class SyncEngine {
                         source.registerLocalDatabase()
                     }
                 }
-
-                NotificationCenter.default.addObserver(self, selector: #selector(self.cleanUp), name: .UIApplicationWillTerminate, object: nil)
                 
+                NotificationCenter.default.addObserver(self, selector: #selector(`self`.cleanUp), name: .UIApplicationWillTerminate, object: nil)
+                
+                /// 3. Create the subscription to the CloudKit database
                 if `self`.subscriptionIsLocallyCached { return }
                 `self`.createDatabaseSubscription()
 
@@ -99,8 +101,8 @@ public final class SyncEngine {
     /// Create new custom zones
     /// You can(but you shouldn't) invoke this method more times, but the CloudKit is smart and will handle that for you
     private func createCustomZones(_ completion: ((Error?) -> ())? = nil) {
-        let zones = sources.filter { !$0.isCustomZoneCreated }.map { CKRecordZone(zoneID: $0.customZoneID) }
-        let modifyOp = CKModifyRecordZonesOperation(recordZonesToSave: zones, recordZoneIDsToDelete: nil)
+        let zonesToCreate = sources.filter { !$0.isCustomZoneCreated }.map { CKRecordZone(zoneID: $0.customZoneID) }
+        let modifyOp = CKModifyRecordZonesOperation(recordZonesToSave: zonesToCreate, recordZoneIDsToDelete: nil)
         modifyOp.modifyRecordZonesCompletionBlock = { [weak self](_, _, error) in
             guard let `self` = self else { return }
             switch `self`.errorHandler.resultType(with: error) {
@@ -121,8 +123,8 @@ public final class SyncEngine {
     }
 
     @objc func cleanUp() {
-        for syncEngine in sources {
-            syncEngine.cleanUp()
+        for source in sources {
+            source.cleanUp()
         }
     }
 }
@@ -225,7 +227,7 @@ extension SyncEngine {
     private func fetchChangesInZones(_ callback: (() -> Void)? = nil) {
         let changesOp = CKFetchRecordZoneChangesOperation(recordZoneIDs: zoneIds, optionsByRecordZoneID: zoneIdOptions)
         changesOp.fetchAllChanges = true
-
+        
         changesOp.recordZoneChangeTokensUpdatedBlock = { [weak self] zoneId, token, _ in
             guard let `self` = self else { return }
             guard let source = `self`.sources.first(where: { $0.customZoneID == zoneId }) else { return }

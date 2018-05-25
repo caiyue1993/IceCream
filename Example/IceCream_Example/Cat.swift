@@ -27,5 +27,5 @@ extension Cat: CKRecordRecoverable {
 }
 
 extension Cat: CKRecordConvertible {
-    typealias O = Cat
+    
 }
