@@ -17,6 +17,8 @@ public final class SyncSource<T> where T: Object & CKRecordConvertible & CKRecor
 
     private let errorHandler = ErrorHandler()
     
+    public var pipeToEngine: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecordID]) -> ())?
+    
     /// We recommend processing the initialization when app launches
     public init() { }
 }

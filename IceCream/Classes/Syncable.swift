@@ -26,14 +26,3 @@ public protocol Syncable: class {
     
     var pipeToEngine: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecordID]) -> ())? { get set }
 }
-
-extension Syncable {
-    public var pipeToEngine: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecordID]) -> ())? {
-        get {
-            return pipeToEngine
-        }
-        set {
-            pipeToEngine = newValue
-        }
-    }
-}
