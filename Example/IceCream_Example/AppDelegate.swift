@@ -19,12 +19,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
         syncEngine = SyncEngine(sources: [
-            SyncSource<Dog>()
+            SyncSource<Dog>(),
+            SyncSource<Cat>()
             ])
         application.registerForRemoteNotifications()
         
         window = UIWindow(frame: UIScreen.main.bounds)
-        window?.rootViewController = UINavigationController(rootViewController: ViewController())
+        window?.rootViewController = TabBarViewController()
         window?.makeKeyAndVisible()
         return true
     }

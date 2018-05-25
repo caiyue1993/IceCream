@@ -12,7 +12,7 @@ import IceCream
 import RxRealm
 import RxSwift
 
-class ViewController: UIViewController {
+class DogsViewController: UIViewController {
     
     var dogs: [Dog] = []
     let bag = DisposeBag()
@@ -37,6 +37,7 @@ class ViewController: UIViewController {
         
         view.addSubview(tableView)
         navigationItem.rightBarButtonItem = addBarItem
+        title = "Dogs"
         
         bind()
     }
@@ -74,7 +75,7 @@ class ViewController: UIViewController {
   }
 }
 
-extension ViewController: UITableViewDelegate {
+extension DogsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let deleteAction = UITableViewRowAction(style: .destructive, title: "Delete") { (_, ip) in
             let alert = UIAlertController(title: NSLocalizedString("caution", comment: "caution"), message: NSLocalizedString("sure_to_delete", comment: "sure_to_delete"), preferredStyle: .alert)
@@ -123,7 +124,7 @@ extension ViewController: UITableViewDelegate {
     }
 }
 
-extension ViewController: UITableViewDataSource {
+extension DogsViewController: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dogs.count
     }
