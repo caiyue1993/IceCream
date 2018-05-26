@@ -8,11 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		6743F6EC202B0CB600912163 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F6EB202B0CB600912163 /* AppDelegate.swift */; };
-		6743F6EE202B0CB600912163 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F6ED202B0CB600912163 /* ViewController.swift */; };
+		6743F6EE202B0CB600912163 /* DogsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F6ED202B0CB600912163 /* DogsViewController.swift */; };
 		6743F6FE202B0D1400912163 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6743F6FD202B0D1400912163 /* Images.xcassets */; };
 		6743F701202B0D1C00912163 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6743F6FF202B0D1C00912163 /* LaunchScreen.xib */; };
 		6743F703202B0D2400912163 /* Dog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F702202B0D2400912163 /* Dog.swift */; };
 		6743F707202B0D4500912163 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6743F706202B0D4500912163 /* CloudKit.framework */; };
+		67AA236020B84C9700953F09 /* CatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67AA235E20B84C9700953F09 /* CatsViewController.swift */; };
+		67AA236120B84C9700953F09 /* Cat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67AA235F20B84C9700953F09 /* Cat.swift */; };
+		67AA236320B84CB600953F09 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67AA236220B84CB600953F09 /* TabBarViewController.swift */; };
 		BDB3667DE46B971D8186EEF8 /* Pods_IceCream_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57E01F0AF05DF4AB5FF9CCDF /* Pods_IceCream_Example.framework */; };
 /* End PBXBuildFile section */
 
@@ -21,13 +24,16 @@
 		57E01F0AF05DF4AB5FF9CCDF /* Pods_IceCream_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IceCream_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6743F6E8202B0CB600912163 /* IceCream_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IceCream_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6743F6EB202B0CB600912163 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		6743F6ED202B0CB600912163 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		6743F6ED202B0CB600912163 /* DogsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DogsViewController.swift; sourceTree = "<group>"; };
 		6743F6F7202B0CB600912163 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6743F6FD202B0D1400912163 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		6743F700202B0D1C00912163 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		6743F702202B0D2400912163 /* Dog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dog.swift; sourceTree = "<group>"; };
 		6743F704202B0D4100912163 /* IceCream_Example.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = IceCream_Example.entitlements; sourceTree = "<group>"; };
 		6743F706202B0D4500912163 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		67AA235E20B84C9700953F09 /* CatsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CatsViewController.swift; sourceTree = "<group>"; };
+		67AA235F20B84C9700953F09 /* Cat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cat.swift; sourceTree = "<group>"; };
+		67AA236220B84CB600953F09 /* TabBarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		72D3DBEF2547326C5816406C /* Pods-IceCream_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IceCream_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-IceCream_Example/Pods-IceCream_Example.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -66,11 +72,14 @@
 			isa = PBXGroup;
 			children = (
 				6743F704202B0D4100912163 /* IceCream_Example.entitlements */,
+				67AA236220B84CB600953F09 /* TabBarViewController.swift */,
+				67AA235F20B84C9700953F09 /* Cat.swift */,
+				67AA235E20B84C9700953F09 /* CatsViewController.swift */,
+				6743F6ED202B0CB600912163 /* DogsViewController.swift */,
 				6743F702202B0D2400912163 /* Dog.swift */,
 				6743F6FF202B0D1C00912163 /* LaunchScreen.xib */,
 				6743F6FD202B0D1400912163 /* Images.xcassets */,
 				6743F6EB202B0CB600912163 /* AppDelegate.swift */,
-				6743F6ED202B0CB600912163 /* ViewController.swift */,
 				6743F6F7202B0CB600912163 /* Info.plist */,
 			);
 			path = IceCream_Example;
@@ -106,7 +115,6 @@
 				6743F6E5202B0CB600912163 /* Frameworks */,
 				6743F6E6202B0CB600912163 /* Resources */,
 				4EB0B0FAB57077CF96674EF8 /* [CP] Embed Pods Frameworks */,
-				1EEEA57037849FB794E951B7 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -172,21 +180,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		1EEEA57037849FB794E951B7 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-IceCream_Example/Pods-IceCream_Example-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		3E357FD277955B6923F73F16 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -236,8 +229,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6743F6EE202B0CB600912163 /* ViewController.swift in Sources */,
+				6743F6EE202B0CB600912163 /* DogsViewController.swift in Sources */,
+				67AA236020B84C9700953F09 /* CatsViewController.swift in Sources */,
+				67AA236120B84C9700953F09 /* Cat.swift in Sources */,
 				6743F6EC202B0CB600912163 /* AppDelegate.swift in Sources */,
+				67AA236320B84CB600953F09 /* TabBarViewController.swift in Sources */,
 				6743F703202B0D2400912163 /* Dog.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

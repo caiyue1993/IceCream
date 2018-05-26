@@ -14,15 +14,18 @@ import CloudKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    var syncEngine: SyncEngine<Dog>?
+    var syncEngine: SyncEngine?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
-        syncEngine = SyncEngine<Dog>()
+        syncEngine = SyncEngine(syncObjects: [
+            SyncObject<Dog>(),
+            SyncObject<Cat>()
+            ])
         application.registerForRemoteNotifications()
         
         window = UIWindow(frame: UIScreen.main.bounds)
-        window?.rootViewController = UINavigationController(rootViewController: ViewController())
+        window?.rootViewController = TabBarViewController()
         window?.makeKeyAndVisible()
         return true
     }

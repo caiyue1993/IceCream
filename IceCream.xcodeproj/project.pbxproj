@@ -7,9 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		41767BFD209863BA00178513 /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41767BFC209863BA00178513 /* SyncEngine.swift */; };
 		6743F717202B0F0F00912163 /* IceCream.h in Headers */ = {isa = PBXBuildFile; fileRef = 6743F715202B0F0F00912163 /* IceCream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6743F726202B0F9400912163 /* .gitkeep in Resources */ = {isa = PBXBuildFile; fileRef = 6743F71E202B0F9400912163 /* .gitkeep */; };
-		6743F727202B0F9400912163 /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F71F202B0F9400912163 /* SyncEngine.swift */; };
+		6743F727202B0F9400912163 /* SyncSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F71F202B0F9400912163 /* SyncSource.swift */; };
 		6743F728202B0F9400912163 /* ErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F720202B0F9400912163 /* ErrorHandler.swift */; };
 		6743F729202B0F9400912163 /* Cream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F721202B0F9400912163 /* Cream.swift */; };
 		6743F72A202B0F9400912163 /* Manifest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F722202B0F9400912163 /* Manifest.swift */; };
@@ -21,11 +22,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		41767BFC209863BA00178513 /* SyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngine.swift; sourceTree = "<group>"; };
 		6743F712202B0F0F00912163 /* IceCream.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IceCream.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6743F715202B0F0F00912163 /* IceCream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IceCream.h; sourceTree = "<group>"; };
 		6743F716202B0F0F00912163 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6743F71E202B0F9400912163 /* .gitkeep */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
-		6743F71F202B0F9400912163 /* SyncEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncEngine.swift; sourceTree = "<group>"; };
+		6743F71F202B0F9400912163 /* SyncSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncSource.swift; sourceTree = "<group>"; };
 		6743F720202B0F9400912163 /* ErrorHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorHandler.swift; sourceTree = "<group>"; };
 		6743F721202B0F9400912163 /* Cream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cream.swift; sourceTree = "<group>"; };
 		6743F722202B0F9400912163 /* Manifest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Manifest.swift; sourceTree = "<group>"; };
@@ -80,13 +82,14 @@
 			isa = PBXGroup;
 			children = (
 				6743F71E202B0F9400912163 /* .gitkeep */,
-				6743F71F202B0F9400912163 /* SyncEngine.swift */,
+				6743F71F202B0F9400912163 /* SyncSource.swift */,
 				6743F720202B0F9400912163 /* ErrorHandler.swift */,
 				6743F721202B0F9400912163 /* Cream.swift */,
 				6743F722202B0F9400912163 /* Manifest.swift */,
 				6743F723202B0F9400912163 /* CreamAsset.swift */,
 				6743F724202B0F9400912163 /* CKRecordConvertible.swift */,
 				6743F725202B0F9400912163 /* Notification+Name.swift */,
+				41767BFC209863BA00178513 /* SyncEngine.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -199,9 +202,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				41767BFD209863BA00178513 /* SyncEngine.swift in Sources */,
 				6743F72C202B0F9400912163 /* CKRecordConvertible.swift in Sources */,
 				6743F72A202B0F9400912163 /* Manifest.swift in Sources */,
-				6743F727202B0F9400912163 /* SyncEngine.swift in Sources */,
+				6743F727202B0F9400912163 /* SyncSource.swift in Sources */,
 				6743F72B202B0F9400912163 /* CreamAsset.swift in Sources */,
 				6743F72D202B0F9400912163 /* Notification+Name.swift in Sources */,
 				6743F729202B0F9400912163 /* Cream.swift in Sources */,
