@@ -13,9 +13,12 @@ import CloudKit
 
 class Cat: Object {
     @objc dynamic var id = NSUUID().uuidString
-    @objc dynamic var name = "ShiWan"
-    @objc dynamic var age = 1
+    @objc dynamic var name = ""
+    @objc dynamic var age = 0
     @objc dynamic var isDeleted = false
+    
+    static let AVATAR_KEY = "avatar"
+    @objc dynamic var avatar: CreamAsset?
     
     override class func primaryKey() -> String? {
         return "id"

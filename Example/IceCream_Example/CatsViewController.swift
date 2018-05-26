@@ -55,7 +55,7 @@ class CatsViewController: UIViewController {
         let cats = realm.objects(Cat.self)
         
         Observable.array(from: cats).subscribe(onNext: { (cats) in
-            /// When dogs data changes in Realm, the following code will be executed
+            /// When cats data changes in Realm, the following code will be executed
             /// It works like magic.
             self.cats = cats.filter{ !$0.isDeleted }
             self.tableView.reloadData()
@@ -67,6 +67,9 @@ class CatsViewController: UIViewController {
         cat.name = "Cat Number " + "\(cats.count)"
         cat.age = cats.count + 1
         
+        let data = UIImageJPEGRepresentation(UIImage(named: cat.age % 2 == 1 ? "heart_cat" : "dull_cat")!, 1.0) as Data!
+        cat.avatar = CreamAsset.create(object: cat, propName: Cat.AVATAR_KEY, data: data!)
+        
         try! realm.write {
             realm.add(cat)
         }
@@ -75,7 +78,52 @@ class CatsViewController: UIViewController {
 }
 
 extension CatsViewController: UITableViewDelegate {
-    
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        let deleteAction = UITableViewRowAction(style: .destructive, title: "Delete") { (_, ip) in
+            let alert = UIAlertController(title: NSLocalizedString("caution", comment: "caution"), message: NSLocalizedString("sure_to_delete", comment: "sure_to_delete"), preferredStyle: .alert)
+            let deleteAction = UIAlertAction(title: NSLocalizedString("delete", comment: "delete"), style: .destructive, handler: { (action) in
+                guard ip.row < self.cats.count else { return }
+                let cat = self.cats[ip.row]
+                try! self.realm.write {
+                    cat.isDeleted = true
+                }
+            })
+            let defaultAction = UIAlertAction(title: NSLocalizedString("cancel", comment: "cancel"), style: .default, handler: nil)
+            alert.addAction(defaultAction)
+            alert.addAction(deleteAction)
+            self.present(alert, animated: true, completion: nil)
+        }
+        
+        let archiveAction = UITableViewRowAction(style: .normal, title: "Plus") { [weak self](_, ip) in
+            guard let `self` = self else { return }
+            guard ip.row < `self`.cats.count else { return }
+            let cat = `self`.cats[ip.row]
+            try! `self`.realm.write {
+                cat.age += 1
+            }
+        }
+        let changeImageAction = UITableViewRowAction(style: .normal, title: "Change Img") { [weak self](_, ip) in
+            guard let `self` = self else { return }
+            guard ip.row < `self`.cats.count else { return }
+            let cat = `self`.cats[ip.row]
+            try! `self`.realm.write {
+                if let imageData = UIImageJPEGRepresentation(UIImage(named: cat.age % 2 == 0 ? "heart_cat" : "dull_cat")!, 1.0) {
+                    cat.avatar = CreamAsset.create(object: cat, propName: Cat.AVATAR_KEY, data: imageData)
+                }
+            }
+        }
+        changeImageAction.backgroundColor = .blue
+        let emptyImageAction = UITableViewRowAction(style: .normal, title: "Nil Img") { [weak self](_, ip) in
+            guard let `self` = self else { return }
+            guard ip.row < `self`.cats.count else { return }
+            let cat = `self`.cats[ip.row]
+            try! `self`.realm.write {
+                cat.avatar = nil
+            }
+        }
+        emptyImageAction.backgroundColor = .purple
+        return [deleteAction, archiveAction, changeImageAction, emptyImageAction]
+    }
 }
 
 extension CatsViewController: UITableViewDataSource {
@@ -86,6 +134,11 @@ extension CatsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell")
         cell?.textLabel?.text = cats[indexPath.row].name + " Age: \(cats[indexPath.row].age)"
+        if let data = cats[indexPath.row].avatar?.storedData() {
+            cell?.imageView?.image = UIImage(data: data)
+        } else {
+            cell?.imageView?.image = UIImage(named: "cat_placeholder")
+        }
         return cell ?? UITableViewCell()
     }
 }
