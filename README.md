@@ -33,9 +33,9 @@ IceCream helps you sync Realm Database with CloudKit.
 - [x] Reachability(Support Long-lived Operation) 
 - [x] Powerful Error Handling 
 - [x] Sync Automatically
-- [x] Large Data support
+- [x] Multiple Objects support
+- [x] Large Data Syncing
 - [x] Manually Synchronization is also supported
-- [x] User Account Status Check
 - [ ] Complete Documentation 
 
 ## Prerequisite
@@ -48,7 +48,7 @@ IceCream helps you sync Realm Database with CloudKit.
 ## Usage
 
 ### Basics
-1. Prepare your Realm Object(e.g. Dog)
+1. Prepare your Realm Object(e.g. Dog, Cat...)
 ```swift
 class Dog: Object {
     @objc dynamic var id = NSUUID().uuidString
@@ -79,10 +79,13 @@ Is that easy? Protocol Extensions do this trick.
 
 3. Start the Engine!
 ```swift
-var syncEngine: SyncEngine<Dog>?
+var syncEngine: SyncEngine?
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
     ...
-    syncEngine = SyncEngine<Dog>()
+    syncEngine = SyncEngine(syncObjects: [
+            SyncObject<Dog>(),
+            SyncObject<Cat>()
+        ])
     application.registerForRemoteNotifications()
     ...
 }
@@ -182,7 +185,7 @@ IceCream is available through [CocoaPods](http://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod 'IceCream', '~> 1.3.3'
+pod 'IceCream', '~> 1.4.0'
 ```
 
 > If you want build IceCream as static framework, CocoaPods 1.4.0+ is required.
@@ -194,7 +197,6 @@ These are the to-do list in IceCream project. You can join us to become a contri
 - CKReference & Realm's LinkingObjects
 - CloudKit Shared Database 
 - Other platforms supported, like macOS, tvOS and watchOS
-- Multiple objects supported
 
 See the [CONTRIBUTING](https://github.com/caiyue1993/IceCream/blob/master/CONTRIBUTING.md) file for contributing guidelines.
 
