@@ -185,7 +185,7 @@ IceCream is available through [CocoaPods](http://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod 'IceCream', '~> 1.4.0'
+pod 'IceCream', '~> 1.4.1'
 ```
 
 > If you want build IceCream as static framework, CocoaPods 1.4.0+ is required.
