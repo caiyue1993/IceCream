@@ -1,6 +1,27 @@
 # Change Log
 
 -----
+## [1.4.1](https://github.com/caiyue1993/IceCream/releases/tag/1.4.1)
+
+#### Fix
+
+* Fix the folder file issue. [#60](https://github.com/caiyue1993/IceCream/pull/60) 
+
+-----
+## [1.4.0 - Dogs and Cats](https://github.com/caiyue1993/IceCream/releases/tag/1.4.0)
+
+#### Add
+
+* Multiple object models support. [#55](https://github.com/caiyue1993/IceCream/pull/55) 
+
+-----
+## [1.3.3](https://github.com/caiyue1993/IceCream/releases/tag/1.3.3)
+
+#### Fix 
+
+* Change the deployment target via Carthage. [#50](https://github.com/caiyue1993/IceCream/pull/50) 
+
+-----
 ## [1.3.2 - Faster](https://github.com/caiyue1993/IceCream/releases/tag/1.3.2)
 
 #### Fix 
