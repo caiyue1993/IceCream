@@ -33,7 +33,7 @@ IceCream helps you sync Realm Database with CloudKit.
 - [x] Reachability(Support Long-lived Operation) 
 - [x] Powerful Error Handling 
 - [x] Sync Automatically
-- [x] Multiple Objects support
+- [x] Multiple object models support
 - [x] Large Data Syncing
 - [x] Manually Synchronization is also supported
 - [ ] Complete Documentation 
@@ -48,7 +48,7 @@ IceCream helps you sync Realm Database with CloudKit.
 ## Usage
 
 ### Basics
-1. Prepare your Realm Object(e.g. Dog, Cat...)
+1. Prepare your Realm Objects(e.g. Dog, Cat...)
 ```swift
 class Dog: Object {
     @objc dynamic var id = NSUUID().uuidString
