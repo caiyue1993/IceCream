@@ -196,7 +196,7 @@ These are the to-do list in IceCream project. You can join us to become a contri
 - CloudKit Shared Database 
 - Other platforms supported, like macOS, tvOS and watchOS
 
-See the [CONTRIBUTING](https://github.com/caiyue1993/IceCream/blob/master/CONTRIBUTING.md) file for contributing guidelines.
+See the [CONTRIBUTING](https://github.com/caiyue1993/IceCream/blob/master/docs/CONTRIBUTING.md) file for contributing guidelines.
 
 ## Live Demo
 
