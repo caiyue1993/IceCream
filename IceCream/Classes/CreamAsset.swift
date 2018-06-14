@@ -35,9 +35,10 @@ public class CreamAsset: Object {
     /// Cuz we only store the path of data, so we can't access data by `data` property
     /// So use this method if you want get the data of this object
     public func storedData() -> Data? {
-        let filePath = CreamAsset.creamAssetDefaultURL().appendingPathComponent(uniqueFileName)
         return try! Data(contentsOf: filePath)
     }
+    
+    public lazy var filePath: URL = CreamAsset.creamAssetDefaultURL().appendingPathComponent(uniqueFileName)
     
     func save(data: Data, to path: String) {
         let url = CreamAsset.creamAssetDefaultURL().appendingPathComponent(path)
@@ -50,7 +51,7 @@ public class CreamAsset: Object {
     
     var asset: CKAsset {
         get {
-            let diskCachePath = CreamAsset.creamAssetDefaultURL().appendingPathComponent(uniqueFileName)
+            let diskCachePath = filePath
             let uploadAsset = CKAsset(fileURL: diskCachePath)
             return uploadAsset
         }
