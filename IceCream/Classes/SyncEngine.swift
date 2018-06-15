@@ -85,7 +85,7 @@ public final class SyncEngine {
                     }
                 }
                 
-                NotificationCenter.default.addObserver(self, selector: #selector(`self`.cleanUp), name: .UIApplicationWillTerminate, object: nil)
+                NotificationCenter.default.addObserver(self, selector: #selector(`self`.cleanUp), name: UIApplication.willTerminateNotification, object: nil)
                 
                 /// 3. Create the subscription to the CloudKit database
                 if `self`.subscriptionIsLocallyCached { return }
@@ -210,14 +210,14 @@ extension SyncEngine {
         privateDatabase.add(changesOperation)
     }
 
-    private var zoneIds: [CKRecordZoneID] {
+    private var zoneIds: [CKRecordZone.ID] {
         return syncObjects.map { $0.customZoneID }
     }
 
-    private var zoneIdOptions: [CKRecordZoneID: CKFetchRecordZoneChangesOptions] {
-        return syncObjects.reduce([CKRecordZoneID: CKFetchRecordZoneChangesOptions]()) { (dict, syncEngine) -> [CKRecordZoneID: CKFetchRecordZoneChangesOptions] in
+    private var zoneIdOptions: [CKRecordZone.ID: CKFetchRecordZoneChangesOperation.ZoneOptions] {
+        return syncObjects.reduce([CKRecordZone.ID: CKFetchRecordZoneChangesOperation.ZoneOptions]()) { (dict, syncEngine) -> [CKRecordZone.ID: CKFetchRecordZoneChangesOperation.ZoneOptions] in
             var dict = dict
-            let zoneChangesOptions = CKFetchRecordZoneChangesOptions()
+            let zoneChangesOptions = CKFetchRecordZoneChangesOperation.ZoneOptions()
             zoneChangesOptions.previousServerChangeToken = syncEngine.zoneChangesToken
             dict[syncEngine.customZoneID] = zoneChangesOptions
             return dict
@@ -283,7 +283,7 @@ extension SyncEngine {
 
         let subscription = CKDatabaseSubscription(subscriptionID: IceCreamConstant.cloudKitSubscriptionID)
 
-        let notificationInfo = CKNotificationInfo()
+        let notificationInfo = CKSubscription.NotificationInfo()
         notificationInfo.shouldSendContentAvailable = true // Silent Push
 
         subscription.notificationInfo = notificationInfo
@@ -337,11 +337,11 @@ extension SyncEngine {
 extension SyncEngine {
     /// Sync local data to CloudKit
     /// For more about the savePolicy: https://developer.apple.com/documentation/cloudkit/ckrecordsavepolicy
-    public func syncRecordsToCloudKit(recordsToStore: [CKRecord], recordIDsToDelete: [CKRecordID], completion: ((Error?) -> ())? = nil) {
+    public func syncRecordsToCloudKit(recordsToStore: [CKRecord], recordIDsToDelete: [CKRecord.ID], completion: ((Error?) -> ())? = nil) {
         let modifyOpe = CKModifyRecordsOperation(recordsToSave: recordsToStore, recordIDsToDelete: recordIDsToDelete)
         
         if #available(iOS 11.0, *) {
-            let config = CKOperationConfiguration()
+            let config = CKOperation.Configuration()
             config.isLongLived = true
             modifyOpe.configuration = config
         } else {

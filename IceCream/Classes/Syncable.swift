@@ -13,7 +13,7 @@ import CloudKit
 public protocol Syncable: class {
     
     var recordType: String { get }
-    var customZoneID: CKRecordZoneID { get }
+    var customZoneID: CKRecordZone.ID { get }
     
     var zoneChangesToken: CKServerChangeToken? { get set }
    
@@ -22,7 +22,7 @@ public protocol Syncable: class {
     func registerLocalDatabase()
     func cleanUp()
     func add(record: CKRecord)
-    func delete(recordID: CKRecordID)
+    func delete(recordID: CKRecord.ID)
     
-    var pipeToEngine: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecordID]) -> ())? { get set }
+    var pipeToEngine: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecord.ID]) -> ())? { get set }
 }

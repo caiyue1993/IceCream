@@ -21,7 +21,7 @@ public class CreamAsset: Object {
     @objc dynamic var uniqueFileName = ""
     @objc dynamic var data: Data?
     override public static func ignoredProperties() -> [String] {
-        return ["data"]
+        return ["data", "filePath"]
     }
 
   private convenience init(objectID: String, propName: String, data: Data) {
@@ -35,8 +35,11 @@ public class CreamAsset: Object {
     /// Cuz we only store the path of data, so we can't access data by `data` property
     /// So use this method if you want get the data of this object
     public func storedData() -> Data? {
-        let filePath = CreamAsset.creamAssetDefaultURL().appendingPathComponent(uniqueFileName)
         return try! Data(contentsOf: filePath)
+    }
+    
+    public var filePath: URL {
+        return CreamAsset.creamAssetDefaultURL().appendingPathComponent(uniqueFileName)
     }
     
     func save(data: Data, to path: String) {
@@ -50,7 +53,7 @@ public class CreamAsset: Object {
     
     var asset: CKAsset {
         get {
-            let diskCachePath = CreamAsset.creamAssetDefaultURL().appendingPathComponent(uniqueFileName)
+            let diskCachePath = filePath
             let uploadAsset = CKAsset(fileURL: diskCachePath)
             return uploadAsset
         }
