@@ -21,7 +21,7 @@ public class CreamAsset: Object {
     @objc dynamic var uniqueFileName = ""
     @objc dynamic var data: Data?
     override public static func ignoredProperties() -> [String] {
-        return ["data"]
+        return ["data", "filePath"]
     }
 
   private convenience init(objectID: String, propName: String, data: Data) {
@@ -38,7 +38,9 @@ public class CreamAsset: Object {
         return try! Data(contentsOf: filePath)
     }
     
-    public lazy var filePath: URL = CreamAsset.creamAssetDefaultURL().appendingPathComponent(uniqueFileName)
+    public var filePath: URL {
+        return CreamAsset.creamAssetDefaultURL().appendingPathComponent(uniqueFileName)
+    }
     
     func save(data: Data, to path: String) {
         let url = CreamAsset.creamAssetDefaultURL().appendingPathComponent(path)
