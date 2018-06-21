@@ -21,14 +21,24 @@ public class CreamAsset: Object {
     @objc dynamic var uniqueFileName = ""
     @objc dynamic var data: Data?
     override public static func ignoredProperties() -> [String] {
-        return ["data"]
+        return ["data", "filePath"]
     }
 
-  private convenience init(objectID: String, propName: String, data: Data) {
+    private convenience init(objectID: String, propName: String, data: Data, fileExtension: String?) {
         self.init()
         self.data = data
-        self.uniqueFileName = "\(objectID)_\(propName)"
+        var suffix = ""
+        if let fileExtension = fileExtension,
+            !fileExtension.isEmpty {
+            suffix = ".\(fileExtension)"
+        }
+        self.uniqueFileName = "\(objectID)_\(propName)\(suffix)"
         save(data: data, to: uniqueFileName)
+    }
+
+    private convenience init?(objectID: String, propName: String, url: URL) {
+        guard let data = try? Data(contentsOf: url) else { return nil }
+        self.init(objectID: objectID, propName: propName, data: data, fileExtension: url.pathExtension)
     }
 
     /// There is an important point that we need to consider:
@@ -37,9 +47,11 @@ public class CreamAsset: Object {
     public func storedData() -> Data? {
         return try! Data(contentsOf: filePath)
     }
-    
-    public lazy var filePath: URL = CreamAsset.creamAssetDefaultURL().appendingPathComponent(uniqueFileName)
-    
+
+    public var filePath: URL {
+        return CreamAsset.creamAssetDefaultURL().appendingPathComponent(uniqueFileName)
+    }
+
     func save(data: Data, to path: String) {
         let url = CreamAsset.creamAssetDefaultURL().appendingPathComponent(path)
         do {
@@ -48,7 +60,7 @@ public class CreamAsset: Object {
             print("Error writing avatar to temporary directory: \(error)")
         }
     }
-    
+
     var asset: CKAsset {
         get {
             let diskCachePath = filePath
@@ -56,20 +68,46 @@ public class CreamAsset: Object {
             return uploadAsset
         }
     }
-    
-  static func parse(from propName: String, record: CKRecord, asset: CKAsset) -> CreamAsset? {
-    guard let assetData = NSData(contentsOfFile: asset.fileURL.path) as Data? else { return nil }
 
-    return CreamAsset(objectID: record.recordID.recordName,
-                      propName: propName,
-                      data: assetData)
-  }
+    /// Parses a CKRecord and CKAsset back into a CreamAsset
+    ///
+    /// - Parameters:
+    ///   - propName: The unique property name to identify this asset. **Must match the property name on the object where it will be stored!**
+    ///   - record: The CKRecord where we will pull the record ID off of to locate/store the file
+    ///   - asset: The CKAsset where we will pull the URL for creating the asset
+    /// - Returns: A CreamAsset if it was successful
+    static func parse(from propName: String, record: CKRecord, asset: CKAsset) -> CreamAsset? {
+        return CreamAsset(objectID: record.recordID.recordName, propName: propName, url: asset.fileURL)
+    }
 
-  public static func create(object: CKRecordConvertible, propName: String, data: Data) -> CreamAsset? {
-    return CreamAsset(objectID: object.recordID.recordName,
-                      propName: propName,
-                           data: data)
-  }
+    /// Creates a new CreamAsset for the given object with Data
+    ///
+    /// - Parameters:
+    ///   - object: The object the asset will live on
+    ///   - propName: The unique property name to identify this asset. **Must match the property name on the object where it will be stored!**
+    ///   - data: The file data
+    ///   - fileExtension: An optional file extension if you want to maintain that information in the filename/url.  e.g. "mov"
+    /// - Returns: A CreamAsset if it was successful
+    public static func create(object: CKRecordConvertible, propName: String, data: Data, fileExtension: String? = nil) -> CreamAsset? {
+        return CreamAsset(objectID: object.recordID.recordName,
+                          propName: propName,
+                          data: data,
+                          fileExtension: fileExtension)
+    }
+
+    /// Creates a new CreamAsset for the given object with a URL
+    ///
+    /// - Parameters:
+    ///   - object: The object the asset will live on
+    ///   - propName: The unique property name to identify this asset. **Must match the property name on the object where it will be stored!**
+    ///   - url: The URL of the file to store. Any path extension on the file (e.g. "mov") will be maintained
+    /// - Returns: A CreamAsset if it was successful
+    public static func create(object: CKRecordConvertible, propName: String, url: URL) -> CreamAsset? {
+
+        return CreamAsset(objectID: object.recordID.recordName,
+                          propName: propName,
+                          url: url)
+    }
 }
 
 extension CreamAsset {
@@ -82,22 +120,22 @@ extension CreamAsset {
             do {
                 try FileManager.default.createDirectory(atPath: commonAssetPath.path, withIntermediateDirectories: false, attributes: nil)
             } catch {
-                
+
             }
         }
         return commonAssetPath
     }
-    
+
     /// Fetch all CreamAsset files' path
     public static func creamAssetFilesPaths() -> [String] {
         do {
             return try FileManager.default.contentsOfDirectory(atPath: CreamAsset.creamAssetDefaultURL().path)
         } catch {
-            
+
         }
         return [String]()
     }
-    
+
     /// Execute deletions
     private static func excecuteDeletions(in filesNames: [String]) {
         for fileName in filesNames {
@@ -106,15 +144,15 @@ extension CreamAsset {
                 print("deleteCacheFiles.removeItem:", absolutePath)
                 try FileManager.default.removeItem(atPath: absolutePath)
             } catch {
-                
+
             }
         }
     }
-    
+
     /// When delete an object. We need to delete related CreamAsset files
     public static func deleteCreamAssetFile(with id: String) {
         let needToDeleteCacheFiles = creamAssetFilesPaths().filter { $0.contains(id) }
         excecuteDeletions(in: needToDeleteCacheFiles)
     }
-    
+
 }
