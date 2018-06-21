@@ -24,21 +24,16 @@ public class CreamAsset: Object {
         return ["data", "filePath"]
     }
 
-    private convenience init(objectID: String, propName: String, data: Data, fileExtension: String?) {
+    private convenience init(objectID: String, propName: String, data: Data) {
         self.init()
         self.data = data
-        var suffix = ""
-        if let fileExtension = fileExtension,
-            !fileExtension.isEmpty {
-            suffix = ".\(fileExtension)"
-        }
-        self.uniqueFileName = "\(objectID)_\(propName)\(suffix)"
+        self.uniqueFileName = "\(objectID)_\(propName)"
         save(data: data, to: uniqueFileName)
     }
 
     private convenience init?(objectID: String, propName: String, url: URL) {
         guard let data = try? Data(contentsOf: url) else { return nil }
-        self.init(objectID: objectID, propName: propName, data: data, fileExtension: url.pathExtension)
+        self.init(objectID: objectID, propName: propName, data: data)
     }
 
     /// There is an important point that we need to consider:
@@ -86,13 +81,11 @@ public class CreamAsset: Object {
     ///   - object: The object the asset will live on
     ///   - propName: The unique property name to identify this asset. **Must match the property name on the object where it will be stored!**
     ///   - data: The file data
-    ///   - fileExtension: An optional file extension if you want to maintain that information in the filename/url.  e.g. "mov"
     /// - Returns: A CreamAsset if it was successful
-    public static func create(object: CKRecordConvertible, propName: String, data: Data, fileExtension: String? = nil) -> CreamAsset? {
+    public static func create(object: CKRecordConvertible, propName: String, data: Data) -> CreamAsset? {
         return CreamAsset(objectID: object.recordID.recordName,
                           propName: propName,
-                          data: data,
-                          fileExtension: fileExtension)
+                          data: data)
     }
 
     /// Creates a new CreamAsset for the given object with a URL
