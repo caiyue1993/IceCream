@@ -58,9 +58,7 @@ public class CreamAsset: Object {
 
     var asset: CKAsset {
         get {
-            let diskCachePath = filePath
-            let uploadAsset = CKAsset(fileURL: diskCachePath)
-            return uploadAsset
+            return CKAsset(fileURL: filePath)
         }
     }
 
