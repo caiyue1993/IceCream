@@ -21,24 +21,32 @@ public class CreamAsset: Object {
     @objc dynamic var uniqueFileName = ""
     @objc dynamic var data: Data?
     override public static func ignoredProperties() -> [String] {
-        return ["data"]
+        return ["data", "filePath"]
     }
 
-  private convenience init(objectID: String, propName: String, data: Data) {
+    private convenience init(objectID: String, propName: String, data: Data) {
         self.init()
         self.data = data
         self.uniqueFileName = "\(objectID)_\(propName)"
         save(data: data, to: uniqueFileName)
     }
 
+    private convenience init?(objectID: String, propName: String, url: URL) {
+        guard let data = try? Data(contentsOf: url) else { return nil }
+        self.init(objectID: objectID, propName: propName, data: data)
+    }
+
     /// There is an important point that we need to consider:
     /// Cuz we only store the path of data, so we can't access data by `data` property
     /// So use this method if you want get the data of this object
     public func storedData() -> Data? {
-        let filePath = CreamAsset.creamAssetDefaultURL().appendingPathComponent(uniqueFileName)
         return try! Data(contentsOf: filePath)
     }
-    
+
+    public var filePath: URL {
+        return CreamAsset.creamAssetDefaultURL().appendingPathComponent(uniqueFileName)
+    }
+
     func save(data: Data, to path: String) {
         let url = CreamAsset.creamAssetDefaultURL().appendingPathComponent(path)
         do {
@@ -47,28 +55,50 @@ public class CreamAsset: Object {
             print("Error writing avatar to temporary directory: \(error)")
         }
     }
-    
+
     var asset: CKAsset {
         get {
-            let diskCachePath = CreamAsset.creamAssetDefaultURL().appendingPathComponent(uniqueFileName)
-            let uploadAsset = CKAsset(fileURL: diskCachePath)
-            return uploadAsset
+            return CKAsset(fileURL: filePath)
         }
     }
-    
-  static func parse(from propName: String, record: CKRecord, asset: CKAsset) -> CreamAsset? {
-    guard let assetData = NSData(contentsOfFile: asset.fileURL.path) as Data? else { return nil }
 
-    return CreamAsset(objectID: record.recordID.recordName,
-                      propName: propName,
-                      data: assetData)
-  }
+    /// Parses a CKRecord and CKAsset back into a CreamAsset
+    ///
+    /// - Parameters:
+    ///   - propName: The unique property name to identify this asset. e.g.: Dog Object may have multiple CreamAsset properties, so we need unique `propName`s to identify these.
+    ///   - record: The CKRecord where we will pull the record ID off of to locate/store the file
+    ///   - asset: The CKAsset where we will pull the URL for creating the asset
+    /// - Returns: A CreamAsset if it was successful
+    static func parse(from propName: String, record: CKRecord, asset: CKAsset) -> CreamAsset? {
+        return CreamAsset(objectID: record.recordID.recordName, propName: propName, url: asset.fileURL)
+    }
 
-  public static func create(object: CKRecordConvertible, propName: String, data: Data) -> CreamAsset? {
-    return CreamAsset(objectID: object.recordID.recordName,
-                      propName: propName,
-                           data: data)
-  }
+    /// Creates a new CreamAsset for the given object with Data
+    ///
+    /// - Parameters:
+    ///   - object: The object the asset will live on
+    ///   - propName: The unique property name to identify this asset. e.g.: Dog Object may have multiple CreamAsset properties, so we need unique `propName`s to identify these.
+    ///   - data: The file data
+    /// - Returns: A CreamAsset if it was successful
+    public static func create(object: CKRecordConvertible, propName: String, data: Data) -> CreamAsset? {
+        return CreamAsset(objectID: object.recordID.recordName,
+                          propName: propName,
+                          data: data)
+    }
+
+    /// Creates a new CreamAsset for the given object with a URL
+    ///
+    /// - Parameters:
+    ///   - object: The object the asset will live on
+    ///   - propName: The unique property name to identify this asset. e.g.: Dog Object may have multiple CreamAsset properties, so we need unique `propName`s to identify these.
+    ///   - url: The URL of the file to store. Any path extension on the file (e.g. "mov") will be maintained
+    /// - Returns: A CreamAsset if it was successful
+    public static func create(object: CKRecordConvertible, propName: String, url: URL) -> CreamAsset? {
+
+        return CreamAsset(objectID: object.recordID.recordName,
+                          propName: propName,
+                          url: url)
+    }
 }
 
 extension CreamAsset {
@@ -81,22 +111,22 @@ extension CreamAsset {
             do {
                 try FileManager.default.createDirectory(atPath: commonAssetPath.path, withIntermediateDirectories: false, attributes: nil)
             } catch {
-                
+
             }
         }
         return commonAssetPath
     }
-    
+
     /// Fetch all CreamAsset files' path
     public static func creamAssetFilesPaths() -> [String] {
         do {
             return try FileManager.default.contentsOfDirectory(atPath: CreamAsset.creamAssetDefaultURL().path)
         } catch {
-            
+
         }
         return [String]()
     }
-    
+
     /// Execute deletions
     private static func excecuteDeletions(in filesNames: [String]) {
         for fileName in filesNames {
@@ -105,15 +135,15 @@ extension CreamAsset {
                 print("deleteCacheFiles.removeItem:", absolutePath)
                 try FileManager.default.removeItem(atPath: absolutePath)
             } catch {
-                
+
             }
         }
     }
-    
+
     /// When delete an object. We need to delete related CreamAsset files
     public static func deleteCreamAssetFile(with id: String) {
         let needToDeleteCacheFiles = creamAssetFilesPaths().filter { $0.contains(id) }
         excecuteDeletions(in: needToDeleteCacheFiles)
     }
-    
+
 }
