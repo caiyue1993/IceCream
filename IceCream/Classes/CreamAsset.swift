@@ -65,7 +65,7 @@ public class CreamAsset: Object {
     /// Parses a CKRecord and CKAsset back into a CreamAsset
     ///
     /// - Parameters:
-    ///   - propName: The unique property name to identify this asset. **Must match the property name on the object where it will be stored!**
+    ///   - propName: The unique property name to identify this asset. e.g.: Dog Object may have multiple CreamAsset properties, so we need unique `propName`s to identify these.
     ///   - record: The CKRecord where we will pull the record ID off of to locate/store the file
     ///   - asset: The CKAsset where we will pull the URL for creating the asset
     /// - Returns: A CreamAsset if it was successful
@@ -77,7 +77,7 @@ public class CreamAsset: Object {
     ///
     /// - Parameters:
     ///   - object: The object the asset will live on
-    ///   - propName: The unique property name to identify this asset. **Must match the property name on the object where it will be stored!**
+    ///   - propName: The unique property name to identify this asset. e.g.: Dog Object may have multiple CreamAsset properties, so we need unique `propName`s to identify these.
     ///   - data: The file data
     /// - Returns: A CreamAsset if it was successful
     public static func create(object: CKRecordConvertible, propName: String, data: Data) -> CreamAsset? {
@@ -90,7 +90,7 @@ public class CreamAsset: Object {
     ///
     /// - Parameters:
     ///   - object: The object the asset will live on
-    ///   - propName: The unique property name to identify this asset. **Must match the property name on the object where it will be stored!**
+    ///   - propName: The unique property name to identify this asset. e.g.: Dog Object may have multiple CreamAsset properties, so we need unique `propName`s to identify these.
     ///   - url: The URL of the file to store. Any path extension on the file (e.g. "mov") will be maintained
     /// - Returns: A CreamAsset if it was successful
     public static func create(object: CKRecordConvertible, propName: String, url: URL) -> CreamAsset? {
