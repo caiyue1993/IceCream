@@ -9,6 +9,12 @@ import Foundation
 import RealmSwift
 import CloudKit
 
+/// SyncObject is for each model you want to sync.
+/// Logically,
+/// 1. it takes care of the operations of CKRecordZone.
+/// 2. it detects the changeSets of Realm Database and directly talks to it.
+/// 3. it hands over to SyncEngine so that it can talk to CloudKit.
+
 public final class SyncObject<T> where T: Object & CKRecordConvertible & CKRecordRecoverable {
     
     /// Notifications are delivered as long as a reference is held to the returned notification token. We should keep a strong reference to this token on the class registering for updates, as notifications are automatically unregistered when the notification token is deallocated.
@@ -25,10 +31,15 @@ public final class SyncObject<T> where T: Object & CKRecordConvertible & CKRecor
 // MARK: - Zone information
 
 extension SyncObject: Syncable {
+    
+    public var recordType: String {
+        return T.recordType
+    }
+    
     public var customZoneID: CKRecordZoneID {
         return T.customZoneID
     }
-
+    
     public var zoneChangesToken: CKServerChangeToken? {
         get {
             /// For the very first time when launching, the token will be nil and the server will be giving everything on the Cloud to client
@@ -46,9 +57,6 @@ extension SyncObject: Syncable {
         }
     }
 
-    public var recordType: String {
-        return T.recordType
-    }
 
     public var isCustomZoneCreated: Bool {
         get {

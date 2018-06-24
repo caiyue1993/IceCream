@@ -36,6 +36,12 @@ public struct IceCreamConstant {
     public static let cloudKitSubscriptionID = "private_changes"
 }
 
+/// SyncEngine talks to CloudKit directly.
+/// Logically,
+/// 1. it takes care of the operations of CKDatabase
+/// 2. it handles all of the CloudKit config stuffs, such as subscriptions
+/// 3. it hands over CKRecordZone stuffs to SyncObject so that it can have an effect on local Realm Database
+
 public final class SyncEngine {
 
     /// Notifications are delivered as long as a reference is held to the returned notification token. You should keep a strong reference to this token on the class registering for updates, as notifications are automatically unregistered when the notification token is deallocated.
