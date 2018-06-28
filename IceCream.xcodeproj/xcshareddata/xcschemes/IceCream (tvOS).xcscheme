@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6743F711202B0F0F00912163"
+               BlueprintIdentifier = "99BC0D9E207FACA500D48702"
                BuildableName = "IceCream.framework"
-               BlueprintName = "IceCream"
+               BlueprintName = "IceCream (tvOS)"
                ReferencedContainer = "container:IceCream.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,9 +45,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "6743F711202B0F0F00912163"
+            BlueprintIdentifier = "99BC0D9E207FACA500D48702"
             BuildableName = "IceCream.framework"
-            BlueprintName = "IceCream"
+            BlueprintName = "IceCream (tvOS)"
             ReferencedContainer = "container:IceCream.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -63,9 +63,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "6743F711202B0F0F00912163"
+            BlueprintIdentifier = "99BC0D9E207FACA500D48702"
             BuildableName = "IceCream.framework"
-            BlueprintName = "IceCream"
+            BlueprintName = "IceCream (tvOS)"
             ReferencedContainer = "container:IceCream.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
