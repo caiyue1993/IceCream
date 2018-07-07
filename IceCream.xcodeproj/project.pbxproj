@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0369A86820F139A5000DC044 /* CKRecordConnectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0369A86720F139A5000DC044 /* CKRecordConnectable.swift */; };
 		41767BFD209863BA00178513 /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41767BFC209863BA00178513 /* SyncEngine.swift */; };
 		6743F717202B0F0F00912163 /* IceCream.h in Headers */ = {isa = PBXBuildFile; fileRef = 6743F715202B0F0F00912163 /* IceCream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6743F726202B0F9400912163 /* .gitkeep in Resources */ = {isa = PBXBuildFile; fileRef = 6743F71E202B0F9400912163 /* .gitkeep */; };
@@ -24,6 +25,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0369A86720F139A5000DC044 /* CKRecordConnectable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CKRecordConnectable.swift; sourceTree = "<group>"; };
 		41767BFC209863BA00178513 /* SyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngine.swift; sourceTree = "<group>"; };
 		6743F712202B0F0F00912163 /* IceCream.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IceCream.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6743F715202B0F0F00912163 /* IceCream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IceCream.h; sourceTree = "<group>"; };
@@ -87,6 +89,7 @@
 			children = (
 				6743F71E202B0F9400912163 /* .gitkeep */,
 				6773DF0220BD2CE10019FF3A /* Syncable.swift */,
+				0369A86720F139A5000DC044 /* CKRecordConnectable.swift */,
 				6773DEFF20BD2CBD0019FF3A /* CKRecordConvertible.swift */,
 				6773DEFE20BD2CBD0019FF3A /* CKRecordRecoverable.swift */,
 				6743F720202B0F9400912163 /* ErrorHandler.swift */,
@@ -148,7 +151,7 @@
 		6743F709202B0F0F00912163 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0920;
+				LastUpgradeCheck = 1000;
 				ORGANIZATIONNAME = "蔡越";
 				TargetAttributes = {
 					6743F711202B0F0F00912163 = {
@@ -218,6 +221,7 @@
 				6743F729202B0F9400912163 /* Cream.swift in Sources */,
 				6743F728202B0F9400912163 /* ErrorHandler.swift in Sources */,
 				6767988F20BCEEB0008F98AD /* SyncObject.swift in Sources */,
+				0369A86820F139A5000DC044 /* CKRecordConnectable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -238,6 +242,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -245,6 +250,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -298,6 +304,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -305,6 +312,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -356,7 +364,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = me.soledad.http.IceCream;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -380,7 +388,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = me.soledad.http.IceCream;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
