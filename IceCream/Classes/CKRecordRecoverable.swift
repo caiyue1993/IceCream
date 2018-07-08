@@ -49,7 +49,7 @@ extension CKRecordRecoverable where Self: Object {
 					}
 					guard let type = objectType, let primaryKey = type.primaryKey() else { break }
 					
-					if let referenceList = record.value(forKey: prop.name) as? [CKRecord.Reference]
+					if let referenceList = record.value(forKey: prop.name) as? [CKReference]
 					{
 						let list = RLMArray<Object>(objectClassName: objectType!.className())
 						
@@ -60,7 +60,7 @@ extension CKRecordRecoverable where Self: Object {
 						}
 						recordValue = list
 					}
-					else if let reference = record.value(forKey: prop.name) as? CKRecord.Reference
+					else if let reference = record.value(forKey: prop.name) as? CKReference
 					{
 						recordValue = realm.objects(type).filter("%K == %@", primaryKey, reference.recordID.recordName)
 					}
