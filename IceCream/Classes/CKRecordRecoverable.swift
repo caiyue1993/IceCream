@@ -33,25 +33,41 @@ extension CKRecordRecoverable where Self: Object {
             case .data:
                 recordValue = record.value(forKey: prop.name) as? Data
             case .object:
-								if let asset = record.value(forKey: prop.name) as? CKAsset
-								{
-									
-									recordValue = CreamAsset.parse(from: prop.name, record: record, asset: asset)
-								}
-								else if let reference = record.value(forKey: prop.name) as? CKReference
-								{
-									var objectType: Object.Type?
-									guard let referencesTypes = Self.references else { break }
-									for referenceType in referencesTypes
-									{
-										if prop.objectClassName == referenceType.className() { objectType = referenceType }
-									}
-									guard let type = objectType,
-										let primaryKey = type.primaryKey() else { break }
-									
-									let object = self.realm?.objects(type).filter("%K == %@", primaryKey, reference.recordID.recordName)
-									recordValue = object
-								}
+                if let asset = record.value(forKey: prop.name) as? CKAsset
+                    {
+                        recordValue = CreamAsset.parse(from: prop.name, record: record, asset: asset)
+                    }
+                    else if let referenceList = record.value(forKey: prop.name) as? [CKReference]
+                    {
+                        var objectType: Object.Type?
+                        guard let referencesTypes = Self.references else { break }
+                        for referenceType in referencesTypes
+                        {
+                            print(prop.objectClassName)
+                            if prop.objectClassName == referenceType.className() { objectType = referenceType }
+                        }
+                        var list = List<Object>()
+                        guard let type = objectType, let primaryKey = type.primaryKey() else { break }
+                        for reference in referenceList
+                        {
+                            guard let object = self.realm?.objects(type).filter("%K == %@", primaryKey, reference.recordID.recordName).first else { break }
+                            list.append(object)
+                        }
+                        recordValue = list
+                    }
+                    else if let reference = record.value(forKey: prop.name) as? CKReference
+                    {
+                        var objectType: Object.Type?
+                        guard let referencesTypes = Self.references else { break }
+                        for referenceType in referencesTypes
+                        {
+                            if prop.objectClassName == referenceType.className() { objectType = referenceType }
+                        }
+                        guard let type = objectType,
+                            let primaryKey = type.primaryKey() else { break }
+                            let object = self.realm?.objects(type).filter("%K == %@", primaryKey, reference.recordID.recordName)
+                        recordValue = object
+                    }
             default:
                 print("Other types will be supported in the future.")
             }

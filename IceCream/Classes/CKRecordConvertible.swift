@@ -59,30 +59,46 @@ extension CKRecordConvertible where Self: Object {
                 r[prop.name] = self[prop.name] as? CKRecordValue
             case .object:
                 guard let objectName = prop.objectClassName else { break }
-								// Convert object as CreamAsset
-								if objectName == CreamAsset.className() {
-									if let creamAsset = self[prop.name] as? CreamAsset {
-										r[prop.name] = creamAsset.asset
-									} else {
-										/// Just a warm hint:
-										/// When we set nil to the property of a CKRecord, that record's property will be hidden in the CloudKit Dashboard
-										r[prop.name] = nil
-									}
-								}
-									// Convert object as CKReference
-								else if let references = Self.references
-								{
-									for reference in references
-									{
-										if objectName == reference.className()
-										{
-											guard let object = self[prop.name] as? Object,
-												let primaryKey = object.objectSchema.primaryKeyProperty?.name,
-												let id = object.value(forKey: primaryKey) as? String else { break }
-											r[prop.name] = CKReference(recordID: CKRecordID(recordName: id), action: .none)
-										}
-									}
+                // Convert object as CreamAsset
+				if objectName == CreamAsset.className() {
+					if let creamAsset = self[prop.name] as? CreamAsset {
+						r[prop.name] = creamAsset.asset
+					} else {
+						/// Just a warm hint:
+						/// When we set nil to the property of a CKRecord, that record's property will be hidden in the CloudKit Dashboard
+						r[prop.name] = nil
+					}
+				}
+				else if let references = Self.references
+				{
+					for reference in references
+					{
+						if objectName == reference.className()
+						{
+							// MARK: Convert object as One to Many relationship.
+							if let object = self[prop.name] as? Object
+							{
+								guard let primaryKey = object.objectSchema.primaryKeyProperty?.name,
+                                      let id = object.value(forKey: primaryKey) as? String else { break }
+								r[prop.name] = CKReference(recordID: CKRecordID(recordName: id), action: .none)
 							}
+							// MARK: Convert object as Many to Many relationship.
+							else if let listBase = self[prop.name] as? ListBase
+							{
+								// MARK: self[prop.name] cannot parsed as an List<Object>. So it has to cast as low level object ListBase and read _rlmArray data from it.
+								var referenceList = [CKReference]()
+								for index in 0..<listBase._rlmArray.count
+								{
+									guard let object = listBase._rlmArray[index] as? Object,
+										let primaryKey = object.objectSchema.primaryKeyProperty?.name,
+										let id = object.value(forKey: primaryKey) as? String else { break }
+									referenceList.append(CKReference(recordID: CKRecordID(recordName: id), action: .none))
+								}
+								r[prop.name] = referenceList
+							}
+						}
+					}
+				}
             default: break
             }
         }
