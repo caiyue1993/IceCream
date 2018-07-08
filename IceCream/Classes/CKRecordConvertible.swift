@@ -73,7 +73,7 @@ extension CKRecordConvertible where Self: Object {
 				{
 					for reference in references
 					{
-						if objectName == reference.className()
+						if objectName == reference.className() 
 						{
 							// MARK: Convert object as One to Many relationship.
 							if let object = self[prop.name] as? Object
@@ -94,7 +94,7 @@ extension CKRecordConvertible where Self: Object {
 										let id = object.value(forKey: primaryKey) as? String else { break }
 									referenceList.append(CKReference(recordID: CKRecordID(recordName: id), action: .none))
 								}
-								r[prop.name] = referenceList
+								r[prop.name] = referenceList as CKRecordValue
 							}
 						}
 					}
