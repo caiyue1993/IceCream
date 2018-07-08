@@ -33,11 +33,24 @@ extension CKRecordRecoverable where Self: Object {
             case .data:
                 recordValue = record.value(forKey: prop.name) as? Data
             case .object:
-                guard let asset = record.value(forKey: prop.name) as? CKAsset else {
-                    print("For now, the Object only support CKAsset related type.")
-                    break
-                }
-                recordValue = CreamAsset.parse(from: prop.name, record: record, asset: asset)
+								if let asset = record.value(forKey: prop.name) as? CKAsset
+								{
+									recordValue = CreamAsset.parse(from: prop.name, record: record, asset: asset)
+								}
+								else if let reference = record.value(forKey: prop.name) as? CKRecord.Reference
+								{
+									var objectType: Object.Type?
+									guard let referencesTypes = Self.references else { break }
+									for referenceType in referencesTypes
+									{
+										if prop.objectClassName == referenceType.className() { objectType = referenceType }
+									}
+									guard let type = objectType,
+										let primaryKey = type.primaryKey() else { break }
+									
+									let object = self.realm?.objects(type).filter("%K == %@", primaryKey, reference.recordID.recordName)
+									recordValue = object
+								}
             default:
                 print("Other types will be supported in the future.")
             }

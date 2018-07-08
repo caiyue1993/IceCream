@@ -59,19 +59,32 @@ extension CKRecordConvertible where Self: Object {
                 r[prop.name] = self[prop.name] as? CKRecordValue
             case .object:
                 guard let objectName = prop.objectClassName else { break }
-                if objectName == CreamAsset.className() {
-                    if let creamAsset = self[prop.name] as? CreamAsset {
-                        r[prop.name] = creamAsset.asset
-                    } else {
-                        /// Just a warm hint:
-                        /// When we set nil to the property of a CKRecord, that record's property will be hidden in the CloudKit Dashboard
-                        r[prop.name] = nil
-                    }
-                }
-            default:
-                break
+								// Convert object as CreamAsset
+								if objectName == CreamAsset.className() {
+									if let creamAsset = self[prop.name] as? CreamAsset {
+										r[prop.name] = creamAsset.asset
+									} else {
+										/// Just a warm hint:
+										/// When we set nil to the property of a CKRecord, that record's property will be hidden in the CloudKit Dashboard
+										r[prop.name] = nil
+									}
+								}
+									// Convert object as CKReference
+								else if let references = Self.references
+								{
+									for reference in references
+									{
+										if objectName == reference.className()
+										{
+											guard let object = self[prop.name] as? Object,
+												let primaryKey = object.objectSchema.primaryKeyProperty?.name,
+												let id = object.value(forKey: primaryKey) as? String else { break }
+											r[prop.name] = CKRecord.Reference(recordID: CKRecord.ID(recordName: id), action: CKRecord_Reference_Action.none)
+										}
+									}
+							}
+            default: break
             }
-            
         }
         return r
     }
