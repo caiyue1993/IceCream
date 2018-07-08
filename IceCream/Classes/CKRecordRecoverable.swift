@@ -57,12 +57,13 @@ extension CKRecordRecoverable where Self: Object {
                         }
                         recordValue = list
                     }
-                else if let reference = record.value(forKey: prop.name) as? CKReference
-                {
-                    guard let type = objectType,
-                        let primaryKey = type.primaryKey() else { break }
-                        let object = realm.objects(type).filter("%K == %@", primaryKey, reference.recordID.recordName)
-                    recordValue = object
+                    else if let reference = record.value(forKey: prop.name) as? CKReference
+                    {
+                        guard let type = objectType,
+                            let primaryKey = type.primaryKey() else { break }
+                            let object = realm.objects(type).filter("%K == %@", primaryKey, reference.recordID.recordName)
+                        recordValue = object
+                    }
                 }
             default:
                 print("Other types will be supported in the future.")
