@@ -13,7 +13,8 @@ public protocol CKRecordRecoverable: CKRecordConnectable {
 }
 
 extension CKRecordRecoverable where Self: Object {
-    func parseFromRecord(record: CKRecord) -> Self? {
+    // CHANGE MARK: During the process, It need to fetch related objects from CKReference list before parsing it.
+    func parseFromRecord(record: CKRecord, realm: Realm) -> Self? {
         let o = Self()
         for prop in o.objectSchema.properties {
             var recordValue: Any?
@@ -40,19 +41,19 @@ extension CKRecordRecoverable where Self: Object {
                 else if let referenceList = record.value(forKey: prop.name) as? [CKReference]
                 {
                     var objectType: Object.Type?
-                    guard let referencesTypes = Self.references else { break }
-                    for referenceType in referencesTypes
-                    {
-                        if prop.objectClassName == referenceType.className() { objectType = referenceType }
-                    }
-                    let list = List<Object>()
-                    guard let type = objectType, let primaryKey = type.primaryKey() else { break }
-                    for reference in referenceList
-                    {
-                        guard let object = self.realm?.objects(type).filter("%K == %@", primaryKey, reference.recordID.recordName).first else { break }
-                        list.append(object)
-                    }
-                    recordValue = list
+					guard let referencesTypes = Self.references else { break }
+					for referenceType in referencesTypes
+					{
+						if prop.objectClassName == referenceType.className() { objectType = referenceType }
+					}
+					let list = RLMArray<Object>(objectClassName: objectType!.className())
+					guard let type = objectType, let primaryKey = type.primaryKey() else { break }
+					for reference in referenceList
+					{
+						guard let object = realm.objects(type).filter("%K == %@", primaryKey, reference.recordID.recordName).first else { break }
+						list.add(object)
+					}
+					recordValue = list
                 }
                 else if let reference = record.value(forKey: prop.name) as? CKReference
                 {
@@ -64,7 +65,7 @@ extension CKRecordRecoverable where Self: Object {
                     }
                     guard let type = objectType,
                         let primaryKey = type.primaryKey() else { break }
-                        let object = self.realm?.objects(type).filter("%K == %@", primaryKey, reference.recordID.recordName)
+                        let object = realm.objects(type).filter("%K == %@", primaryKey, reference.recordID.recordName)
                     recordValue = object
                 }
             default:
