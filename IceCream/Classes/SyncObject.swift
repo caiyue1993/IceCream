@@ -74,8 +74,8 @@ extension SyncObject: Syncable {
             
             let realm = try! Realm()
 
-            guard let object = T().parseFromRecord(record: record, realm: Realm) else {
-                print("There is something wrong with the converson from cloud record to local object")
+            guard let object = T().parseFromRecord(record: record, realm: realm) else {
+                print("There is something wrong with the conversion from cloud record to local object")
                 return
             }
             
