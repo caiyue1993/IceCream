@@ -47,24 +47,23 @@ extension CKRecordRecoverable where Self: Object {
 					{
 						if prop.objectClassName == referenceType.className() { objectType = referenceType }
 					}
-                    guard let type = objectType else { break }
-                    if let referenceList = record.value(forKey: prop.name) as? [CKReference]
-                    {
-                        let list = RLMArray<Object>(objectClassName: objectType.className())
-                        gaurd let primaryKey = type.primaryKey() else { break }
-                        for reference in referenceList
-                        {
-                            guard let object = realm.objects(type).filter("%K == %@", primaryKey, reference.recordID.recordName).first else { break }
-                            list.add(object)
-                        }
-                        recordValue = list
-                    }
-                    else if let reference = record.value(forKey: prop.name) as? CKReference
-                    {
-                        guard let primaryKey = type.primaryKey() else { break }
-                        let object = realm.objects(type).filter("%K == %@", primaryKey, reference.recordID.recordName)
-                        recordValue = object
-                    }
+					guard let type = objectType, let primaryKey = type.primaryKey() else { break }
+					
+					if let referenceList = record.value(forKey: prop.name) as? [CKRecord.Reference]
+					{
+						let list = RLMArray<Object>(objectClassName: objectType!.className())
+						
+						for reference in referenceList
+						{
+							guard let object = realm.objects(type).filter("%K == %@", primaryKey, reference.recordID.recordName).first else { break }
+							list.add(object)
+						}
+						recordValue = list
+					}
+					else if let reference = record.value(forKey: prop.name) as? CKRecord.Reference
+					{
+						recordValue = realm.objects(type).filter("%K == %@", primaryKey, reference.recordID.recordName)
+					}
                 }
             default:
                 print("Other types will be supported in the future.")
