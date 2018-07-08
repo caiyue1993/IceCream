@@ -35,9 +35,10 @@ extension CKRecordRecoverable where Self: Object {
             case .object:
 								if let asset = record.value(forKey: prop.name) as? CKAsset
 								{
+									
 									recordValue = CreamAsset.parse(from: prop.name, record: record, asset: asset)
 								}
-								else if let reference = record.value(forKey: prop.name) as? CKRecord.Reference
+								else if let reference = record.value(forKey: prop.name) as? CKReference
 								{
 									var objectType: Object.Type?
 									guard let referencesTypes = Self.references else { break }
