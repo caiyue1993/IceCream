@@ -79,7 +79,7 @@ extension CKRecordConvertible where Self: Object {
 											guard let object = self[prop.name] as? Object,
 												let primaryKey = object.objectSchema.primaryKeyProperty?.name,
 												let id = object.value(forKey: primaryKey) as? String else { break }
-											r[prop.name] = CKRecord.Reference(recordID: CKRecord.ID(recordName: id), action: .none)
+											r[prop.name] = CKReference(recordID: CKRecordID(recordName: id), action: .none)
 										}
 									}
 							}
