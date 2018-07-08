@@ -69,13 +69,15 @@ extension SyncObject: Syncable {
     }
     
     public func add(record: CKRecord) {
-        guard let object = T().parseFromRecord(record: record) else {
-            print("There is something wrong with the converson from cloud record to local object")
-            return
-        }
-        
+       
         DispatchQueue.main.async {
+            
             let realm = try! Realm()
+
+            guard let object = T().parseFromRecord(record: record, realm: realm) else {
+                print("There is something wrong with the conversion from cloud record to local object")
+                return
+            }
             
             /// If your model class includes a primary key, you can have Realm intelligently update or add objects based off of their primary key values using Realm().add(_:update:).
             /// https://realm.io/docs/swift/latest/#objects-with-primary-keys

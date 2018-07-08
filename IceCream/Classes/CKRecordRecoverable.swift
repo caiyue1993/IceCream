@@ -6,14 +6,16 @@
 //
 
 import CloudKit
+import Realm
 import RealmSwift
 
-public protocol CKRecordRecoverable {
+public protocol CKRecordRecoverable: CKRecordConnectable {
     
 }
 
 extension CKRecordRecoverable where Self: Object {
-    func parseFromRecord(record: CKRecord) -> Self? {
+    // CHANGE MARK: During the process, It need to fetch related objects from CKReference list before parsing it.
+    func parseFromRecord(record: CKRecord, realm: Realm) -> Self? {
         let o = Self()
         for prop in o.objectSchema.properties {
             var recordValue: Any?
@@ -33,11 +35,36 @@ extension CKRecordRecoverable where Self: Object {
             case .data:
                 recordValue = record.value(forKey: prop.name) as? Data
             case .object:
-                guard let asset = record.value(forKey: prop.name) as? CKAsset else {
-                    print("For now, the Object only support CKAsset related type.")
-                    break
+                if let asset = record.value(forKey: prop.name) as? CKAsset
+                {
+                    recordValue = CreamAsset.parse(from: prop.name, record: record, asset: asset)
                 }
-                recordValue = CreamAsset.parse(from: prop.name, record: record, asset: asset)
+                else 
+                {
+                    var objectType: Object.Type?
+					guard let referencesTypes = Self.references else { break }
+					for referenceType in referencesTypes
+					{
+						if prop.objectClassName == referenceType.className() { objectType = referenceType }
+					}
+					guard let type = objectType, let primaryKey = type.primaryKey() else { break }
+					
+					if let referenceList = record.value(forKey: prop.name) as? [CKReference]
+					{
+						let list = RLMArray<Object>(objectClassName: objectType!.className())
+						
+						for reference in referenceList
+						{
+							guard let object = realm.objects(type).filter("%K == %@", primaryKey, reference.recordID.recordName).first else { break }
+							list.add(object)
+						}
+						recordValue = list
+					}
+					else if let reference = record.value(forKey: prop.name) as? CKReference
+					{
+						recordValue = realm.objects(type).filter("%K == %@", primaryKey, reference.recordID.recordName)
+					}
+                }
             default:
                 print("Other types will be supported in the future.")
             }
