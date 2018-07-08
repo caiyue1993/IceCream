@@ -6,6 +6,7 @@
 //
 
 import CloudKit
+import Realm
 import RealmSwift
 
 public protocol CKRecordRecoverable: CKRecordConnectable {
