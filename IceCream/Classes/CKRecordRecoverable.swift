@@ -8,7 +8,7 @@
 import CloudKit
 import RealmSwift
 
-public protocol CKRecordRecoverable {
+public protocol CKRecordRecoverable: CKRecordConnectable {
     
 }
 

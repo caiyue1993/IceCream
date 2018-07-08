@@ -9,7 +9,7 @@ import Foundation
 import CloudKit
 import RealmSwift
 
-public protocol CKRecordConvertible {
+public protocol CKRecordConvertible: CKRecordConnectable {
     static var recordType: String { get }
     static var customZoneID: CKRecordZoneID { get }
     
