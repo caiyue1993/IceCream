@@ -23,6 +23,10 @@ class Dog: Object {
     override class func primaryKey() -> String? {
         return "id"
     }
+    
+    // required for sharing, observing public database
+    @objc dynamic var databaseType = DatabaseType.dbPrivate
+
 }
 
 extension Dog: CKRecordConvertible {

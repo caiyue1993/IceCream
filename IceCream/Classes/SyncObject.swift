@@ -23,7 +23,7 @@ public final class SyncObject<T> where T: Object & CKRecordConvertible & CKRecor
     
     private let errorHandler = ErrorHandler()
     
-    public var pipeToEngine: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecordID]) -> ())?
+    public var pipeToEngine: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecord.ID]) -> ())?
     
     public init() {}
 }
@@ -36,7 +36,7 @@ extension SyncObject: Syncable {
         return T.recordType
     }
     
-    public var customZoneID: CKRecordZoneID {
+    public var customZoneID: CKRecordZone.ID {
         return T.customZoneID
     }
     
@@ -68,12 +68,13 @@ extension SyncObject: Syncable {
         }
     }
     
-    public func add(record: CKRecord) {
-        guard let object = T().parseFromRecord(record: record) else {
+    public func add(databaseType: DatabaseType, record: CKRecord) {
+        guard var object = T().parseFromRecord(record: record) else {
             print("There is something wrong with the converson from cloud record to local object")
             return
         }
-        
+        object.databaseType = databaseType
+
         DispatchQueue.main.async {
             let realm = try! Realm()
             
@@ -89,7 +90,7 @@ extension SyncObject: Syncable {
         }
     }
     
-    public func delete(recordID: CKRecordID) {
+    public func delete(recordID: CKRecord.ID) {
         DispatchQueue.main.async {
             let realm = try! Realm()
             guard let object = realm.object(ofType: T.self, forPrimaryKey: recordID.recordName) else {
@@ -129,7 +130,7 @@ extension SyncObject: Syncable {
                 
                 guard objectsToStore.count > 0 || objectsToDelete.count > 0 else { return }
                 
-                let recordsToStore = objectsToStore.map{ $0.record }
+                let recordsToStore = objectsToStore.filter{ $0.databaseType == .dbPrivate }.map{ $0.record }
                 let recordIDsToDelete = objectsToDelete.map{ $0.recordID }
                 
                 `self`.pipeToEngine?(recordsToStore, recordIDsToDelete)

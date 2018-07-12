@@ -14,7 +14,7 @@ public protocol Syncable: class {
     
     /// CKRecordZone related
     var recordType: String { get }
-    var customZoneID: CKRecordZoneID { get }
+    var customZoneID: CKRecordZone.ID { get }
     
     /// Local storage
     var zoneChangesToken: CKServerChangeToken? { get set }
@@ -23,9 +23,12 @@ public protocol Syncable: class {
     /// Realm Database related
     func registerLocalDatabase()
     func cleanUp()
-    func add(record: CKRecord)
-    func delete(recordID: CKRecordID)
-    
-    /// Callback
-    var pipeToEngine: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecordID]) -> ())? { get set }
+    func add(databaseType: DatabaseType, record: CKRecord)
+    func delete(recordID: CKRecord.ID)
+ 
+    ///
+    /// Upon observing changes originating locally, send the changes to CloudKit
+    /// - Parameters:
+    ///   - recordsToStore: An array of all
+    var pipeToEngine: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecord.ID]) -> ())? { get set }
 }

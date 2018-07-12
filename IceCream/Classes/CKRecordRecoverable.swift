@@ -8,8 +8,29 @@
 import CloudKit
 import RealmSwift
 
+@objc public enum DatabaseType: Int {
+    case dbPrivate, dbShared
+    func description() -> String {
+        switch self {
+        case .dbPrivate:
+            return "dbPrivate"
+        case .dbShared:
+            return "dbShared"
+        }
+    }
+    func dataBase() -> CKDatabase {
+        let container = CKContainer.default()
+        switch self {
+        case .dbPrivate:
+            return container.privateCloudDatabase
+        case .dbShared:
+            return container.sharedCloudDatabase
+        }
+    }
+}
+
 public protocol CKRecordRecoverable {
-    
+    var databaseType: DatabaseType { get set }
 }
 
 extension CKRecordRecoverable where Self: Object {
