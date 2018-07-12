@@ -23,9 +23,12 @@ public protocol Syncable: class {
     /// Realm Database related
     func registerLocalDatabase()
     func cleanUp()
-    func add(record: CKRecord)
+    func add(databaseType: DatabaseType, record: CKRecord)
     func delete(recordID: CKRecord.ID)
-    
-    /// Callback
+ 
+    ///
+    /// Upon observing changes originating locally, send the changes to CloudKit
+    /// - Parameters:
+    ///   - recordsToStore: An array of all
     var pipeToEngine: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecord.ID]) -> ())? { get set }
 }
