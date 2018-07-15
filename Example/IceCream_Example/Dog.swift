@@ -20,6 +20,9 @@ class Dog: Object {
     static let AVATAR_KEY = "avatar"
     @objc dynamic var avatar: CreamAsset?
     
+    // Relationships usage in Realm: https://realm.io/docs/swift/latest/#relationships
+    @objc dynamic var owner: Person? // to-one relationships must be optional
+    
     override class func primaryKey() -> String? {
         return "id"
     }
