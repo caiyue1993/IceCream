@@ -13,6 +13,7 @@
 		6743F701202B0D1C00912163 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6743F6FF202B0D1C00912163 /* LaunchScreen.xib */; };
 		6743F703202B0D2400912163 /* Dog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F702202B0D2400912163 /* Dog.swift */; };
 		6743F707202B0D4500912163 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6743F706202B0D4500912163 /* CloudKit.framework */; };
+		67851AF920FAFE0F00D5142C /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67851AF820FAFE0F00D5142C /* Person.swift */; };
 		67AA236020B84C9700953F09 /* CatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67AA235E20B84C9700953F09 /* CatsViewController.swift */; };
 		67AA236120B84C9700953F09 /* Cat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67AA235F20B84C9700953F09 /* Cat.swift */; };
 		67AA236320B84CB600953F09 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67AA236220B84CB600953F09 /* TabBarViewController.swift */; };
@@ -31,6 +32,7 @@
 		6743F702202B0D2400912163 /* Dog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dog.swift; sourceTree = "<group>"; };
 		6743F704202B0D4100912163 /* IceCream_Example.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = IceCream_Example.entitlements; sourceTree = "<group>"; };
 		6743F706202B0D4500912163 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		67851AF820FAFE0F00D5142C /* Person.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
 		67AA235E20B84C9700953F09 /* CatsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CatsViewController.swift; sourceTree = "<group>"; };
 		67AA235F20B84C9700953F09 /* Cat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cat.swift; sourceTree = "<group>"; };
 		67AA236220B84CB600953F09 /* TabBarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
@@ -73,10 +75,11 @@
 			children = (
 				6743F704202B0D4100912163 /* IceCream_Example.entitlements */,
 				67AA236220B84CB600953F09 /* TabBarViewController.swift */,
+				67851AF820FAFE0F00D5142C /* Person.swift */,
 				67AA235F20B84C9700953F09 /* Cat.swift */,
+				6743F702202B0D2400912163 /* Dog.swift */,
 				67AA235E20B84C9700953F09 /* CatsViewController.swift */,
 				6743F6ED202B0CB600912163 /* DogsViewController.swift */,
-				6743F702202B0D2400912163 /* Dog.swift */,
 				6743F6FF202B0D1C00912163 /* LaunchScreen.xib */,
 				6743F6FD202B0D1400912163 /* Images.xcassets */,
 				6743F6EB202B0CB600912163 /* AppDelegate.swift */,
@@ -233,6 +236,7 @@
 				67AA236020B84C9700953F09 /* CatsViewController.swift in Sources */,
 				67AA236120B84C9700953F09 /* Cat.swift in Sources */,
 				6743F6EC202B0CB600912163 /* AppDelegate.swift in Sources */,
+				67851AF920FAFE0F00D5142C /* Person.swift in Sources */,
 				67AA236320B84CB600953F09 /* TabBarViewController.swift in Sources */,
 				6743F703202B0D2400912163 /* Dog.swift in Sources */,
 			);
