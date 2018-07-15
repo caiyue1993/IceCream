@@ -59,21 +59,18 @@ extension CKRecordConvertible where Self: Object {
                 r[prop.name] = self[prop.name] as? CKRecordValue
             case .object:
                 guard let objectName = prop.objectClassName else { break }
-                if objectName == CreamAsset.className() {
-                    // If object is CreamAsset, set record with its wrapped CKAsset value
-                    if let creamAsset = self[prop.name] as? CreamAsset {
-                        r[prop.name] = creamAsset.asset
-                    } else {
-                        /// Just a warm hint:
-                        /// When we set nil to the property of a CKRecord, that record's property will be hidden in the CloudKit Dashboard
-                        r[prop.name] = nil
-                    }
+                // If object is CreamAsset, set record with its wrapped CKAsset value
+                if objectName == CreamAsset.className(), let creamAsset = self[prop.name] as? CreamAsset {
+                    r[prop.name] = creamAsset.asset
+                } else if let owner = self[prop.name] as? CKRecordConvertible {
+                    // Handle to-one relationship: https://realm.io/docs/swift/latest/#many-to-one
+                    r[prop.name] = CKReference(recordID: owner.recordID, action: .none)
                 } else {
-                    // take it as Reference
-                    if let owner = self[prop.name] as? CKRecordConvertible {
-                        r[prop.name] = CKReference(recordID: owner.recordID, action: .none)
-                    }
+                    /// Just a warm hint:
+                    /// When we set nil to the property of a CKRecord, that record's property will be hidden in the CloudKit Dashboard
+                    r[prop.name] = nil
                 }
+                // To-many relationship is not supported yet.
             default:
                 break
             }
