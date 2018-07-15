@@ -60,12 +60,18 @@ extension CKRecordConvertible where Self: Object {
             case .object:
                 guard let objectName = prop.objectClassName else { break }
                 if objectName == CreamAsset.className() {
+                    // If object is CreamAsset, set record with its wrapped CKAsset value
                     if let creamAsset = self[prop.name] as? CreamAsset {
                         r[prop.name] = creamAsset.asset
                     } else {
                         /// Just a warm hint:
                         /// When we set nil to the property of a CKRecord, that record's property will be hidden in the CloudKit Dashboard
                         r[prop.name] = nil
+                    }
+                } else {
+                    // take it as Reference
+                    if let owner = self[prop.name] as? CKRecordConvertible {
+                        r[prop.name] = CKReference(recordID: owner.recordID, action: .none)
                     }
                 }
             default:
