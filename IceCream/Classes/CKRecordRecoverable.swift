@@ -37,6 +37,7 @@ extension CKRecordRecoverable where Self: Object {
                     recordValue = CreamAsset.parse(from: prop.name, record: record, asset: asset)
                 } else if let owner = record.value(forKey: prop.name) as? CKReference, let ownerType = prop.objectClassName {
                     recordValue = realm.dynamicObject(ofType: ownerType, forPrimaryKey: owner.recordID.recordName)
+                    // Because we use the primaryKey as recordName when object converting to CKRecord
                 }
             default:
                 print("Other types will be supported in the future.")

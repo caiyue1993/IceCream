@@ -64,6 +64,7 @@ extension CKRecordConvertible where Self: Object {
                     r[prop.name] = creamAsset.asset
                 } else if let owner = self[prop.name] as? CKRecordConvertible {
                     // Handle to-one relationship: https://realm.io/docs/swift/latest/#many-to-one
+                    // So the owner Object has to conform to CKRecordConvertible protocol
                     r[prop.name] = CKReference(recordID: owner.recordID, action: .none)
                 } else {
                     /// Just a warm hint:
