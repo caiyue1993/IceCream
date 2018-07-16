@@ -14,6 +14,7 @@ import RxSwift
 
 class DogsViewController: UIViewController {
     
+    let jim = Person()
     var dogs: [Dog] = []
     let bag = DisposeBag()
     
@@ -63,16 +64,17 @@ class DogsViewController: UIViewController {
     }
     
     @objc func add() {
-      let dog = Dog()
-      dog.name = "Dog Number " + "\(dogs.count)"
-      dog.age = dogs.count + 1
-
-      let data = UIImageJPEGRepresentation(UIImage(named: dog.age % 2 == 1 ? "smile_dog" : "tongue_dog")!, 1.0) as Data!
-      dog.avatar = CreamAsset.create(object: dog, propName: Dog.AVATAR_KEY, data: data!)
-      try! realm.write {
-        realm.add(dog)
-      }
-  }
+        let dog = Dog()
+        dog.name = "Dog Number " + "\(dogs.count)"
+        dog.age = dogs.count + 1
+        dog.owner = jim
+        
+        let data = UIImageJPEGRepresentation(UIImage(named: dog.age % 2 == 1 ? "smile_dog" : "tongue_dog")!, 1.0) as Data!
+        dog.avatar = CreamAsset.create(object: dog, propName: Dog.AVATAR_KEY, data: data!)
+        try! realm.write {
+            realm.add(dog)
+        }
+    }
 }
 
 extension DogsViewController: UITableViewDelegate {
@@ -131,7 +133,7 @@ extension DogsViewController: UITableViewDataSource {
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell")
-        cell?.textLabel?.text = dogs[indexPath.row].name + " Age: \(dogs[indexPath.row].age)"
+        cell?.textLabel?.text = dogs[indexPath.row].name + " Age: \(dogs[indexPath.row].age)" + " Owner: " + (dogs[indexPath.row].owner?.name ?? "homeless")
         if let data = dogs[indexPath.row].avatar?.storedData() {
             cell?.imageView?.image = UIImage(data: data)
         } else {

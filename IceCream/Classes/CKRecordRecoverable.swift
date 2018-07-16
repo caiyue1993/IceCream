@@ -13,7 +13,7 @@ public protocol CKRecordRecoverable {
 }
 
 extension CKRecordRecoverable where Self: Object {
-    func parseFromRecord(record: CKRecord) -> Self? {
+    func parseFromRecord(record: CKRecord, realm: Realm) -> Self? {
         let o = Self()
         for prop in o.objectSchema.properties {
             var recordValue: Any?
@@ -33,11 +33,11 @@ extension CKRecordRecoverable where Self: Object {
             case .data:
                 recordValue = record.value(forKey: prop.name) as? Data
             case .object:
-                guard let asset = record.value(forKey: prop.name) as? CKAsset else {
-                    print("For now, the Object only support CKAsset related type.")
-                    break
+                if let asset = record.value(forKey: prop.name) as? CKAsset {
+                    recordValue = CreamAsset.parse(from: prop.name, record: record, asset: asset)
+                } else if let owner = record.value(forKey: prop.name) as? CKReference, let ownerType = prop.objectClassName {
+                    recordValue = realm.dynamicObject(ofType: ownerType, forPrimaryKey: owner.recordID.recordName)
                 }
-                recordValue = CreamAsset.parse(from: prop.name, record: record, asset: asset)
             default:
                 print("Other types will be supported in the future.")
             }
