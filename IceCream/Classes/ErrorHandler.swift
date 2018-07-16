@@ -11,10 +11,10 @@ import CloudKit
 /// This struct helps you handle all the CKErrors and has been updated to the current Apple documentation(12/15/2017):
 /// https://developer.apple.com/documentation/cloudkit/ckerror.code
 
-public struct ErrorHandler {
+struct ErrorHandler {
     
     /// We could classify all the result that CKOperation returns into the following five CKOperationResultTypes
-    public enum CKOperationResultType {
+    enum CKOperationResultType {
         case success
         case retry(afterSeconds: Double, message: String)
         case chunk
@@ -23,7 +23,7 @@ public struct ErrorHandler {
     }
     
     /// The reason of CloudKit failure could be classified into following 8 cases
-    public enum CKOperationFailReason {
+    enum CKOperationFailReason {
         case changeTokenExpired
         case network
         case quotaExceeded
@@ -34,7 +34,7 @@ public struct ErrorHandler {
         case unknown
     }
     
-    public func resultType(with error: Error?) -> CKOperationResultType {
+    func resultType(with error: Error?) -> CKOperationResultType {
         guard error != nil else { return .success }
         
         guard let e = error as? CKError else {
@@ -104,7 +104,7 @@ public struct ErrorHandler {
         
     }
     
-    public func retryOperationIfPossible(retryAfter: Double, block: @escaping () -> ()) {
+    func retryOperationIfPossible(retryAfter: Double, block: @escaping () -> ()) {
         
         let delayTime = DispatchTime.now() + retryAfter
         DispatchQueue.main.asyncAfter(deadline: delayTime, execute: {
