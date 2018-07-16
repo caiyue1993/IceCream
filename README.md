@@ -124,11 +124,11 @@ An example project is provided to see the detailed usage.
 
 ### Relationships 
 
-There are two main types of relationships in Realm Database: To-one and To-many relationship.
+There are two main types of relationships in Realm Database: to-one and to-many relationship.
 
 - To-one(including many-to-one and one-to-one)
 
-Thanks to the [CKReference](https://developer.apple.com/documentation/cloudkit/ckrecord/reference) in the CloudKit, IceCream has supported to-one relationship naturally. And we implemented this feature using the **back references** which is recommended by Apple. 
+Thanks to the [CKReference](https://developer.apple.com/documentation/cloudkit/ckrecord/reference) in the CloudKit, IceCream has supported to-one relationship nicely. And we implemented this feature using the **back references** which is recommended by Apple. 
 
 - To-many
 
