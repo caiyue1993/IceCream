@@ -9,33 +9,6 @@ import Foundation
 import RealmSwift
 import CloudKit
 
-public enum Notifications: String, NotificationName {
-    case cloudKitDataDidChangeRemotely
-}
-
-public enum IceCreamKey: String {
-    /// Tokens
-    case databaseChangesTokenKey
-    case zoneChangesTokenKey
-
-    /// Flags
-    case subscriptionIsLocallyCachedKey
-    case hasCustomZoneCreatedKey
-
-    public var value: String {
-        return "icecream.keys." + rawValue
-    }
-}
-
-/// Dangerous part:
-/// In most cases, you should not change the string value cause it is related to user settings.
-/// e.g.: the cloudKitSubscriptionID, if you don't want to use "private_changes" and use another string. You should remove the old subsription first.
-/// Or your user will not save the same subscription again. So you got trouble.
-/// The right way is remove old subscription first and then save new subscription.
-public struct IceCreamConstant {
-    public static let cloudKitSubscriptionID = "private_changes"
-}
-
 /// SyncEngine talks to CloudKit directly.
 /// Logically,
 /// 1. it takes care of the operations of CKDatabase
@@ -54,10 +27,10 @@ public final class SyncEngine {
     private let errorHandler = ErrorHandler()
     
     private let syncObjects: [Syncable]
-
+    
     /// We recommend processing the initialization when app launches
-    public init(syncObjects: [Syncable]) {
-        self.syncObjects = syncObjects
+    public init(objects: [Syncable]) {
+        self.syncObjects = objects
         for syncObject in syncObjects {
             syncObject.pipeToEngine = { [weak self] recordsToStore, recordIDsToDelete in
                 guard let `self` = self else { return }
@@ -406,4 +379,30 @@ extension SyncEngine {
     }
 }
 
+public enum Notifications: String, NotificationName {
+    case cloudKitDataDidChangeRemotely
+}
+
+public enum IceCreamKey: String {
+    /// Tokens
+    case databaseChangesTokenKey
+    case zoneChangesTokenKey
+    
+    /// Flags
+    case subscriptionIsLocallyCachedKey
+    case hasCustomZoneCreatedKey
+    
+    public var value: String {
+        return "icecream.keys." + rawValue
+    }
+}
+
+/// Dangerous part:
+/// In most cases, you should not change the string value cause it is related to user settings.
+/// e.g.: the cloudKitSubscriptionID, if you don't want to use "private_changes" and use another string. You should remove the old subsription first.
+/// Or your user will not save the same subscription again. So you got trouble.
+/// The right way is remove old subscription first and then save new subscription.
+public struct IceCreamConstant {
+    public static let cloudKitSubscriptionID = "private_changes"
+}
 
