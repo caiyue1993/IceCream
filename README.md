@@ -178,6 +178,8 @@ and add the paths to the frameworks you want to use under “Input Files”:
 
 ```
 $(SRCROOT)/Carthage/Build/iOS/IceCream.framework
+$(SRCROOT)/Carthage/Build/iOS/Realm.framework
+$(SRCROOT)/Carthage/Build/iOS/RealmSwift.framework
 ```
 
 For more information about how to use Carthage, please see its [project page](https://github.com/Carthage/Carthage).
