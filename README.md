@@ -35,6 +35,7 @@ IceCream helps you sync Realm Database with CloudKit.
 - [x] Multiple object models support
 - [x] Large Data Syncing
 - [x] Manually Synchronization is also supported
+- [x] Many-to-one & One-to-one relationship
 - [ ] Complete Documentation 
 
 ## Prerequisite
@@ -58,6 +59,8 @@ class Dog: Object {
 
     static let AVATAR_KEY = "avatar"
     @objc dynamic var avatar: CreamAsset?
+
+    @objc dynamic var owner: Person? // to-one relationships must be optional
 
     override class func primaryKey() -> String? {
         return "id"
@@ -85,7 +88,8 @@ Is that easy? Protocol Extensions do this trick.
 var syncEngine: SyncEngine?
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
     ...
-    syncEngine = SyncEngine(syncObjects: [
+    syncEngine = SyncEngine(objects: [
+            SyncObject<Person>(),
             SyncObject<Dog>(),
             SyncObject<Cat>()
         ])
@@ -117,6 +121,18 @@ Absolutely, you could also store your image or kind of resource stuff as `Data` 
 So taking the consideration of the above two, we recommend you to use `CreamAsset` property to hold data. `CreamAsset` will store local data on the file system and just save file paths in the Realm, all automatically. And we'll wrap things up to upload to CloudKit as `CKAsset`. 
 
 An example project is provided to see the detailed usage.
+
+### Relationships 
+
+There are two main types of relationships in Realm Database: To-one and To-many relationship.
+
+1. To-one(including many-to-one and one-to-one)
+
+Thanks to the [CKReference](https://developer.apple.com/documentation/cloudkit/ckrecord/reference) in the CloudKit, IceCream has supported to-one relationship naturally. And we implemented this feature using the *back references*** which is recommended by Apple. 
+
+2. To-many
+
+Due to the limit of Realm, we haven't found out a elegant way to implement to-many relationship which acts like using `List`. For a workaround now, you could use many-to-one relationship above inversely. See #74 and #68 for more details.
 
 ## Requirements
 
