@@ -214,9 +214,8 @@ pod 'IceCream', '~> 1.5.0'
 
 This is the to-do list for the IceCream project. You can join us to become a contributor.
 
-- CKReference & Realm's LinkingObjects
-- CloudKit Shared Database 
-- Other platforms supported, like macOS, tvOS and watchOS
+- [ ] CloudKit Shared Database 
+- [ ] Other platforms supported, like macOS, tvOS and watchOS
 
 See the [CONTRIBUTING](docs/CONTRIBUTING.md) file for contributing guidelines.
 
