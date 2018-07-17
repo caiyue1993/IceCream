@@ -23,7 +23,7 @@ public final class SyncObject<T> where T: Object & CKRecordConvertible & CKRecor
     
     private let errorHandler = ErrorHandler()
     
-    public var pipeToEngine: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecordID]) -> ())?
+    public var pipeToEngine: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecord.ID]) -> ())?
     
     public init() {}
 }
@@ -36,7 +36,7 @@ extension SyncObject: Syncable {
         return T.recordType
     }
     
-    public var customZoneID: CKRecordZoneID {
+    public var customZoneID: CKRecordZone.ID {
         return T.customZoneID
     }
     
@@ -89,7 +89,7 @@ extension SyncObject: Syncable {
         }
     }
     
-    public func delete(recordID: CKRecordID) {
+    public func delete(recordID: CKRecord.ID) {
         DispatchQueue.main.async {
             let realm = try! Realm()
             guard let object = realm.object(ofType: T.self, forPrimaryKey: recordID.recordName) else {

@@ -11,9 +11,9 @@ import RealmSwift
 
 public protocol CKRecordConvertible {
     static var recordType: String { get }
-    static var customZoneID: CKRecordZoneID { get }
+    static var customZoneID: CKRecordZone.ID { get }
     
-    var recordID: CKRecordID { get }
+    var recordID: CKRecord.ID { get }
     var record: CKRecord { get }
     
     var isDeleted: Bool { get }
@@ -25,13 +25,13 @@ extension CKRecordConvertible where Self: Object {
         return className()
     }
     
-    public static var customZoneID: CKRecordZoneID {
-        return CKRecordZoneID(zoneName: "\(recordType)sZone", ownerName: CKCurrentUserDefaultName)
+    public static var customZoneID: CKRecordZone.ID {
+        return CKRecordZone.ID(zoneName: "\(recordType)sZone", ownerName: CKCurrentUserDefaultName)
     }
     
     /// recordName : this is the unique identifier for the record, used to locate records on the database. We can create our own ID or leave it to CloudKit to generate a random UUID.
     /// For more: https://medium.com/@guilhermerambo/synchronizing-data-with-cloudkit-94c6246a3fda
-    public var recordID: CKRecordID {
+    public var recordID: CKRecord.ID {
         guard let sharedSchema = Self.sharedSchema() else {
             fatalError("No schema settled. Go to Realm Community to seek more help.")
         }
@@ -41,9 +41,9 @@ extension CKRecordConvertible where Self: Object {
         }
         
         if let primaryValueString = self[primaryKeyProperty.name] as? String {
-            return CKRecordID(recordName: primaryValueString, zoneID: Self.customZoneID)
+            return CKRecord.ID(recordName: primaryValueString, zoneID: Self.customZoneID)
         } else if let primaryValueInt = self[primaryKeyProperty.name] as? Int {
-            return CKRecordID(recordName: "\(primaryValueInt)", zoneID: Self.customZoneID)
+            return CKRecord.ID(recordName: "\(primaryValueInt)", zoneID: Self.customZoneID)
         } else {
             fatalError("Primary key should be String or Int")
         }
@@ -65,7 +65,7 @@ extension CKRecordConvertible where Self: Object {
                 } else if let owner = self[prop.name] as? CKRecordConvertible {
                     // Handle to-one relationship: https://realm.io/docs/swift/latest/#many-to-one
                     // So the owner Object has to conform to CKRecordConvertible protocol
-                    r[prop.name] = CKReference(recordID: owner.recordID, action: .none)
+                    r[prop.name] = CKRecord.Reference(recordID: owner.recordID, action: .none)
                 } else {
                     /// Just a warm hint:
                     /// When we set nil to the property of a CKRecord, that record's property will be hidden in the CloudKit Dashboard
