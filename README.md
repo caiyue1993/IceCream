@@ -6,7 +6,6 @@
 [![License](https://img.shields.io/cocoapods/l/IceCream.svg?style=flat)](http://cocoapods.org/pods/IceCream)
 [![Platform](https://img.shields.io/cocoapods/p/IceCream.svg?style=flat)](http://cocoapods.org/pods/IceCream)
    
-<a href="http://cocoapods.org/pods/IceCream"><img src="https://img.shields.io/cocoapods/at/IceCream.svg?label=Apps%20Using%20IceCream&colorB=28B9FE"></a>
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/caiyue1993/icecream/issues)
 <a href="https://twitter.com/caiyue5"><img src="https://img.shields.io/twitter/follow/caiyue5.svg?style=social"></a>
 
@@ -35,7 +34,7 @@ IceCream helps you sync Realm Database with CloudKit.
 - [x] Multiple object models support
 - [x] Large Data Syncing
 - [x] Manually Synchronization is also supported
-- [x] To-one relationship support
+- [x] Many-to-one relationship support
 - [ ] Complete Documentation 
 
 ## Prerequisite
@@ -124,15 +123,15 @@ An example project is provided to see the detailed usage.
 
 ### Relationships 
 
-There are two main types of relationships in Realm Database: to-one and to-many relationship.
+There are two main types of relationships in Realm Database: many-to-one and many-to-many.
 
-- To-one(including many-to-one and one-to-one)
+- Many-to-one
 
-Thanks to the [CKReference](https://developer.apple.com/documentation/cloudkit/ckrecord/reference) in the CloudKit, IceCream has supported to-one relationship nicely. And we implemented this feature using the **back references** which is recommended by Apple. 
+Thanks to the [CKReference](https://developer.apple.com/documentation/cloudkit/ckrecord/reference) in the CloudKit, IceCream has supported many-to-one relationship nicely. And we implemented this feature using the **back references** which is recommended by Apple. 
 
-- To-many
+- Many-to-many
 
-Due to the limit of Realm, we haven't found out a elegant way to implement to-many relationship which acts like using `List`. For a workaround now, you could use many-to-one relationship above inversely. See [#74](https://github.com/caiyue1993/IceCream/pull/74) and [#68](https://github.com/caiyue1993/IceCream/pull/68) for more details.
+Due to the limit of Realm, we haven't found out a elegant way to handle `List` yet. For an alternatives now(and it's recommended), you can use many-to-one relationship above inversely and [LinkingObjects](https://realm.io/docs/swift/latest#inverse-relationships). See [#74](https://github.com/caiyue1993/IceCream/pull/74) and [#68](https://github.com/caiyue1993/IceCream/pull/68) for more details.
 
 ## Requirements
 
