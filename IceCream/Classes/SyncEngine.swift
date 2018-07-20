@@ -365,6 +365,15 @@ extension SyncEngine {
                 for chunk in chunkedRecords {
                     `self`.syncRecordsToCloudKit(recordsToStore: chunk, recordIDsToDelete: recordIDsToDelete, completion: completion)
                 }
+            case .recoverableError(let reason, _):
+                switch reason {
+                case .partialFailure:
+                    `self`.errorHandler.retryOperationIfPossible(retryAfter: IceCreamConstant.defaultRetryTime) {
+                        `self`.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete, completion: completion)
+                    }
+                default:
+                    return
+                }
             default:
                 return
             }
@@ -404,5 +413,6 @@ public enum IceCreamKey: String {
 /// The right way is remove old subscription first and then save new subscription.
 public struct IceCreamConstant {
     public static let cloudKitSubscriptionID = "private_changes"
+    static let defaultRetryTime: Double = 2
 }
 
