@@ -1,10 +1,5 @@
 import CloudKit
 
-struct RemoteChanges<RemoteModel, RemoteModelId> {
-    let added: RemoteModel
-    let deletedId: RemoteModelId
-}
-
 protocol RemoteDataSourcing {
     func fetchChanges(recordZoneTokenUpdated: @escaping (CKRecordZoneID, CKServerChangeToken?) -> Void, added: @escaping ((CKRecord) -> Void), removed: @escaping ((CKRecordID) -> Void))
 }
@@ -100,8 +95,6 @@ struct CloudKitRemoteDataSource: RemoteDataSourcing {
 
         changesOp.recordWithIDWasDeletedBlock = { recordId, _ in
             removed(recordId)
-//            guard let syncObject = `self`.syncObjects.first(where: { $0.customZoneID == recordId.zoneID }) else { return }
-//            syncObject.delete(recordID: recordId)
         }
 
         changesOp.recordZoneFetchCompletionBlock = { (zoneId ,token, _, _, error) in
