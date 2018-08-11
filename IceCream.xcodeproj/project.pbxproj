@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4136B192211CD74E00E32210 /* RemoteDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4136B191211CD74E00E32210 /* RemoteDataSource.swift */; };
 		41767BFD209863BA00178513 /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41767BFC209863BA00178513 /* SyncEngine.swift */; };
 		6743F717202B0F0F00912163 /* IceCream.h in Headers */ = {isa = PBXBuildFile; fileRef = 6743F715202B0F0F00912163 /* IceCream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6743F726202B0F9400912163 /* .gitkeep in Resources */ = {isa = PBXBuildFile; fileRef = 6743F71E202B0F9400912163 /* .gitkeep */; };
@@ -24,6 +25,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4136B191211CD74E00E32210 /* RemoteDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteDataSource.swift; sourceTree = "<group>"; };
 		41767BFC209863BA00178513 /* SyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngine.swift; sourceTree = "<group>"; };
 		6743F712202B0F0F00912163 /* IceCream.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IceCream.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6743F715202B0F0F00912163 /* IceCream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IceCream.h; sourceTree = "<group>"; };
@@ -96,6 +98,7 @@
 				6743F725202B0F9400912163 /* Notification+Name.swift */,
 				41767BFC209863BA00178513 /* SyncEngine.swift */,
 				6767988E20BCEEB0008F98AD /* SyncObject.swift */,
+				4136B191211CD74E00E32210 /* RemoteDataSource.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -191,6 +194,7 @@
 			files = (
 				41767BFD209863BA00178513 /* SyncEngine.swift in Sources */,
 				6743F72A202B0F9400912163 /* Manifest.swift in Sources */,
+				4136B192211CD74E00E32210 /* RemoteDataSource.swift in Sources */,
 				6743F72B202B0F9400912163 /* CreamAsset.swift in Sources */,
 				6773DF0120BD2CBD0019FF3A /* CKRecordConvertible.swift in Sources */,
 				6773DF0320BD2CE20019FF3A /* Syncable.swift in Sources */,

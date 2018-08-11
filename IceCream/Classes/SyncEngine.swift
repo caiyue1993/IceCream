@@ -27,10 +27,20 @@ public final class SyncEngine {
     private let errorHandler = ErrorHandler()
     
     private let syncObjects: [Syncable]
-    
-    /// We recommend processing the initialization when app launches
-    public init(objects: [Syncable]) {
+
+    private let remoteDataSource: RemoteDataSourcing
+
+    /// We recommend starting when app launches
+    public static func start(objects: [Syncable]) -> SyncEngine {
+        let cloudKitDataSource = CloudKitRemoteDataSource(zoneIds: objects.map { $0.customZoneID }, zoneIdOptions: {
+            return SyncEngine.zoneIdOptions(from: objects)
+        })
+        return SyncEngine(remoteDataSource: cloudKitDataSource, objects: objects)
+    }
+
+    private init(remoteDataSource: RemoteDataSourcing, objects: [Syncable]) {
         self.syncObjects = objects
+        self.remoteDataSource = remoteDataSource
         for syncObject in syncObjects {
             syncObject.pipeToEngine = { [weak self] recordsToStore, recordIDsToDelete in
                 guard let `self` = self else { return }
@@ -47,9 +57,7 @@ public final class SyncEngine {
                 /// Apple suggests that we should fetch changes in database, *especially* the very first launch.
                 /// But actually, there **might** be some rare unknown and weird reason that the data is not synced between muilty devices.
                 /// So I suggests fetch changes in database everytime app launches.
-                `self`.fetchChangesInDatabase({
-                    print("First sync done!")
-                })
+                `self`.fetchChangesInDatabase()
 
                 `self`.resumeLongLivedOperationIfPossible()
 
@@ -110,25 +118,6 @@ public final class SyncEngine {
 
 /// Chat to the CloudKit API directly
 extension SyncEngine {
-    
-    /// The changes token, for more please reference to https://developer.apple.com/videos/play/wwdc2016/231/
-    var databaseChangeToken: CKServerChangeToken? {
-        get {
-            /// For the very first time when launching, the token will be nil and the server will be giving everything on the Cloud to client
-            /// In other situation just get the unarchive the data object
-            guard let tokenData = UserDefaults.standard.object(forKey: IceCreamKey.databaseChangesTokenKey.value) as? Data else { return nil }
-            return NSKeyedUnarchiver.unarchiveObject(with: tokenData) as? CKServerChangeToken
-        }
-        set {
-            guard let n = newValue else {
-                UserDefaults.standard.removeObject(forKey: IceCreamKey.databaseChangesTokenKey.value)
-                return
-            }
-            let data = NSKeyedArchiver.archivedData(withRootObject: n)
-            UserDefaults.standard.set(data, forKey: IceCreamKey.databaseChangesTokenKey.value)
-        }
-    }
-
     /// Cuz we only need to do subscription once succeed
     var subscriptionIsLocallyCached: Bool {
         get {
@@ -141,120 +130,35 @@ extension SyncEngine {
     }
 
     /// Only update the changeToken when fetch process completes
-    private func fetchChangesInDatabase(_ callback: (() -> Void)? = nil) {
-
-        let changesOperation = CKFetchDatabaseChangesOperation(previousServerChangeToken: databaseChangeToken)
-        
-        /// For more, see the source code, it has the detailed explanation
-        changesOperation.fetchAllChanges = true
-
-        changesOperation.changeTokenUpdatedBlock = { [weak self] newToken in
+    private func fetchChangesInDatabase() {
+        let updateToken: (CKRecordZoneID, CKServerChangeToken?) -> Void = { [weak self] zoneId, changeToken in
             guard let `self` = self else { return }
-            self.databaseChangeToken = newToken
+            guard let syncObject = `self`.syncObjects.first(where: { $0.customZoneID == zoneId }) else { return }
+            syncObject.zoneChangesToken = changeToken
         }
 
-        /// Cuz we only have one custom zone, so we don't need to store the CKRecordZoneID temporarily
-        /*
-         changesOperation.recordZoneWithIDChangedBlock = { [weak self] zoneID in
-         guard let `self` = self else { return }
-         `self`.changedRecordZoneID = zoneID
-         }
-         */
-        changesOperation.fetchDatabaseChangesCompletionBlock = {
-            [weak self]
-            newToken, _, error in
+        let added: (CKRecord) -> Void = { [weak self] record in
             guard let `self` = self else { return }
-            switch `self`.errorHandler.resultType(with: error) {
-            case .success:
-                `self`.databaseChangeToken = newToken
-                // Fetch the changes in zone level
-                `self`.fetchChangesInZones(callback)
-            case .retry(let timeToWait, _):
-                `self`.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
-                    `self`.fetchChangesInDatabase(callback)
-                })
-            case .recoverableError(let reason, _):
-                switch reason {
-                case .changeTokenExpired:
-                    /// The previousServerChangeToken value is too old and the client must re-sync from scratch
-                    `self`.databaseChangeToken = nil
-                    `self`.fetchChangesInDatabase(callback)
-                default:
-                    return
-                }
-            default:
-                return
-            }
+            guard let syncObject = `self`.syncObjects.first(where: { $0.recordType == record.recordType }) else { return }
+            syncObject.add(record: record)
         }
-        privateDatabase.add(changesOperation)
+
+        let deleted: (CKRecordID) -> Void = {[weak self] recordId in
+            guard let `self` = self else { return }
+            guard let syncObject = `self`.syncObjects.first(where: { $0.customZoneID == recordId.zoneID }) else { return }
+            syncObject.delete(recordID: recordId)
+        }
+        remoteDataSource.fetchChanges(recordZoneTokenUpdated: updateToken, added: added, removed: deleted)
     }
 
-    private var zoneIds: [CKRecordZoneID] {
-        return syncObjects.map { $0.customZoneID }
-    }
-
-    private var zoneIdOptions: [CKRecordZoneID: CKFetchRecordZoneChangesOptions] {
-        return syncObjects.reduce([CKRecordZoneID: CKFetchRecordZoneChangesOptions]()) { (dict, syncEngine) -> [CKRecordZoneID: CKFetchRecordZoneChangesOptions] in
+    private static func zoneIdOptions(from objects: [Syncable]) -> [CKRecordZoneID: CKFetchRecordZoneChangesOptions] {
+        return objects.reduce([CKRecordZoneID: CKFetchRecordZoneChangesOptions]()) { (dict, syncEngine) -> [CKRecordZoneID: CKFetchRecordZoneChangesOptions] in
             var dict = dict
             let zoneChangesOptions = CKFetchRecordZoneChangesOptions()
             zoneChangesOptions.previousServerChangeToken = syncEngine.zoneChangesToken
             dict[syncEngine.customZoneID] = zoneChangesOptions
             return dict
         }
-    }
-
-    private func fetchChangesInZones(_ callback: (() -> Void)? = nil) {
-        let changesOp = CKFetchRecordZoneChangesOperation(recordZoneIDs: zoneIds, optionsByRecordZoneID: zoneIdOptions)
-        changesOp.fetchAllChanges = true
-        
-        changesOp.recordZoneChangeTokensUpdatedBlock = { [weak self] zoneId, token, _ in
-            guard let `self` = self else { return }
-            guard let syncObject = `self`.syncObjects.first(where: { $0.customZoneID == zoneId }) else { return }
-            syncObject.zoneChangesToken = token
-        }
-
-        changesOp.recordChangedBlock = { [weak self] record in
-            /// The Cloud will return the modified record since the last zoneChangesToken, we need to do local cache here.
-            /// Handle the record:
-            guard let `self` = self else { return }
-            guard let syncObject = `self`.syncObjects.first(where: { $0.recordType == record.recordType }) else { return }
-            syncObject.add(record: record)
-        }
-
-        changesOp.recordWithIDWasDeletedBlock = { [weak self] recordId, _ in
-            guard let `self` = self else { return }
-            guard let syncObject = `self`.syncObjects.first(where: { $0.customZoneID == recordId.zoneID }) else { return }
-            syncObject.delete(recordID: recordId)
-        }
-
-        changesOp.recordZoneFetchCompletionBlock = { [weak self](zoneId ,token, _, _, error) in
-            guard let `self` = self else { return }
-            switch `self`.errorHandler.resultType(with: error) {
-            case .success:
-                guard let syncObject = `self`.syncObjects.first(where: { $0.customZoneID == zoneId }) else { return }
-                syncObject.zoneChangesToken = token
-                callback?()
-                print("Sync successfully!")
-            case .retry(let timeToWait, _):
-                `self`.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
-                    `self`.fetchChangesInZones(callback)
-                })
-            case .recoverableError(let reason, _):
-                switch reason {
-                case .changeTokenExpired:
-                    /// The previousServerChangeToken value is too old and the client must re-sync from scratch
-                    guard let syncObject = `self`.syncObjects.first(where: { $0.customZoneID == zoneId }) else { return }
-                    syncObject.zoneChangesToken = nil
-                    `self`.fetchChangesInZones(callback)
-                default:
-                    return
-                }
-            default:
-                return
-            }
-        }
-
-        privateDatabase.add(changesOp)
     }
 
     fileprivate func createDatabaseSubscription() {
