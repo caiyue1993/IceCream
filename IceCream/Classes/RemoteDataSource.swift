@@ -14,7 +14,7 @@ public enum IceCreamKey: String {
     }
 }
 
-protocol CloudKitDataSourcing {
+public protocol CloudKitDataSourcing {
     func cloudKitAvailable(_ completed: @escaping (Bool) -> Void)
     func fetchChanges(recordZoneTokenUpdated: @escaping (CKRecordZoneID, CKServerChangeToken?) -> Void, added: @escaping ((CKRecord) -> Void), removed: @escaping ((CKRecordID) -> Void))
     func syncRecordsToCloudKit(recordsToStore: [CKRecord], recordIDsToDelete: [CKRecordID], completion: ((Error?) -> ())?)

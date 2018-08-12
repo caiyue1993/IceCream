@@ -20,9 +20,6 @@ public final class SyncEngine {
     /// Notifications are delivered as long as a reference is held to the returned notification token. You should keep a strong reference to this token on the class registering for updates, as notifications are automatically unregistered when the notification token is deallocated.
     /// For more, reference is here: https://realm.io/docs/swift/latest/#notifications
     private var notificationToken: NotificationToken?
-
-    /// Indicates the private database in default container
-    private let privateDatabase = CKContainer.default().privateCloudDatabase
     
     private let errorHandler = ErrorHandler()
     
@@ -38,6 +35,10 @@ public final class SyncEngine {
             return objects.filter { !$0.isCustomZoneCreated }.map { CKRecordZone(zoneID: $0.customZoneID) }
         })
         return SyncEngine(remoteDataSource: cloudKitDataSource, objects: objects)
+    }
+
+    public static func start(objects: [Syncable], remoteDataSource: CloudKitDataSourcing) -> SyncEngine {
+        return SyncEngine(remoteDataSource: remoteDataSource, objects: objects)
     }
 
     private init(remoteDataSource: CloudKitDataSourcing, objects: [Syncable]) {

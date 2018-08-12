@@ -23,10 +23,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		4136B16C211B99C800E32210 /* IceCream.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IceCream.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4136B16C211B99C800E32210 /* IceCreamTests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IceCreamTests.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4136B16F211B99C800E32210 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4136B17B211B99CA00E32210 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4136B180211B99CA00E32210 /* IceCreamTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IceCreamTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4136B180211B99CA00E32210 /* IceCreamTestsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IceCreamTestsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4136B184211B99CA00E32210 /* IceCreamTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IceCreamTests.swift; sourceTree = "<group>"; };
 		4136B186211B99CA00E32210 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		58EFB53A0E618F26CC8FA700 /* Pods_IceCreamTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IceCreamTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -67,8 +67,8 @@
 		4136B16D211B99C800E32210 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				4136B16C211B99C800E32210 /* IceCream.app */,
-				4136B180211B99CA00E32210 /* IceCreamTests.xctest */,
+				4136B16C211B99C800E32210 /* IceCreamTests.app */,
+				4136B180211B99CA00E32210 /* IceCreamTestsTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -111,9 +111,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		4136B16B211B99C800E32210 /* IceCream */ = {
+		4136B16B211B99C800E32210 /* IceCreamTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 4136B189211B99CA00E32210 /* Build configuration list for PBXNativeTarget "IceCream" */;
+			buildConfigurationList = 4136B189211B99CA00E32210 /* Build configuration list for PBXNativeTarget "IceCreamTests" */;
 			buildPhases = (
 				4136B168211B99C800E32210 /* Sources */,
 				4136B169211B99C800E32210 /* Frameworks */,
@@ -123,14 +123,14 @@
 			);
 			dependencies = (
 			);
-			name = IceCream;
+			name = IceCreamTests;
 			productName = IceCream;
-			productReference = 4136B16C211B99C800E32210 /* IceCream.app */;
+			productReference = 4136B16C211B99C800E32210 /* IceCreamTests.app */;
 			productType = "com.apple.product-type.application";
 		};
-		4136B17F211B99CA00E32210 /* IceCreamTests */ = {
+		4136B17F211B99CA00E32210 /* IceCreamTestsTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 4136B18C211B99CA00E32210 /* Build configuration list for PBXNativeTarget "IceCreamTests" */;
+			buildConfigurationList = 4136B18C211B99CA00E32210 /* Build configuration list for PBXNativeTarget "IceCreamTestsTests" */;
 			buildPhases = (
 				C4D093DC93449A0446C220C9 /* [CP] Check Pods Manifest.lock */,
 				4136B17C211B99CA00E32210 /* Sources */,
@@ -143,9 +143,9 @@
 			dependencies = (
 				4136B182211B99CA00E32210 /* PBXTargetDependency */,
 			);
-			name = IceCreamTests;
+			name = IceCreamTestsTests;
 			productName = IceCreamTests;
-			productReference = 4136B180211B99CA00E32210 /* IceCreamTests.xctest */;
+			productReference = 4136B180211B99CA00E32210 /* IceCreamTestsTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -166,7 +166,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 4136B167211B99C800E32210 /* Build configuration list for PBXProject "IceCream" */;
+			buildConfigurationList = 4136B167211B99C800E32210 /* Build configuration list for PBXProject "IceCreamTests" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -179,8 +179,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				4136B16B211B99C800E32210 /* IceCream */,
-				4136B17F211B99CA00E32210 /* IceCreamTests */,
+				4136B16B211B99C800E32210 /* IceCreamTests */,
+				4136B17F211B99CA00E32210 /* IceCreamTestsTests */,
 			);
 		};
 /* End PBXProject section */
@@ -265,7 +265,7 @@
 /* Begin PBXTargetDependency section */
 		4136B182211B99CA00E32210 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 4136B16B211B99C800E32210 /* IceCream */;
+			target = 4136B16B211B99C800E32210 /* IceCreamTests */;
 			targetProxy = 4136B181211B99CA00E32210 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -389,14 +389,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = IceCream/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = me.soledad.http.IceCream.IceCream;
+				PRODUCT_BUNDLE_IDENTIFIER = me.soledad.http.IceCreamTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -406,14 +408,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = IceCream/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = me.soledad.http.IceCream.IceCream;
+				PRODUCT_BUNDLE_IDENTIFIER = me.soledad.http.IceCreamTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -436,7 +440,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/IceCream.app/IceCream";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/IceCreamTests.app/IceCreamTests";
 			};
 			name = Debug;
 		};
@@ -457,14 +461,14 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/IceCream.app/IceCream";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/IceCreamTests.app/IceCreamTests";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		4136B167211B99C800E32210 /* Build configuration list for PBXProject "IceCream" */ = {
+		4136B167211B99C800E32210 /* Build configuration list for PBXProject "IceCreamTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4136B187211B99CA00E32210 /* Debug */,
@@ -473,7 +477,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		4136B189211B99CA00E32210 /* Build configuration list for PBXNativeTarget "IceCream" */ = {
+		4136B189211B99CA00E32210 /* Build configuration list for PBXNativeTarget "IceCreamTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4136B18A211B99CA00E32210 /* Debug */,
@@ -482,7 +486,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		4136B18C211B99CA00E32210 /* Build configuration list for PBXNativeTarget "IceCreamTests" */ = {
+		4136B18C211B99CA00E32210 /* Build configuration list for PBXNativeTarget "IceCreamTestsTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4136B18D211B99CA00E32210 /* Debug */,

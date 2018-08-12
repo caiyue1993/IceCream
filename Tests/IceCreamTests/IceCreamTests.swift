@@ -6,7 +6,10 @@
 //
 
 import XCTest
-@testable import IceCream
+import IceCream
+import CloudKit
+import RealmSwift
+@testable import IceCreamTests
 
 class IceCreamTests: XCTestCase {
     
@@ -20,16 +23,54 @@ class IceCreamTests: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testSetupsSyncObjectCloudPipe() {
+        let expectation = XCTestExpectation(description: "Wait cloudkit")
+        let syncObject = SyncObject<MockObject>()
+        let syncEngine = SyncEngine.start(objects: [syncObject], remoteDataSource: CloudKitMock())
+        XCTAssertNotNil(syncObject.pipeToEngine)
     }
-    
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
+}
+
+class MockObject: Object {
+    var recordType: String = "Test"
+
+    var customZoneID: CKRecordZoneID = CKRecordZoneID(zoneName: "Test", ownerName: "Test")
+
+    var zoneChangesToken: CKServerChangeToken? = nil
+
+    var isCustomZoneCreated: Bool = true
+
+    func registerLocalDatabase() { }
+
+    func cleanUp() { }
+
+    func add(record: CKRecord) { }
+
+    func delete(recordID: CKRecordID) { }
+
+    var pipeToEngine: (([CKRecord], [CKRecordID]) -> ())?
+}
+
+extension MockObject: Syncable { }
+
+extension MockObject: CKRecordConvertible, CKRecordRecoverable {
+    var isDeleted: Bool {
+        return false
     }
-    
+}
+
+class CloudKitMock: CloudKitDataSourcing {
+    var recordsSentToStore: [CKRecord] = []
+    var recordIdsSendToDelete: [CKRecordID] = []
+
+    func cloudKitAvailable(_ completed: @escaping (Bool) -> Void) {
+        completed(true)
+    }
+
+    func fetchChanges(recordZoneTokenUpdated: @escaping (CKRecordZoneID, CKServerChangeToken?) -> Void, added: @escaping ((CKRecord) -> Void), removed: @escaping ((CKRecordID) -> Void)) { }
+
+    func syncRecordsToCloudKit(recordsToStore: [CKRecord], recordIDsToDelete: [CKRecordID], completion: ((Error?) -> ())?) {
+        recordsSentToStore = recordsToStore
+        recordIdsSendToDelete = recordIDsToDelete
+    }
 }
