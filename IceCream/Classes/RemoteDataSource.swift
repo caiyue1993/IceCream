@@ -1,5 +1,19 @@
 import CloudKit
 
+public enum IceCreamKey: String {
+    /// Tokens
+    case databaseChangesTokenKey
+    case zoneChangesTokenKey
+
+    /// Flags
+    case subscriptionIsLocallyCachedKey
+    case hasCustomZoneCreatedKey
+
+    public var value: String {
+        return "icecream.keys." + rawValue
+    }
+}
+
 protocol RemoteDataSourcing {
     func cloudKitAvailable(_ completed: @escaping (Bool) -> Void)
     func fetchChanges(recordZoneTokenUpdated: @escaping (CKRecordZoneID, CKServerChangeToken?) -> Void, added: @escaping ((CKRecord) -> Void), removed: @escaping ((CKRecordID) -> Void))

@@ -129,20 +129,6 @@ public enum Notifications: String, NotificationName {
     case cloudKitDataDidChangeRemotely
 }
 
-public enum IceCreamKey: String {
-    /// Tokens
-    case databaseChangesTokenKey
-    case zoneChangesTokenKey
-    
-    /// Flags
-    case subscriptionIsLocallyCachedKey
-    case hasCustomZoneCreatedKey
-    
-    public var value: String {
-        return "icecream.keys." + rawValue
-    }
-}
-
 /// Dangerous part:
 /// In most cases, you should not change the string value cause it is related to user settings.
 /// e.g.: the cloudKitSubscriptionID, if you don't want to use "private_changes" and use another string. You should remove the old subsription first.
