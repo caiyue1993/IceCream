@@ -40,6 +40,13 @@ public final class SyncEngine {
         return SyncEngine(remoteDataSource: cloudKitDataSource, objects: objects)
     }
 
+    private init(remoteDataSource: RemoteDataSourcing, objects: [Syncable]) {
+        self.syncObjects = objects
+        self.remoteDataSource = remoteDataSource
+        pipeSyncObjectsChangesToRemote()
+        setupCloudKit()
+    }
+
     private func pipeSyncObjectsChangesToRemote() {
         for syncObject in syncObjects {
             syncObject.pipeToEngine = { [weak self] recordsToStore, recordIDsToDelete in
@@ -47,13 +54,6 @@ public final class SyncEngine {
                 `self`.remoteDataSource.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete, completion: nil)
             }
         }
-    }
-
-    private init(remoteDataSource: RemoteDataSourcing, objects: [Syncable]) {
-        self.syncObjects = objects
-        self.remoteDataSource = remoteDataSource
-        pipeSyncObjectsChangesToRemote()
-        setupCloudKit()
     }
 
     private func setupCloudKit() {
@@ -65,15 +65,13 @@ public final class SyncEngine {
                 return
             }
             `self`.fetchChangesInDatabase()
-            /// 2. Register to local database
+            /// Register to local database
             DispatchQueue.main.async {
                 for syncObject in `self`.syncObjects {
                     syncObject.registerLocalDatabase()
                 }
             }
             NotificationCenter.default.addObserver(self, selector: #selector(`self`.cleanUp), name: .UIApplicationWillTerminate, object: nil)
-            /// 3. Create the subscription to the CloudKit database
-            `self`.remoteDataSource.createDatabaseSubscription()
         }
     }
 

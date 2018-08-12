@@ -70,6 +70,7 @@ struct CloudKitRemoteDataSource: RemoteDataSourcing {
         self.startObservingRemoteChanges {
             self.fetchChanges(recordZoneTokenUpdated: recordZoneTokenUpdated, added: added, removed: removed)
         }
+        self.createDatabaseSubscription()
     }
 
     private func fetchDatabaseChange(recordZoneTokenUpdated: @escaping (CKRecordZoneID, CKServerChangeToken?) -> Void, added: @escaping ((CKRecord) -> Void), removed: @escaping ((CKRecordID) -> Void)) {
