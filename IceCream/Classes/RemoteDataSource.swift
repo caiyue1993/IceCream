@@ -1,5 +1,20 @@
 import CloudKit
 
+protocol CKContainerProtocol {
+    func accountStatus(completionHandler: @escaping (CKAccountStatus, Error?) -> Void)
+    func fetchAllLongLivedOperationIDs(completionHandler: @escaping ([String]?, Error?) -> Void)
+    func fetchLongLivedOperation(withID operationID: String, completionHandler: @escaping (CKOperation?, Error?) -> Void)
+    func add(_ operation: CKOperation)
+}
+
+protocol CKDatabaseProtocol {
+    func add(_ operation: CKDatabaseOperation)
+}
+
+extension CKContainer: CKContainerProtocol { }
+
+extension CKDatabase: CKDatabaseProtocol { }
+
 public protocol CloudKitDataSourcing {
     func cloudKitAvailable(_ completed: @escaping (Bool) -> Void)
     func fetchChanges(recordZoneTokenUpdated: @escaping (CKRecordZoneID, CKServerChangeToken?) -> Void, added: @escaping ((CKRecord) -> Void), removed: @escaping ((CKRecordID) -> Void))
@@ -9,13 +24,13 @@ public protocol CloudKitDataSourcing {
 struct CloudKitDataSource: CloudKitDataSourcing {
     private let errorHandler = ErrorHandler()
     private let userDefaults: UserDefaultsProtocol
-    private let container: CKContainer
-    private let database: CKDatabase
+    private let container: CKContainerProtocol
+    private let database: CKDatabaseProtocol
     private let zoneIds: [CKRecordZoneID]
     private let zoneIdOptions: () -> [CKRecordZoneID: CKFetchRecordZoneChangesOptions]
     private let zonesToCreate: () -> [CKRecordZone]
 
-    init(userDefaults: UserDefaultsProtocol = UserDefaults.standard, container: CKContainer = CKContainer.default(), database: CKDatabase = CKContainer.default().privateCloudDatabase, zoneIds: [CKRecordZoneID], zoneIdOptions: @escaping () -> [CKRecordZoneID: CKFetchRecordZoneChangesOptions], zonesToCreate: @escaping () -> [CKRecordZone]) {
+    init(userDefaults: UserDefaultsProtocol = UserDefaults.standard, container: CKContainerProtocol = CKContainer.default(), database: CKDatabaseProtocol = CKContainer.default().privateCloudDatabase, zoneIds: [CKRecordZoneID], zoneIdOptions: @escaping () -> [CKRecordZoneID: CKFetchRecordZoneChangesOptions], zonesToCreate: @escaping () -> [CKRecordZone]) {
         self.userDefaults = userDefaults
         self.container = container
         self.database = database
