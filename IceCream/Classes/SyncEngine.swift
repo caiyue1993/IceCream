@@ -51,12 +51,15 @@ public final class SyncEngine {
         self.syncObjects = objects
         self.remoteDataSource = remoteDataSource
         pipeSyncObjectsChangesToRemote()
-        
+        setupCloudKit()
+    }
+
+    private func setupCloudKit() {
         /// Check iCloud status so that we can go on
         CKContainer.default().accountStatus { [weak self] (status, error) in
             guard let `self` = self else { return }
             if status == CKAccountStatus.available {
-                
+
                 /// 1. Fetch changes in the Cloud
                 /// Apple suggests that we should fetch changes in database, *especially* the very first launch.
                 /// But actually, there **might** be some rare unknown and weird reason that the data is not synced between muilty devices.
@@ -67,21 +70,21 @@ public final class SyncEngine {
 
                 let zonesToCreate = `self`.syncObjects.filter { !$0.isCustomZoneCreated }.map { CKRecordZone(zoneID: $0.customZoneID) }
                 `self`.remoteDataSource.createCustomZones(zonesToCreate: zonesToCreate, nil)
-                
+
                 `self`.remoteDataSource.startObservingRemoteChanges { [weak self] in
                     guard let `self` = self else { return }
                     `self`.fetchChangesInDatabase()
                 }
-                
+
                 /// 2. Register to local database
                 DispatchQueue.main.async {
                     for syncObject in `self`.syncObjects {
                         syncObject.registerLocalDatabase()
                     }
                 }
-                
+
                 NotificationCenter.default.addObserver(self, selector: #selector(`self`.cleanUp), name: .UIApplicationWillTerminate, object: nil)
-                
+
                 /// 3. Create the subscription to the CloudKit database
                 `self`.remoteDataSource.createDatabaseSubscription()
 
