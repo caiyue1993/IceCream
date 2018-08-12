@@ -17,10 +17,6 @@ public enum IceCreamKey: String {
 protocol RemoteDataSourcing {
     func cloudKitAvailable(_ completed: @escaping (Bool) -> Void)
     func fetchChanges(recordZoneTokenUpdated: @escaping (CKRecordZoneID, CKServerChangeToken?) -> Void, added: @escaping ((CKRecord) -> Void), removed: @escaping ((CKRecordID) -> Void))
-    func resumeLongLivedOperationIfPossible()
-    func createCustomZones(_ completion: ((Error?) -> ())?)
-    func startObservingRemoteChanges(changed: @escaping () -> Void)
-    func createDatabaseSubscription()
     func syncRecordsToCloudKit(recordsToStore: [CKRecord], recordIDsToDelete: [CKRecordID], completion: ((Error?) -> ())?)
 }
 
