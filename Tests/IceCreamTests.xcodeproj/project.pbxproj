@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		07025E4A428CBE9825061DA9 /* Pods_IceCreamTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58EFB53A0E618F26CC8FA700 /* Pods_IceCreamTests.framework */; };
 		4136B170211B99C800E32210 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4136B16F211B99C800E32210 /* AppDelegate.swift */; };
-		4136B185211B99CA00E32210 /* IceCreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4136B184211B99CA00E32210 /* IceCreamTests.swift */; };
+		4136B185211B99CA00E32210 /* SyncEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4136B184211B99CA00E32210 /* SyncEngineTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -27,7 +27,7 @@
 		4136B16F211B99C800E32210 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4136B17B211B99CA00E32210 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4136B180211B99CA00E32210 /* IceCreamTestsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IceCreamTestsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		4136B184211B99CA00E32210 /* IceCreamTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IceCreamTests.swift; sourceTree = "<group>"; };
+		4136B184211B99CA00E32210 /* SyncEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngineTests.swift; sourceTree = "<group>"; };
 		4136B186211B99CA00E32210 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		58EFB53A0E618F26CC8FA700 /* Pods_IceCreamTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IceCreamTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C440E0441FA77E11A93650D /* Pods-IceCreamTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IceCreamTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-IceCreamTests/Pods-IceCreamTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -85,7 +85,7 @@
 		4136B183211B99CA00E32210 /* IceCreamTests */ = {
 			isa = PBXGroup;
 			children = (
-				4136B184211B99CA00E32210 /* IceCreamTests.swift */,
+				4136B184211B99CA00E32210 /* SyncEngineTests.swift */,
 				4136B186211B99CA00E32210 /* Info.plist */,
 			);
 			path = IceCreamTests;
@@ -256,7 +256,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4136B185211B99CA00E32210 /* IceCreamTests.swift in Sources */,
+				4136B185211B99CA00E32210 /* SyncEngineTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
