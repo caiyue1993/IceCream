@@ -6,6 +6,7 @@ protocol RemoteDataSourcing {
     func createCustomZones(zonesToCreate: [CKRecordZone], _ completion: ((Error?) -> ())?)
     func startObservingRemoteChanges(changed: @escaping () -> Void)
     func createDatabaseSubscription()
+    func syncRecordsToCloudKit(recordsToStore: [CKRecord], recordIDsToDelete: [CKRecordID], completion: ((Error?) -> ())?)
 }
 
 struct CloudKitRemoteDataSource: RemoteDataSourcing {
@@ -185,6 +186,59 @@ struct CloudKitRemoteDataSource: RemoteDataSourcing {
         }
         createOp.qualityOfService = .utility
         database.add(createOp)
+    }
+
+    /// Sync local data to CloudKit
+    /// For more about the savePolicy: https://developer.apple.com/documentation/cloudkit/ckrecordsavepolicy
+    func syncRecordsToCloudKit(recordsToStore: [CKRecord], recordIDsToDelete: [CKRecordID], completion: ((Error?) -> ())?) {
+        let modifyOpe = CKModifyRecordsOperation(recordsToSave: recordsToStore, recordIDsToDelete: recordIDsToDelete)
+
+        if #available(iOS 11.0, *) {
+            let config = CKOperationConfiguration()
+            config.isLongLived = true
+            modifyOpe.configuration = config
+        } else {
+            // Fallback on earlier versions
+            modifyOpe.isLongLived = true
+        }
+
+        // We use .changedKeys savePolicy to do unlocked changes here cause my app is contentious and off-line first
+        // Apple suggests using .ifServerRecordUnchanged save policy
+        // For more, see Advanced CloudKit(https://developer.apple.com/videos/play/wwdc2014/231/)
+        modifyOpe.savePolicy = .changedKeys
+
+        // To avoid CKError.partialFailure, make the operation atomic (if one record fails to get modified, they all fail)
+        // If you want to handle partial failures, set .isAtomic to false and implement CKOperationResultType .fail(reason: .partialFailure) where appropriate
+        modifyOpe.isAtomic = true
+
+        modifyOpe.modifyRecordsCompletionBlock = { (_, _, error) in
+            switch self.errorHandler.resultType(with: error) {
+            case .success:
+                DispatchQueue.main.async {
+                    completion?(nil)
+
+                    /// Cause we will get a error when there is very empty in the cloudKit dashboard
+                    /// which often happen when users first launch your app.
+                    /// So, we put the subscription process here when we sure there is a record type in CloudKit.
+                    self.createDatabaseSubscription()
+                }
+            case .retry(let timeToWait, _):
+                self.errorHandler.retryOperationIfPossible(retryAfter: timeToWait) {
+                    self.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete, completion: completion)
+                }
+            case .chunk:
+                /// CloudKit says maximum number of items in a single request is 400.
+                /// So I think 300 should be a fine by them.
+                let chunkedRecords = recordsToStore.chunkItUp(by: 300)
+                for chunk in chunkedRecords {
+                    self.syncRecordsToCloudKit(recordsToStore: chunk, recordIDsToDelete: recordIDsToDelete, completion: completion)
+                }
+            default:
+                return
+            }
+        }
+
+        database.add(modifyOpe)
     }
 
     /// The CloudKit Best Practice is out of date, now use this:
