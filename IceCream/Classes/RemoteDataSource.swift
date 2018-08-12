@@ -1,9 +1,10 @@
 import CloudKit
 
 protocol RemoteDataSourcing {
+    func cloudKitAvailable(_ completed: @escaping (Bool) -> Void)
     func fetchChanges(recordZoneTokenUpdated: @escaping (CKRecordZoneID, CKServerChangeToken?) -> Void, added: @escaping ((CKRecord) -> Void), removed: @escaping ((CKRecordID) -> Void))
     func resumeLongLivedOperationIfPossible()
-    func createCustomZones(zonesToCreate: [CKRecordZone], _ completion: ((Error?) -> ())?)
+    func createCustomZones(_ completion: ((Error?) -> ())?)
     func startObservingRemoteChanges(changed: @escaping () -> Void)
     func createDatabaseSubscription()
     func syncRecordsToCloudKit(recordsToStore: [CKRecord], recordIDsToDelete: [CKRecordID], completion: ((Error?) -> ())?)
@@ -15,12 +16,14 @@ struct CloudKitRemoteDataSource: RemoteDataSourcing {
     private let database: CKDatabase
     private let zoneIds: [CKRecordZoneID]
     private let zoneIdOptions: () -> [CKRecordZoneID: CKFetchRecordZoneChangesOptions]
+    private let zonesToCreate: () -> [CKRecordZone]
 
-    init(container: CKContainer = CKContainer.default(), database: CKDatabase = CKContainer.default().privateCloudDatabase, zoneIds: [CKRecordZoneID], zoneIdOptions: @escaping () -> [CKRecordZoneID: CKFetchRecordZoneChangesOptions]) {
+    init(container: CKContainer = CKContainer.default(), database: CKDatabase = CKContainer.default().privateCloudDatabase, zoneIds: [CKRecordZoneID], zoneIdOptions: @escaping () -> [CKRecordZoneID: CKFetchRecordZoneChangesOptions], zonesToCreate: @escaping () -> [CKRecordZone]) {
         self.container = container
         self.database = database
         self.zoneIds = zoneIds
         self.zoneIdOptions = zoneIdOptions
+        self.zonesToCreate = zonesToCreate
     }
 
     /// The changes token, for more please reference to https://developer.apple.com/videos/play/wwdc2016/231/
@@ -54,7 +57,22 @@ struct CloudKitRemoteDataSource: RemoteDataSourcing {
         UserDefaults.standard.set(isCached, forKey: IceCreamKey.subscriptionIsLocallyCachedKey.value)
     }
 
+    func cloudKitAvailable(_ completed: @escaping (Bool) -> Void) {
+        container.accountStatus { (status, error) in
+            completed(status == CKAccountStatus.available)
+        }
+    }
+
     func fetchChanges(recordZoneTokenUpdated: @escaping (CKRecordZoneID, CKServerChangeToken?) -> Void, added: @escaping ((CKRecord) -> Void), removed: @escaping ((CKRecordID) -> Void)) {
+        self.fetchDatabaseChange(recordZoneTokenUpdated: recordZoneTokenUpdated, added: added, removed: removed)
+        self.resumeLongLivedOperationIfPossible()
+        self.createCustomZones(nil)
+        self.startObservingRemoteChanges {
+            self.fetchChanges(recordZoneTokenUpdated: recordZoneTokenUpdated, added: added, removed: removed)
+        }
+    }
+
+    private func fetchDatabaseChange(recordZoneTokenUpdated: @escaping (CKRecordZoneID, CKServerChangeToken?) -> Void, added: @escaping ((CKRecord) -> Void), removed: @escaping ((CKRecordID) -> Void)) {
         let changesOperation = CKFetchDatabaseChangesOperation(previousServerChangeToken: CloudKitRemoteDataSource.getDatabaseChangeToken())
 
         /// For more, see the source code, it has the detailed explanation
@@ -142,8 +160,8 @@ struct CloudKitRemoteDataSource: RemoteDataSourcing {
 
     /// Create new custom zones
     /// You can(but you shouldn't) invoke this method more times, but the CloudKit is smart and will handle that for you
-    func createCustomZones(zonesToCreate: [CKRecordZone], _ completion: ((Error?) -> ())?) {
-        let modifyOp = CKModifyRecordZonesOperation(recordZonesToSave: zonesToCreate, recordZoneIDsToDelete: nil)
+    func createCustomZones(_ completion: ((Error?) -> ())?) {
+        let modifyOp = CKModifyRecordZonesOperation(recordZonesToSave: zonesToCreate(), recordZoneIDsToDelete: nil)
         modifyOp.modifyRecordZonesCompletionBlock = {(_, _, error) in
             switch self.errorHandler.resultType(with: error) {
             case .success:
@@ -152,7 +170,7 @@ struct CloudKitRemoteDataSource: RemoteDataSourcing {
                 }
             case .retry(let timeToWait, _):
                 self.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
-                    self.createCustomZones(zonesToCreate: zonesToCreate, completion)
+                    self.createCustomZones(completion)
                 })
             default:
                 return
