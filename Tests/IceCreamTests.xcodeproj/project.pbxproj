@@ -10,6 +10,9 @@
 		07025E4A428CBE9825061DA9 /* Pods_IceCreamTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58EFB53A0E618F26CC8FA700 /* Pods_IceCreamTests.framework */; };
 		4136B170211B99C800E32210 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4136B16F211B99C800E32210 /* AppDelegate.swift */; };
 		4136B185211B99CA00E32210 /* SyncEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4136B184211B99CA00E32210 /* SyncEngineTests.swift */; };
+		41DFDC0F2120595800F45C48 /* SyncableMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41DFDC0E2120595800F45C48 /* SyncableMock.swift */; };
+		41DFDC112120597200F45C48 /* CKRecordMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41DFDC102120597200F45C48 /* CKRecordMocks.swift */; };
+		41DFDC14212059A800F45C48 /* CloudKitDataSourcingMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41DFDC12212059A400F45C48 /* CloudKitDataSourcingMock.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +32,9 @@
 		4136B180211B99CA00E32210 /* IceCreamTestsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IceCreamTestsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4136B184211B99CA00E32210 /* SyncEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngineTests.swift; sourceTree = "<group>"; };
 		4136B186211B99CA00E32210 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		41DFDC0E2120595800F45C48 /* SyncableMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncableMock.swift; sourceTree = "<group>"; };
+		41DFDC102120597200F45C48 /* CKRecordMocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CKRecordMocks.swift; sourceTree = "<group>"; };
+		41DFDC12212059A400F45C48 /* CloudKitDataSourcingMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitDataSourcingMock.swift; sourceTree = "<group>"; };
 		58EFB53A0E618F26CC8FA700 /* Pods_IceCreamTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IceCreamTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C440E0441FA77E11A93650D /* Pods-IceCreamTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IceCreamTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-IceCreamTests/Pods-IceCreamTests.release.xcconfig"; sourceTree = "<group>"; };
 		8EAC4F108957EBB8A4230BEE /* Pods-IceCreamTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IceCreamTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-IceCreamTests/Pods-IceCreamTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -85,10 +91,21 @@
 		4136B183211B99CA00E32210 /* IceCreamTests */ = {
 			isa = PBXGroup;
 			children = (
+				41DFDC0D2120593800F45C48 /* Mocks */,
 				4136B184211B99CA00E32210 /* SyncEngineTests.swift */,
 				4136B186211B99CA00E32210 /* Info.plist */,
 			);
 			path = IceCreamTests;
+			sourceTree = "<group>";
+		};
+		41DFDC0D2120593800F45C48 /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				41DFDC0E2120595800F45C48 /* SyncableMock.swift */,
+				41DFDC102120597200F45C48 /* CKRecordMocks.swift */,
+				41DFDC12212059A400F45C48 /* CloudKitDataSourcingMock.swift */,
+			);
+			path = Mocks;
 			sourceTree = "<group>";
 		};
 		F57AFD831073747ED7E98078 /* Pods */ = {
@@ -256,7 +273,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				41DFDC0F2120595800F45C48 /* SyncableMock.swift in Sources */,
 				4136B185211B99CA00E32210 /* SyncEngineTests.swift in Sources */,
+				41DFDC14212059A800F45C48 /* CloudKitDataSourcingMock.swift in Sources */,
+				41DFDC112120597200F45C48 /* CKRecordMocks.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
