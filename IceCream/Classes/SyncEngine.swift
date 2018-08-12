@@ -28,11 +28,11 @@ public final class SyncEngine {
     
     private let syncObjects: [Syncable]
 
-    private let remoteDataSource: RemoteDataSourcing
+    private let remoteDataSource: CloudKitDataSourcing
 
     /// We recommend starting when app launches
     public static func start(objects: [Syncable]) -> SyncEngine {
-        let cloudKitDataSource = CloudKitRemoteDataSource(zoneIds: objects.map { $0.customZoneID }, zoneIdOptions: {
+        let cloudKitDataSource = CloudKitDataSource(zoneIds: objects.map { $0.customZoneID }, zoneIdOptions: {
             return SyncEngine.zoneIdOptions(from: objects)
         }, zonesToCreate: {
             return objects.filter { !$0.isCustomZoneCreated }.map { CKRecordZone(zoneID: $0.customZoneID) }
@@ -40,7 +40,7 @@ public final class SyncEngine {
         return SyncEngine(remoteDataSource: cloudKitDataSource, objects: objects)
     }
 
-    private init(remoteDataSource: RemoteDataSourcing, objects: [Syncable]) {
+    private init(remoteDataSource: CloudKitDataSourcing, objects: [Syncable]) {
         self.syncObjects = objects
         self.remoteDataSource = remoteDataSource
         pipeSyncObjectsChangesToRemote()

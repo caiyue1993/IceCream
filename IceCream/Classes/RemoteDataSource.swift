@@ -14,13 +14,13 @@ public enum IceCreamKey: String {
     }
 }
 
-protocol RemoteDataSourcing {
+protocol CloudKitDataSourcing {
     func cloudKitAvailable(_ completed: @escaping (Bool) -> Void)
     func fetchChanges(recordZoneTokenUpdated: @escaping (CKRecordZoneID, CKServerChangeToken?) -> Void, added: @escaping ((CKRecord) -> Void), removed: @escaping ((CKRecordID) -> Void))
     func syncRecordsToCloudKit(recordsToStore: [CKRecord], recordIDsToDelete: [CKRecordID], completion: ((Error?) -> ())?)
 }
 
-struct CloudKitRemoteDataSource: RemoteDataSourcing {
+struct CloudKitDataSource: CloudKitDataSourcing {
     private let errorHandler = ErrorHandler()
     private let container: CKContainer
     private let database: CKDatabase
@@ -84,13 +84,13 @@ struct CloudKitRemoteDataSource: RemoteDataSourcing {
     }
 
     private func fetchDatabaseChange(recordZoneTokenUpdated: @escaping (CKRecordZoneID, CKServerChangeToken?) -> Void, added: @escaping ((CKRecord) -> Void), removed: @escaping ((CKRecordID) -> Void)) {
-        let changesOperation = CKFetchDatabaseChangesOperation(previousServerChangeToken: CloudKitRemoteDataSource.getDatabaseChangeToken())
+        let changesOperation = CKFetchDatabaseChangesOperation(previousServerChangeToken: CloudKitDataSource.getDatabaseChangeToken())
 
         /// For more, see the source code, it has the detailed explanation
         changesOperation.fetchAllChanges = true
 
         changesOperation.changeTokenUpdatedBlock = { newToken in
-            CloudKitRemoteDataSource.setDatabaseChangeToken(token: newToken)
+            CloudKitDataSource.setDatabaseChangeToken(token: newToken)
         }
 
         /// Cuz we only have one custom zone, so we don't need to store the CKRecordZoneID temporarily
@@ -104,7 +104,7 @@ struct CloudKitRemoteDataSource: RemoteDataSourcing {
             newToken, _, error in
             switch self.errorHandler.resultType(with: error) {
             case .success:
-                CloudKitRemoteDataSource.setDatabaseChangeToken(token: newToken)
+                CloudKitDataSource.setDatabaseChangeToken(token: newToken)
                 // Fetch the changes in zone level
                 self.fetchChangesInZones(recordZoneTokenUpdated: recordZoneTokenUpdated, added: added, removed: removed)
             case .retry(let timeToWait, _):
@@ -115,7 +115,7 @@ struct CloudKitRemoteDataSource: RemoteDataSourcing {
                 switch reason {
                 case .changeTokenExpired:
                     /// The previousServerChangeToken value is too old and the client must re-sync from scratch
-                    CloudKitRemoteDataSource.deleteDatabaseChangeToken()
+                    CloudKitDataSource.deleteDatabaseChangeToken()
                     self.fetchChanges(recordZoneTokenUpdated: recordZoneTokenUpdated, added: added, removed: removed)
                 default:
                     return
@@ -198,7 +198,7 @@ struct CloudKitRemoteDataSource: RemoteDataSourcing {
     }
 
     func createDatabaseSubscription() {
-        guard !CloudKitRemoteDataSource.getSubscriptionIsLocallyCached() else { return }
+        guard !CloudKitDataSource.getSubscriptionIsLocallyCached() else { return }
         // The direct below is the subscribe way that Apple suggests in CloudKit Best Practices(https://developer.apple.com/videos/play/wwdc2016/231/) , but it doesn't work here in my place.
 
         let subscription = CKDatabaseSubscription(subscriptionID: IceCreamConstant.cloudKitSubscriptionID)
@@ -211,7 +211,7 @@ struct CloudKitRemoteDataSource: RemoteDataSourcing {
         let createOp = CKModifySubscriptionsOperation(subscriptionsToSave: [subscription], subscriptionIDsToDelete: [])
         createOp.modifySubscriptionsCompletionBlock = { _, _, error in
             guard error == nil else { return }
-            CloudKitRemoteDataSource.setSubscriptionIsLocallyCached(true)
+            CloudKitDataSource.setSubscriptionIsLocallyCached(true)
         }
         createOp.qualityOfService = .utility
         database.add(createOp)
