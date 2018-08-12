@@ -14,6 +14,15 @@ public enum IceCreamKey: String {
     }
 }
 
+protocol UserDefaultsProtocol {
+    func object(forKey defaultName: String) -> Any?
+    func removeObject(forKey defaultName: String)
+    func set(_ value: Bool, forKey defaultName: String)
+    func set(_ value: Any?, forKey defaultName: String)
+}
+
+extension UserDefaults: UserDefaultsProtocol { }
+
 public protocol CloudKitDataSourcing {
     func cloudKitAvailable(_ completed: @escaping (Bool) -> Void)
     func fetchChanges(recordZoneTokenUpdated: @escaping (CKRecordZoneID, CKServerChangeToken?) -> Void, added: @escaping ((CKRecord) -> Void), removed: @escaping ((CKRecordID) -> Void))
@@ -22,13 +31,15 @@ public protocol CloudKitDataSourcing {
 
 struct CloudKitDataSource: CloudKitDataSourcing {
     private let errorHandler = ErrorHandler()
+    private let userDefaults: UserDefaultsProtocol
     private let container: CKContainer
     private let database: CKDatabase
     private let zoneIds: [CKRecordZoneID]
     private let zoneIdOptions: () -> [CKRecordZoneID: CKFetchRecordZoneChangesOptions]
     private let zonesToCreate: () -> [CKRecordZone]
 
-    init(container: CKContainer = CKContainer.default(), database: CKDatabase = CKContainer.default().privateCloudDatabase, zoneIds: [CKRecordZoneID], zoneIdOptions: @escaping () -> [CKRecordZoneID: CKFetchRecordZoneChangesOptions], zonesToCreate: @escaping () -> [CKRecordZone]) {
+    init(userDefaults: UserDefaultsProtocol = UserDefaults.standard, container: CKContainer = CKContainer.default(), database: CKDatabase = CKContainer.default().privateCloudDatabase, zoneIds: [CKRecordZoneID], zoneIdOptions: @escaping () -> [CKRecordZoneID: CKFetchRecordZoneChangesOptions], zonesToCreate: @escaping () -> [CKRecordZone]) {
+        self.userDefaults = userDefaults
         self.container = container
         self.database = database
         self.zoneIds = zoneIds
@@ -37,34 +48,34 @@ struct CloudKitDataSource: CloudKitDataSourcing {
     }
 
     /// The changes token, for more please reference to https://developer.apple.com/videos/play/wwdc2016/231/
-    static func getDatabaseChangeToken() -> CKServerChangeToken? {
+    private func getDatabaseChangeToken() -> CKServerChangeToken? {
         /// For the very first time when launching, the token will be nil and the server will be giving everything on the Cloud to client
         /// In other situation just get the unarchive the data object
-        guard let tokenData = UserDefaults.standard.object(forKey: IceCreamKey.databaseChangesTokenKey.value) as? Data else { return nil }
+        guard let tokenData = userDefaults.object(forKey: IceCreamKey.databaseChangesTokenKey.value) as? Data else { return nil }
         return NSKeyedUnarchiver.unarchiveObject(with: tokenData) as? CKServerChangeToken
     }
 
-    static func setDatabaseChangeToken(token: CKServerChangeToken?) {
+    private func setDatabaseChangeToken(token: CKServerChangeToken?) {
         guard let token = token else {
-            UserDefaults.standard.removeObject(forKey: IceCreamKey.databaseChangesTokenKey.value)
+            userDefaults.removeObject(forKey: IceCreamKey.databaseChangesTokenKey.value)
             return
         }
         let data = NSKeyedArchiver.archivedData(withRootObject: token)
-        UserDefaults.standard.set(data, forKey: IceCreamKey.databaseChangesTokenKey.value)
+        userDefaults.set(data, forKey: IceCreamKey.databaseChangesTokenKey.value)
     }
 
-    static func deleteDatabaseChangeToken() {
-        UserDefaults.standard.removeObject(forKey: IceCreamKey.databaseChangesTokenKey.value)
+    private func deleteDatabaseChangeToken() {
+        userDefaults.removeObject(forKey: IceCreamKey.databaseChangesTokenKey.value)
     }
 
     /// Cuz we only need to do subscription once succeed
-    static func getSubscriptionIsLocallyCached() -> Bool {
-        guard let flag = UserDefaults.standard.object(forKey: IceCreamKey.subscriptionIsLocallyCachedKey.value) as? Bool  else { return false }
+    private func getSubscriptionIsLocallyCached() -> Bool {
+        guard let flag = userDefaults.object(forKey: IceCreamKey.subscriptionIsLocallyCachedKey.value) as? Bool  else { return false }
         return flag
     }
 
-    static func setSubscriptionIsLocallyCached(_ isCached: Bool) {
-        UserDefaults.standard.set(isCached, forKey: IceCreamKey.subscriptionIsLocallyCachedKey.value)
+    private func setSubscriptionIsLocallyCached(_ isCached: Bool) {
+        userDefaults.set(isCached, forKey: IceCreamKey.subscriptionIsLocallyCachedKey.value)
     }
 
     func cloudKitAvailable(_ completed: @escaping (Bool) -> Void) {
@@ -84,13 +95,13 @@ struct CloudKitDataSource: CloudKitDataSourcing {
     }
 
     private func fetchDatabaseChange(recordZoneTokenUpdated: @escaping (CKRecordZoneID, CKServerChangeToken?) -> Void, added: @escaping ((CKRecord) -> Void), removed: @escaping ((CKRecordID) -> Void)) {
-        let changesOperation = CKFetchDatabaseChangesOperation(previousServerChangeToken: CloudKitDataSource.getDatabaseChangeToken())
+        let changesOperation = CKFetchDatabaseChangesOperation(previousServerChangeToken: getDatabaseChangeToken())
 
         /// For more, see the source code, it has the detailed explanation
         changesOperation.fetchAllChanges = true
 
         changesOperation.changeTokenUpdatedBlock = { newToken in
-            CloudKitDataSource.setDatabaseChangeToken(token: newToken)
+            self.setDatabaseChangeToken(token: newToken)
         }
 
         /// Cuz we only have one custom zone, so we don't need to store the CKRecordZoneID temporarily
@@ -104,7 +115,7 @@ struct CloudKitDataSource: CloudKitDataSourcing {
             newToken, _, error in
             switch self.errorHandler.resultType(with: error) {
             case .success:
-                CloudKitDataSource.setDatabaseChangeToken(token: newToken)
+                self.setDatabaseChangeToken(token: newToken)
                 // Fetch the changes in zone level
                 self.fetchChangesInZones(recordZoneTokenUpdated: recordZoneTokenUpdated, added: added, removed: removed)
             case .retry(let timeToWait, _):
@@ -115,7 +126,7 @@ struct CloudKitDataSource: CloudKitDataSourcing {
                 switch reason {
                 case .changeTokenExpired:
                     /// The previousServerChangeToken value is too old and the client must re-sync from scratch
-                    CloudKitDataSource.deleteDatabaseChangeToken()
+                    self.deleteDatabaseChangeToken()
                     self.fetchChanges(recordZoneTokenUpdated: recordZoneTokenUpdated, added: added, removed: removed)
                 default:
                     return
@@ -198,7 +209,7 @@ struct CloudKitDataSource: CloudKitDataSourcing {
     }
 
     func createDatabaseSubscription() {
-        guard !CloudKitDataSource.getSubscriptionIsLocallyCached() else { return }
+        guard !getSubscriptionIsLocallyCached() else { return }
         // The direct below is the subscribe way that Apple suggests in CloudKit Best Practices(https://developer.apple.com/videos/play/wwdc2016/231/) , but it doesn't work here in my place.
 
         let subscription = CKDatabaseSubscription(subscriptionID: IceCreamConstant.cloudKitSubscriptionID)
@@ -211,7 +222,7 @@ struct CloudKitDataSource: CloudKitDataSourcing {
         let createOp = CKModifySubscriptionsOperation(subscriptionsToSave: [subscription], subscriptionIDsToDelete: [])
         createOp.modifySubscriptionsCompletionBlock = { _, _, error in
             guard error == nil else { return }
-            CloudKitDataSource.setSubscriptionIsLocallyCached(true)
+            self.setSubscriptionIsLocallyCached(true)
         }
         createOp.qualityOfService = .utility
         database.add(createOp)
