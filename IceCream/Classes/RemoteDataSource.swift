@@ -1,28 +1,5 @@
 import CloudKit
 
-public enum IceCreamKey: String {
-    /// Tokens
-    case databaseChangesTokenKey
-    case zoneChangesTokenKey
-
-    /// Flags
-    case subscriptionIsLocallyCachedKey
-    case hasCustomZoneCreatedKey
-
-    public var value: String {
-        return "icecream.keys." + rawValue
-    }
-}
-
-protocol UserDefaultsProtocol {
-    func object(forKey defaultName: String) -> Any?
-    func removeObject(forKey defaultName: String)
-    func set(_ value: Bool, forKey defaultName: String)
-    func set(_ value: Any?, forKey defaultName: String)
-}
-
-extension UserDefaults: UserDefaultsProtocol { }
-
 public protocol CloudKitDataSourcing {
     func cloudKitAvailable(_ completed: @escaping (Bool) -> Void)
     func fetchChanges(recordZoneTokenUpdated: @escaping (CKRecordZoneID, CKServerChangeToken?) -> Void, added: @escaping ((CKRecord) -> Void), removed: @escaping ((CKRecordID) -> Void))
@@ -306,3 +283,26 @@ struct CloudKitDataSource: CloudKitDataSourcing {
         }
     }
 }
+
+public enum IceCreamKey: String {
+    /// Tokens
+    case databaseChangesTokenKey
+    case zoneChangesTokenKey
+
+    /// Flags
+    case subscriptionIsLocallyCachedKey
+    case hasCustomZoneCreatedKey
+
+    public var value: String {
+        return "icecream.keys." + rawValue
+    }
+}
+
+protocol UserDefaultsProtocol {
+    func object(forKey defaultName: String) -> Any?
+    func removeObject(forKey defaultName: String)
+    func set(_ value: Bool, forKey defaultName: String)
+    func set(_ value: Any?, forKey defaultName: String)
+}
+
+extension UserDefaults: UserDefaultsProtocol { }
