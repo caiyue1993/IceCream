@@ -59,9 +59,10 @@ public final class SyncEngine {
                 /// So I suggests fetch changes in database everytime app launches.
                 `self`.fetchChangesInDatabase()
 
-                `self`.resumeLongLivedOperationIfPossible()
+                `self`.remoteDataSource.resumeLongLivedOperationIfPossible()
 
-                `self`.createCustomZones()
+                let zonesToCreate = `self`.syncObjects.filter { !$0.isCustomZoneCreated }.map { CKRecordZone(zoneID: $0.customZoneID) }
+                `self`.remoteDataSource.createCustomZones(zonesToCreate: zonesToCreate, nil)
                 
                 `self`.startObservingRemoteChanges()
                 
@@ -83,30 +84,6 @@ public final class SyncEngine {
                 print("Easy, my boy. You haven't logged into iCloud account on your device/simulator yet.")
             }
         }
-    }
-
-    /// Create new custom zones
-    /// You can(but you shouldn't) invoke this method more times, but the CloudKit is smart and will handle that for you
-    private func createCustomZones(_ completion: ((Error?) -> ())? = nil) {
-        let zonesToCreate = syncObjects.filter { !$0.isCustomZoneCreated }.map { CKRecordZone(zoneID: $0.customZoneID) }
-        let modifyOp = CKModifyRecordZonesOperation(recordZonesToSave: zonesToCreate, recordZoneIDsToDelete: nil)
-        modifyOp.modifyRecordZonesCompletionBlock = { [weak self](_, _, error) in
-            guard let `self` = self else { return }
-            switch `self`.errorHandler.resultType(with: error) {
-            case .success:
-                DispatchQueue.main.async {
-                    completion?(nil)
-                }
-            case .retry(let timeToWait, _):
-                `self`.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
-                    `self`.createCustomZones(completion)
-                })
-            default:
-                return
-            }
-        }
-
-        privateDatabase.add(modifyOp)
     }
 
     @objc func cleanUp() {
@@ -185,34 +162,6 @@ extension SyncEngine {
             guard let `self` = self else { return }
             `self`.fetchChangesInDatabase()
         })
-    }
-}
-
-/// Long-lived Manipulation
-extension SyncEngine {
-    /// The CloudKit Best Practice is out of date, now use this:
-    /// https://developer.apple.com/documentation/cloudkit/ckoperation
-    /// Which problem does this func solve? E.g.:
-    /// 1.(Offline) You make a local change, involve a operation
-    /// 2. App exits or ejected by user
-    /// 3. Back to app again
-    /// The operation resumes! All works like a magic!
-    fileprivate func resumeLongLivedOperationIfPossible () {
-        CKContainer.default().fetchAllLongLivedOperationIDs { ( opeIDs, error) in
-            guard error == nil else { return }
-            guard let ids = opeIDs else { return }
-            for id in ids {
-                CKContainer.default().fetchLongLivedOperation(withID: id, completionHandler: { (ope, error) in
-                    guard error == nil else { return }
-                    if let modifyOp = ope as? CKModifyRecordsOperation {
-                        modifyOp.modifyRecordsCompletionBlock = { (_,_,_) in
-                            print("Resume modify records success!")
-                        }
-                        CKContainer.default().add(modifyOp)
-                    }
-                })
-            }
-        }
     }
 }
 

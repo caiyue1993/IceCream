@@ -2,15 +2,19 @@ import CloudKit
 
 protocol RemoteDataSourcing {
     func fetchChanges(recordZoneTokenUpdated: @escaping (CKRecordZoneID, CKServerChangeToken?) -> Void, added: @escaping ((CKRecord) -> Void), removed: @escaping ((CKRecordID) -> Void))
+    func resumeLongLivedOperationIfPossible()
+    func createCustomZones(zonesToCreate: [CKRecordZone], _ completion: ((Error?) -> ())?)
 }
 
 struct CloudKitRemoteDataSource: RemoteDataSourcing {
     private let errorHandler = ErrorHandler()
+    private let container: CKContainer
     private let database: CKDatabase
     private let zoneIds: [CKRecordZoneID]
     private let zoneIdOptions: () -> [CKRecordZoneID: CKFetchRecordZoneChangesOptions]
 
-    init(database: CKDatabase = CKContainer.default().privateCloudDatabase, zoneIds: [CKRecordZoneID], zoneIdOptions: @escaping () -> [CKRecordZoneID: CKFetchRecordZoneChangesOptions]) {
+    init(container: CKContainer = CKContainer.default(), database: CKDatabase = CKContainer.default().privateCloudDatabase, zoneIds: [CKRecordZoneID], zoneIdOptions: @escaping () -> [CKRecordZoneID: CKFetchRecordZoneChangesOptions]) {
+        self.container = container
         self.database = database
         self.zoneIds = zoneIds
         self.zoneIdOptions = zoneIdOptions
@@ -121,5 +125,52 @@ struct CloudKitRemoteDataSource: RemoteDataSourcing {
         }
 
         database.add(changesOp)
+    }
+
+    /// Create new custom zones
+    /// You can(but you shouldn't) invoke this method more times, but the CloudKit is smart and will handle that for you
+    private func createCustomZones(zonesToCreate: [CKRecordZone], _ completion: ((Error?) -> ())? = nil) {
+        let modifyOp = CKModifyRecordZonesOperation(recordZonesToSave: zonesToCreate, recordZoneIDsToDelete: nil)
+        modifyOp.modifyRecordZonesCompletionBlock = {(_, _, error) in
+            switch self.errorHandler.resultType(with: error) {
+            case .success:
+                DispatchQueue.main.async {
+                    completion?(nil)
+                }
+            case .retry(let timeToWait, _):
+                self.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
+                    self.createCustomZones(zonesToCreate: zonesToCreate, completion)
+                })
+            default:
+                return
+            }
+        }
+
+        database.add(modifyOp)
+    }
+
+    /// The CloudKit Best Practice is out of date, now use this:
+    /// https://developer.apple.com/documentation/cloudkit/ckoperation
+    /// Which problem does this func solve? E.g.:
+    /// 1.(Offline) You make a local change, involve a operation
+    /// 2. App exits or ejected by user
+    /// 3. Back to app again
+    /// The operation resumes! All works like a magic!
+    func resumeLongLivedOperationIfPossible () {
+        container.fetchAllLongLivedOperationIDs { ( opeIDs, error) in
+            guard error == nil else { return }
+            guard let ids = opeIDs else { return }
+            for id in ids {
+                self.container.fetchLongLivedOperation(withID: id, completionHandler: { (ope, error) in
+                    guard error == nil else { return }
+                    if let modifyOp = ope as? CKModifyRecordsOperation {
+                        modifyOp.modifyRecordsCompletionBlock = { (_,_,_) in
+                            print("Resume modify records success!")
+                        }
+                        self.container.add(modifyOp)
+                    }
+                })
+            }
+        }
     }
 }
