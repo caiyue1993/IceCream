@@ -64,7 +64,10 @@ public final class SyncEngine {
                 let zonesToCreate = `self`.syncObjects.filter { !$0.isCustomZoneCreated }.map { CKRecordZone(zoneID: $0.customZoneID) }
                 `self`.remoteDataSource.createCustomZones(zonesToCreate: zonesToCreate, nil)
                 
-                `self`.startObservingRemoteChanges()
+                `self`.remoteDataSource.startObservingRemoteChanges { [weak self] in
+                    guard let `self` = self else { return }
+                    `self`.fetchChangesInDatabase()
+                }
                 
                 /// 2. Register to local database
                 DispatchQueue.main.async {
@@ -155,13 +158,6 @@ extension SyncEngine {
         }
         createOp.qualityOfService = .utility
         privateDatabase.add(createOp)
-    }
-
-    fileprivate func startObservingRemoteChanges() {
-        NotificationCenter.default.addObserver(forName: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, queue: OperationQueue.main, using: { [weak self](_) in
-            guard let `self` = self else { return }
-            `self`.fetchChangesInDatabase()
-        })
     }
 }
 

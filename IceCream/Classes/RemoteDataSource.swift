@@ -4,6 +4,7 @@ protocol RemoteDataSourcing {
     func fetchChanges(recordZoneTokenUpdated: @escaping (CKRecordZoneID, CKServerChangeToken?) -> Void, added: @escaping ((CKRecord) -> Void), removed: @escaping ((CKRecordID) -> Void))
     func resumeLongLivedOperationIfPossible()
     func createCustomZones(zonesToCreate: [CKRecordZone], _ completion: ((Error?) -> ())?)
+    func startObservingRemoteChanges(changed: @escaping () -> Void)
 }
 
 struct CloudKitRemoteDataSource: RemoteDataSourcing {
@@ -129,7 +130,7 @@ struct CloudKitRemoteDataSource: RemoteDataSourcing {
 
     /// Create new custom zones
     /// You can(but you shouldn't) invoke this method more times, but the CloudKit is smart and will handle that for you
-    private func createCustomZones(zonesToCreate: [CKRecordZone], _ completion: ((Error?) -> ())? = nil) {
+    private func createCustomZones(zonesToCreate: [CKRecordZone], _ completion: ((Error?) -> ())?) {
         let modifyOp = CKModifyRecordZonesOperation(recordZonesToSave: zonesToCreate, recordZoneIDsToDelete: nil)
         modifyOp.modifyRecordZonesCompletionBlock = {(_, _, error) in
             switch self.errorHandler.resultType(with: error) {
@@ -147,6 +148,12 @@ struct CloudKitRemoteDataSource: RemoteDataSourcing {
         }
 
         database.add(modifyOp)
+    }
+
+    func startObservingRemoteChanges(changed: @escaping () -> Void) {
+        NotificationCenter.default.addObserver(forName: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, queue: OperationQueue.main, using: { _ in
+            changed()
+        })
     }
 
     /// The CloudKit Best Practice is out of date, now use this:
