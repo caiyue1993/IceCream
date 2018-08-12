@@ -5,6 +5,7 @@ protocol RemoteDataSourcing {
     func resumeLongLivedOperationIfPossible()
     func createCustomZones(zonesToCreate: [CKRecordZone], _ completion: ((Error?) -> ())?)
     func startObservingRemoteChanges(changed: @escaping () -> Void)
+    func createDatabaseSubscription()
 }
 
 struct CloudKitRemoteDataSource: RemoteDataSourcing {
@@ -40,6 +41,16 @@ struct CloudKitRemoteDataSource: RemoteDataSourcing {
 
     static func deleteDatabaseChangeToken() {
         UserDefaults.standard.removeObject(forKey: IceCreamKey.databaseChangesTokenKey.value)
+    }
+
+    /// Cuz we only need to do subscription once succeed
+    static func getSubscriptionIsLocallyCached() -> Bool {
+        guard let flag = UserDefaults.standard.object(forKey: IceCreamKey.subscriptionIsLocallyCachedKey.value) as? Bool  else { return false }
+        return flag
+    }
+
+    static func setSubscriptionIsLocallyCached(_ isCached: Bool) {
+        UserDefaults.standard.set(isCached, forKey: IceCreamKey.subscriptionIsLocallyCachedKey.value)
     }
 
     func fetchChanges(recordZoneTokenUpdated: @escaping (CKRecordZoneID, CKServerChangeToken?) -> Void, added: @escaping ((CKRecord) -> Void), removed: @escaping ((CKRecordID) -> Void)) {
@@ -130,7 +141,7 @@ struct CloudKitRemoteDataSource: RemoteDataSourcing {
 
     /// Create new custom zones
     /// You can(but you shouldn't) invoke this method more times, but the CloudKit is smart and will handle that for you
-    private func createCustomZones(zonesToCreate: [CKRecordZone], _ completion: ((Error?) -> ())?) {
+    func createCustomZones(zonesToCreate: [CKRecordZone], _ completion: ((Error?) -> ())?) {
         let modifyOp = CKModifyRecordZonesOperation(recordZonesToSave: zonesToCreate, recordZoneIDsToDelete: nil)
         modifyOp.modifyRecordZonesCompletionBlock = {(_, _, error) in
             switch self.errorHandler.resultType(with: error) {
@@ -154,6 +165,26 @@ struct CloudKitRemoteDataSource: RemoteDataSourcing {
         NotificationCenter.default.addObserver(forName: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, queue: OperationQueue.main, using: { _ in
             changed()
         })
+    }
+
+    func createDatabaseSubscription() {
+        guard !CloudKitRemoteDataSource.getSubscriptionIsLocallyCached() else { return }
+        // The direct below is the subscribe way that Apple suggests in CloudKit Best Practices(https://developer.apple.com/videos/play/wwdc2016/231/) , but it doesn't work here in my place.
+
+        let subscription = CKDatabaseSubscription(subscriptionID: IceCreamConstant.cloudKitSubscriptionID)
+
+        let notificationInfo = CKNotificationInfo()
+        notificationInfo.shouldSendContentAvailable = true // Silent Push
+
+        subscription.notificationInfo = notificationInfo
+
+        let createOp = CKModifySubscriptionsOperation(subscriptionsToSave: [subscription], subscriptionIDsToDelete: [])
+        createOp.modifySubscriptionsCompletionBlock = { _, _, error in
+            guard error == nil else { return }
+            CloudKitRemoteDataSource.setSubscriptionIsLocallyCached(true)
+        }
+        createOp.qualityOfService = .utility
+        database.add(createOp)
     }
 
     /// The CloudKit Best Practice is out of date, now use this:

@@ -79,8 +79,7 @@ public final class SyncEngine {
                 NotificationCenter.default.addObserver(self, selector: #selector(`self`.cleanUp), name: .UIApplicationWillTerminate, object: nil)
                 
                 /// 3. Create the subscription to the CloudKit database
-                if `self`.subscriptionIsLocallyCached { return }
-                `self`.createDatabaseSubscription()
+                `self`.remoteDataSource.createDatabaseSubscription()
 
             } else {
                 /// Handle when user account is not available
@@ -98,17 +97,6 @@ public final class SyncEngine {
 
 /// Chat to the CloudKit API directly
 extension SyncEngine {
-    /// Cuz we only need to do subscription once succeed
-    var subscriptionIsLocallyCached: Bool {
-        get {
-            guard let flag = UserDefaults.standard.object(forKey: IceCreamKey.subscriptionIsLocallyCachedKey.value) as? Bool  else { return false }
-            return flag
-        }
-        set {
-            UserDefaults.standard.set(newValue, forKey: IceCreamKey.subscriptionIsLocallyCachedKey.value)
-        }
-    }
-
     /// Only update the changeToken when fetch process completes
     private func fetchChangesInDatabase() {
         let updateToken: (CKRecordZoneID, CKServerChangeToken?) -> Void = { [weak self] zoneId, changeToken in
@@ -139,25 +127,6 @@ extension SyncEngine {
             dict[syncEngine.customZoneID] = zoneChangesOptions
             return dict
         }
-    }
-
-    fileprivate func createDatabaseSubscription() {
-        // The direct below is the subscribe way that Apple suggests in CloudKit Best Practices(https://developer.apple.com/videos/play/wwdc2016/231/) , but it doesn't work here in my place.
-
-        let subscription = CKDatabaseSubscription(subscriptionID: IceCreamConstant.cloudKitSubscriptionID)
-
-        let notificationInfo = CKNotificationInfo()
-        notificationInfo.shouldSendContentAvailable = true // Silent Push
-
-        subscription.notificationInfo = notificationInfo
-
-        let createOp = CKModifySubscriptionsOperation(subscriptionsToSave: [subscription], subscriptionIDsToDelete: [])
-        createOp.modifySubscriptionsCompletionBlock = { _, _, error in
-            guard error == nil else { return }
-            self.subscriptionIsLocallyCached = true
-        }
-        createOp.qualityOfService = .utility
-        privateDatabase.add(createOp)
     }
 }
 
@@ -200,8 +169,7 @@ extension SyncEngine {
                     /// Cause we will get a error when there is very empty in the cloudKit dashboard
                     /// which often happen when users first launch your app.
                     /// So, we put the subscription process here when we sure there is a record type in CloudKit.
-                    if `self`.subscriptionIsLocallyCached { return }
-                    `self`.createDatabaseSubscription()
+                    `self`.remoteDataSource.createDatabaseSubscription()
                 }
             case .retry(let timeToWait, _):
                 `self`.errorHandler.retryOperationIfPossible(retryAfter: timeToWait) {
