@@ -9,6 +9,10 @@ import Foundation
 import RealmSwift
 import CloudKit
 
+#if os(macOS)
+import Cocoa
+#endif
+
 /// SyncEngine talks to CloudKit directly.
 /// Logically,
 /// 1. it takes care of the operations of CKDatabase
@@ -64,7 +68,7 @@ public final class SyncEngine {
                     }
                 }
                 
-                #if os(iOS) || os(tvOS) || os(watchOS)
+                #if os(iOS)
                 
                 NotificationCenter.default.addObserver(self, selector: #selector(`self`.cleanUp), name: .UIApplicationWillTerminate, object: nil)
                 
