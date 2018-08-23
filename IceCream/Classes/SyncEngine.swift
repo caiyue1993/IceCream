@@ -19,14 +19,14 @@ public final class SyncEngine {
 
     /// Notifications are delivered as long as a reference is held to the returned notification token. You should keep a strong reference to this token on the class registering for updates, as notifications are automatically unregistered when the notification token is deallocated.
     /// For more, reference is here: https://realm.io/docs/swift/latest/#notifications
-    private var notificationToken: NotificationToken?
+    fileprivate var notificationToken: NotificationToken?
 
     /// Indicates the private database in default container
-    private let privateDatabase = CKContainer.default().privateCloudDatabase
+    fileprivate let privateDatabase = CKContainer.default().privateCloudDatabase
     
-    private let errorHandler = ErrorHandler()
+    fileprivate let errorHandler = ErrorHandler()
     
-    private let syncObjects: [Syncable]
+    fileprivate let syncObjects: [Syncable]
     
     /// We recommend processing the initialization when app launches
     public init(objects: [Syncable]) {
@@ -141,7 +141,7 @@ extension SyncEngine {
     }
 
     /// Only update the changeToken when fetch process completes
-    private func fetchChangesInDatabase(_ callback: (() -> Void)? = nil) {
+    fileprivate func fetchChangesInDatabase(_ callback: (() -> Void)? = nil) {
 
         let changesOperation = CKFetchDatabaseChangesOperation(previousServerChangeToken: databaseChangeToken)
         

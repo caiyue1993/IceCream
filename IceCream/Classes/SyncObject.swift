@@ -19,7 +19,7 @@ public final class SyncObject<T> where T: Object & CKRecordConvertible & CKRecor
     
     /// Notifications are delivered as long as a reference is held to the returned notification token. We should keep a strong reference to this token on the class registering for updates, as notifications are automatically unregistered when the notification token is deallocated.
     /// For more, reference is here: https://realm.io/docs/swift/latest/#notifications
-    private var notificationToken: NotificationToken?
+    fileprivate var notificationToken: NotificationToken?
     
     private let errorHandler = ErrorHandler()
     
