@@ -9,6 +9,10 @@ import Foundation
 import RealmSwift
 import CloudKit
 
+#if os(macOS)
+import Cocoa
+#endif
+
 /// SyncEngine talks to CloudKit directly.
 /// Logically,
 /// 1. it takes care of the operations of CKDatabase
@@ -64,7 +68,15 @@ public final class SyncEngine {
                     }
                 }
                 
+                #if os(iOS)
+                
                 NotificationCenter.default.addObserver(self, selector: #selector(`self`.cleanUp), name: .UIApplicationWillTerminate, object: nil)
+                
+                #elseif os(macOS)
+                
+                NotificationCenter.default.addObserver(self, selector: #selector(`self`.cleanUp), name: NSApplication.willTerminateNotification, object: nil)
+                
+                #endif
                 
                 /// 3. Create the subscription to the CloudKit database
                 if `self`.subscriptionIsLocallyCached { return }
@@ -319,7 +331,7 @@ extension SyncEngine {
     public func syncRecordsToCloudKit(recordsToStore: [CKRecord], recordIDsToDelete: [CKRecordID], completion: ((Error?) -> ())? = nil) {
         let modifyOpe = CKModifyRecordsOperation(recordsToSave: recordsToStore, recordIDsToDelete: recordIDsToDelete)
         
-        if #available(iOS 11.0, *) {
+        if #available(iOS 11.0, OSX 10.13, *) {
             let config = CKOperationConfiguration()
             config.isLongLived = true
             modifyOpe.configuration = config

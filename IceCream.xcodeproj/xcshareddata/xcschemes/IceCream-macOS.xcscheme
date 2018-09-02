@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6743F711202B0F0F00912163"
+               BlueprintIdentifier = "D826ADB0212189DF002B5C0F"
                BuildableName = "IceCream.framework"
-               BlueprintName = "IceCream"
+               BlueprintName = "IceCream-macOS"
                ReferencedContainer = "container:IceCream.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -28,7 +28,26 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "D826ADB8212189DF002B5C0F"
+               BuildableName = "IceCream-macOSTests.xctest"
+               BlueprintName = "IceCream-macOSTests"
+               ReferencedContainer = "container:IceCream.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "D826ADB0212189DF002B5C0F"
+            BuildableName = "IceCream.framework"
+            BlueprintName = "IceCream-macOS"
+            ReferencedContainer = "container:IceCream.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -45,9 +64,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "6743F711202B0F0F00912163"
+            BlueprintIdentifier = "D826ADB0212189DF002B5C0F"
             BuildableName = "IceCream.framework"
-            BlueprintName = "IceCream"
+            BlueprintName = "IceCream-macOS"
             ReferencedContainer = "container:IceCream.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -63,9 +82,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "6743F711202B0F0F00912163"
+            BlueprintIdentifier = "D826ADB0212189DF002B5C0F"
             BuildableName = "IceCream.framework"
-            BlueprintName = "IceCream"
+            BlueprintName = "IceCream-macOS"
             ReferencedContainer = "container:IceCream.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
