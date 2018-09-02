@@ -41,6 +41,7 @@
 		67478170213BEF16005C132B /* IceCream.h in Headers */ = {isa = PBXBuildFile; fileRef = 6743F715202B0F0F00912163 /* IceCream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		67478173213BEF2A005C132B /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67478171213BEF2A005C132B /* Realm.framework */; };
 		67478174213BEF2A005C132B /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67478172213BEF2A005C132B /* RealmSwift.framework */; };
+		67478175213BF1F1005C132B /* IceCream.h in Headers */ = {isa = PBXBuildFile; fileRef = 6743F715202B0F0F00912163 /* IceCream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6767988F20BCEEB0008F98AD /* SyncObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6767988E20BCEEB0008F98AD /* SyncObject.swift */; };
 		6773DF0020BD2CBD0019FF3A /* CKRecordRecoverable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6773DEFE20BD2CBD0019FF3A /* CKRecordRecoverable.swift */; };
 		6773DF0120BD2CBD0019FF3A /* CKRecordConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6773DEFF20BD2CBD0019FF3A /* CKRecordConvertible.swift */; };
@@ -223,6 +224,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				67478175213BF1F1005C132B /* IceCream.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
