@@ -9,8 +9,11 @@ import Foundation
 import RealmSwift
 import CloudKit
 
+
 #if os(macOS)
 import Cocoa
+#else
+import UIKit
 #endif
 
 /// SyncEngine talks to CloudKit directly.
