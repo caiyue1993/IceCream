@@ -15,7 +15,6 @@
 		6743F72A202B0F9400912163 /* Manifest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F722202B0F9400912163 /* Manifest.swift */; };
 		6743F72B202B0F9400912163 /* CreamAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F723202B0F9400912163 /* CreamAsset.swift */; };
 		6743F72D202B0F9400912163 /* Notification+Name.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F725202B0F9400912163 /* Notification+Name.swift */; };
-		67478146213BCE46005C132B /* IceCream_watchOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 67478144213BCE46005C132B /* IceCream_watchOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6767988F20BCEEB0008F98AD /* SyncObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6767988E20BCEEB0008F98AD /* SyncObject.swift */; };
 		6773DF0020BD2CBD0019FF3A /* CKRecordRecoverable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6773DEFE20BD2CBD0019FF3A /* CKRecordRecoverable.swift */; };
 		6773DF0120BD2CBD0019FF3A /* CKRecordConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6773DEFF20BD2CBD0019FF3A /* CKRecordConvertible.swift */; };
@@ -47,9 +46,7 @@
 		6743F722202B0F9400912163 /* Manifest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Manifest.swift; sourceTree = "<group>"; };
 		6743F723202B0F9400912163 /* CreamAsset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreamAsset.swift; sourceTree = "<group>"; };
 		6743F725202B0F9400912163 /* Notification+Name.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Notification+Name.swift"; sourceTree = "<group>"; };
-		67478142213BCE46005C132B /* IceCream_watchOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IceCream_watchOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		67478144213BCE46005C132B /* IceCream_watchOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IceCream_watchOS.h; sourceTree = "<group>"; };
-		67478145213BCE46005C132B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		67478142213BCE46005C132B /* IceCream.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IceCream.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6767988E20BCEEB0008F98AD /* SyncObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncObject.swift; sourceTree = "<group>"; };
 		6773DEFE20BD2CBD0019FF3A /* CKRecordRecoverable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CKRecordRecoverable.swift; sourceTree = "<group>"; };
 		6773DEFF20BD2CBD0019FF3A /* CKRecordConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CKRecordConvertible.swift; sourceTree = "<group>"; };
@@ -94,7 +91,6 @@
 			isa = PBXGroup;
 			children = (
 				6743F714202B0F0F00912163 /* IceCream */,
-				67478143213BCE46005C132B /* IceCream-watchOS */,
 				6743F713202B0F0F00912163 /* Products */,
 				67FE320D202B505000125432 /* Frameworks */,
 			);
@@ -105,7 +101,7 @@
 			children = (
 				6743F712202B0F0F00912163 /* IceCream.framework */,
 				D826ADB1212189DF002B5C0F /* IceCream.framework */,
-				67478142213BCE46005C132B /* IceCream_watchOS.framework */,
+				67478142213BCE46005C132B /* IceCream.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -138,15 +134,6 @@
 			path = Classes;
 			sourceTree = "<group>";
 		};
-		67478143213BCE46005C132B /* IceCream-watchOS */ = {
-			isa = PBXGroup;
-			children = (
-				67478144213BCE46005C132B /* IceCream_watchOS.h */,
-				67478145213BCE46005C132B /* Info.plist */,
-			);
-			path = "IceCream-watchOS";
-			sourceTree = "<group>";
-		};
 		67FE320D202B505000125432 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -173,7 +160,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				67478146213BCE46005C132B /* IceCream_watchOS.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -220,7 +206,7 @@
 			);
 			name = "IceCream-watchOS";
 			productName = "IceCream-watchOS";
-			productReference = 67478142213BCE46005C132B /* IceCream_watchOS.framework */;
+			productReference = 67478142213BCE46005C132B /* IceCream.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		D826ADB0212189DF002B5C0F /* IceCream-macOS */ = {
@@ -533,16 +519,16 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "IceCream-watchOS/Info.plist";
+				INFOPLIST_FILE = IceCream/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "me.soledad.IceCream-watchOS";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = me.soledad.http.IceCream;
+				PRODUCT_NAME = IceCream;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 4.3;
+				WATCHOS_DEPLOYMENT_TARGET = 3.0;
 			};
 			name = Debug;
 		};
@@ -558,16 +544,16 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "IceCream-watchOS/Info.plist";
+				INFOPLIST_FILE = IceCream/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "me.soledad.IceCream-watchOS";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = me.soledad.http.IceCream;
+				PRODUCT_NAME = IceCream;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 4.3;
+				WATCHOS_DEPLOYMENT_TARGET = 3.0;
 			};
 			name = Release;
 		};
