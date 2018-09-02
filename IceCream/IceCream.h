@@ -6,7 +6,7 @@
 //  Copyright © 2018 蔡越. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+@import Foundation;
 
 //! Project version number for IceCream.
 FOUNDATION_EXPORT double IceCreamVersionNumber;
