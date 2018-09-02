@@ -9,8 +9,11 @@ import Foundation
 import RealmSwift
 import CloudKit
 
+
 #if os(macOS)
 import Cocoa
+#else
+import UIKit
 #endif
 
 /// SyncEngine talks to CloudKit directly.
@@ -68,7 +71,7 @@ public final class SyncEngine {
                     }
                 }
                 
-                #if os(iOS)
+                #if os(iOS) || os(tvOS)
                 
                 NotificationCenter.default.addObserver(self, selector: #selector(`self`.cleanUp), name: .UIApplicationWillTerminate, object: nil)
                 
@@ -271,7 +274,9 @@ extension SyncEngine {
 
     fileprivate func createDatabaseSubscription() {
         // The direct below is the subscribe way that Apple suggests in CloudKit Best Practices(https://developer.apple.com/videos/play/wwdc2016/231/) , but it doesn't work here in my place.
-
+        
+        #if os(iOS) || os(tvOS) || os(macOS)
+        
         let subscription = CKDatabaseSubscription(subscriptionID: IceCreamConstant.cloudKitSubscriptionID)
 
         let notificationInfo = CKNotificationInfo()
@@ -286,6 +291,8 @@ extension SyncEngine {
         }
         createOp.qualityOfService = .utility
         privateDatabase.add(createOp)
+        
+        #endif
     }
 
     fileprivate func startObservingRemoteChanges() {
@@ -331,7 +338,7 @@ extension SyncEngine {
     public func syncRecordsToCloudKit(recordsToStore: [CKRecord], recordIDsToDelete: [CKRecordID], completion: ((Error?) -> ())? = nil) {
         let modifyOpe = CKModifyRecordsOperation(recordsToSave: recordsToStore, recordIDsToDelete: recordIDsToDelete)
         
-        if #available(iOS 11.0, OSX 10.13, *) {
+        if #available(iOS 11.0, OSX 10.13, tvOS 11.0, watchOS 4.0, *) {
             let config = CKOperationConfiguration()
             config.isLongLived = true
             modifyOpe.configuration = config

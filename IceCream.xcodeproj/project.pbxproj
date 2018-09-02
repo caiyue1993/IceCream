@@ -15,6 +15,33 @@
 		6743F72A202B0F9400912163 /* Manifest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F722202B0F9400912163 /* Manifest.swift */; };
 		6743F72B202B0F9400912163 /* CreamAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F723202B0F9400912163 /* CreamAsset.swift */; };
 		6743F72D202B0F9400912163 /* Notification+Name.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F725202B0F9400912163 /* Notification+Name.swift */; };
+		67478157213BEDD6005C132B /* Syncable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6773DF0220BD2CE10019FF3A /* Syncable.swift */; };
+		67478158213BEDD6005C132B /* CKRecordConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6773DEFF20BD2CBD0019FF3A /* CKRecordConvertible.swift */; };
+		67478159213BEDD6005C132B /* CKRecordRecoverable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6773DEFE20BD2CBD0019FF3A /* CKRecordRecoverable.swift */; };
+		6747815A213BEDD6005C132B /* ErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F720202B0F9400912163 /* ErrorHandler.swift */; };
+		6747815B213BEDD6005C132B /* Cream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F721202B0F9400912163 /* Cream.swift */; };
+		6747815C213BEDD6005C132B /* Manifest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F722202B0F9400912163 /* Manifest.swift */; };
+		6747815D213BEDD6005C132B /* CreamAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F723202B0F9400912163 /* CreamAsset.swift */; };
+		6747815E213BEDD6005C132B /* Notification+Name.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F725202B0F9400912163 /* Notification+Name.swift */; };
+		6747815F213BEDD6005C132B /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41767BFC209863BA00178513 /* SyncEngine.swift */; };
+		67478160213BEDD6005C132B /* SyncObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6767988E20BCEEB0008F98AD /* SyncObject.swift */; };
+		67478163213BEE0D005C132B /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67478161213BEE0D005C132B /* RealmSwift.framework */; };
+		67478164213BEE0D005C132B /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67478162213BEE0D005C132B /* Realm.framework */; };
+		67478165213BEE17005C132B /* IceCream.h in Headers */ = {isa = PBXBuildFile; fileRef = 6743F715202B0F0F00912163 /* IceCream.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		67478166213BEF0E005C132B /* Syncable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6773DF0220BD2CE10019FF3A /* Syncable.swift */; };
+		67478167213BEF0E005C132B /* CKRecordConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6773DEFF20BD2CBD0019FF3A /* CKRecordConvertible.swift */; };
+		67478168213BEF0E005C132B /* CKRecordRecoverable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6773DEFE20BD2CBD0019FF3A /* CKRecordRecoverable.swift */; };
+		67478169213BEF0E005C132B /* ErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F720202B0F9400912163 /* ErrorHandler.swift */; };
+		6747816A213BEF0E005C132B /* Cream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F721202B0F9400912163 /* Cream.swift */; };
+		6747816B213BEF0E005C132B /* Manifest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F722202B0F9400912163 /* Manifest.swift */; };
+		6747816C213BEF0E005C132B /* CreamAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F723202B0F9400912163 /* CreamAsset.swift */; };
+		6747816D213BEF0E005C132B /* Notification+Name.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F725202B0F9400912163 /* Notification+Name.swift */; };
+		6747816E213BEF0E005C132B /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41767BFC209863BA00178513 /* SyncEngine.swift */; };
+		6747816F213BEF0E005C132B /* SyncObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6767988E20BCEEB0008F98AD /* SyncObject.swift */; };
+		67478170213BEF16005C132B /* IceCream.h in Headers */ = {isa = PBXBuildFile; fileRef = 6743F715202B0F0F00912163 /* IceCream.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		67478173213BEF2A005C132B /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67478171213BEF2A005C132B /* Realm.framework */; };
+		67478174213BEF2A005C132B /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67478172213BEF2A005C132B /* RealmSwift.framework */; };
+		67478175213BF1F1005C132B /* IceCream.h in Headers */ = {isa = PBXBuildFile; fileRef = 6743F715202B0F0F00912163 /* IceCream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6767988F20BCEEB0008F98AD /* SyncObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6767988E20BCEEB0008F98AD /* SyncObject.swift */; };
 		6773DF0020BD2CBD0019FF3A /* CKRecordRecoverable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6773DEFE20BD2CBD0019FF3A /* CKRecordRecoverable.swift */; };
 		6773DF0120BD2CBD0019FF3A /* CKRecordConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6773DEFF20BD2CBD0019FF3A /* CKRecordConvertible.swift */; };
@@ -46,6 +73,12 @@
 		6743F722202B0F9400912163 /* Manifest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Manifest.swift; sourceTree = "<group>"; };
 		6743F723202B0F9400912163 /* CreamAsset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreamAsset.swift; sourceTree = "<group>"; };
 		6743F725202B0F9400912163 /* Notification+Name.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Notification+Name.swift"; sourceTree = "<group>"; };
+		67478142213BCE46005C132B /* IceCream.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IceCream.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6747814F213BE66C005C132B /* IceCream.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IceCream.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		67478161213BEE0D005C132B /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealmSwift.framework; path = Carthage/Build/watchOS/RealmSwift.framework; sourceTree = "<group>"; };
+		67478162213BEE0D005C132B /* Realm.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Realm.framework; path = Carthage/Build/watchOS/Realm.framework; sourceTree = "<group>"; };
+		67478171213BEF2A005C132B /* Realm.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Realm.framework; path = Carthage/Build/tvOS/Realm.framework; sourceTree = "<group>"; };
+		67478172213BEF2A005C132B /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealmSwift.framework; path = Carthage/Build/tvOS/RealmSwift.framework; sourceTree = "<group>"; };
 		6767988E20BCEEB0008F98AD /* SyncObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncObject.swift; sourceTree = "<group>"; };
 		6773DEFE20BD2CBD0019FF3A /* CKRecordRecoverable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CKRecordRecoverable.swift; sourceTree = "<group>"; };
 		6773DEFF20BD2CBD0019FF3A /* CKRecordConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CKRecordConvertible.swift; sourceTree = "<group>"; };
@@ -64,6 +97,24 @@
 			files = (
 				67FE320F202B505000125432 /* Realm.framework in Frameworks */,
 				67FE3211202B505600125432 /* RealmSwift.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6747813E213BCE46005C132B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				67478163213BEE0D005C132B /* RealmSwift.framework in Frameworks */,
+				67478164213BEE0D005C132B /* Realm.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6747814B213BE66C005C132B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				67478173213BEF2A005C132B /* Realm.framework in Frameworks */,
+				67478174213BEF2A005C132B /* RealmSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -93,6 +144,8 @@
 			children = (
 				6743F712202B0F0F00912163 /* IceCream.framework */,
 				D826ADB1212189DF002B5C0F /* IceCream.framework */,
+				67478142213BCE46005C132B /* IceCream.framework */,
+				6747814F213BE66C005C132B /* IceCream.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -128,6 +181,10 @@
 		67FE320D202B505000125432 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				67478171213BEF2A005C132B /* Realm.framework */,
+				67478172213BEF2A005C132B /* RealmSwift.framework */,
+				67478162213BEE0D005C132B /* Realm.framework */,
+				67478161213BEE0D005C132B /* RealmSwift.framework */,
 				D826ADD321218A1C002B5C0F /* Realm.framework */,
 				D826ADD221218A1C002B5C0F /* RealmSwift.framework */,
 				67FE3210202B505600125432 /* RealmSwift.framework */,
@@ -147,10 +204,27 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6747813F213BCE46005C132B /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				67478165213BEE17005C132B /* IceCream.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6747814C213BE66C005C132B /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				67478170213BEF16005C132B /* IceCream.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D826ADAE212189DF002B5C0F /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				67478175213BF1F1005C132B /* IceCream.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -173,6 +247,42 @@
 			name = IceCream;
 			productName = IceCream;
 			productReference = 6743F712202B0F0F00912163 /* IceCream.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		67478141213BCE46005C132B /* IceCream-watchOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 67478149213BCE46005C132B /* Build configuration list for PBXNativeTarget "IceCream-watchOS" */;
+			buildPhases = (
+				6747813D213BCE46005C132B /* Sources */,
+				6747813E213BCE46005C132B /* Frameworks */,
+				6747813F213BCE46005C132B /* Headers */,
+				67478140213BCE46005C132B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "IceCream-watchOS";
+			productName = "IceCream-watchOS";
+			productReference = 67478142213BCE46005C132B /* IceCream.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		6747814E213BE66C005C132B /* IceCream-tvOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 67478154213BE66C005C132B /* Build configuration list for PBXNativeTarget "IceCream-tvOS" */;
+			buildPhases = (
+				6747814A213BE66C005C132B /* Sources */,
+				6747814B213BE66C005C132B /* Frameworks */,
+				6747814C213BE66C005C132B /* Headers */,
+				6747814D213BE66C005C132B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "IceCream-tvOS";
+			productName = "IceCream-tvOS";
+			productReference = 6747814F213BE66C005C132B /* IceCream.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		D826ADB0212189DF002B5C0F /* IceCream-macOS */ = {
@@ -207,6 +317,14 @@
 						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Automatic;
 					};
+					67478141213BCE46005C132B = {
+						CreatedOnToolsVersion = 9.3;
+						ProvisioningStyle = Automatic;
+					};
+					6747814E213BE66C005C132B = {
+						CreatedOnToolsVersion = 9.3;
+						ProvisioningStyle = Automatic;
+					};
 					D826ADB0212189DF002B5C0F = {
 						CreatedOnToolsVersion = 9.4.1;
 						ProvisioningStyle = Automatic;
@@ -227,6 +345,8 @@
 			targets = (
 				6743F711202B0F0F00912163 /* IceCream */,
 				D826ADB0212189DF002B5C0F /* IceCream-macOS */,
+				67478141213BCE46005C132B /* IceCream-watchOS */,
+				6747814E213BE66C005C132B /* IceCream-tvOS */,
 			);
 		};
 /* End PBXProject section */
@@ -237,6 +357,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				6743F726202B0F9400912163 /* .gitkeep in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		67478140213BCE46005C132B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6747814D213BE66C005C132B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -264,6 +398,40 @@
 				6743F729202B0F9400912163 /* Cream.swift in Sources */,
 				6743F728202B0F9400912163 /* ErrorHandler.swift in Sources */,
 				6767988F20BCEEB0008F98AD /* SyncObject.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6747813D213BCE46005C132B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				67478157213BEDD6005C132B /* Syncable.swift in Sources */,
+				67478158213BEDD6005C132B /* CKRecordConvertible.swift in Sources */,
+				67478159213BEDD6005C132B /* CKRecordRecoverable.swift in Sources */,
+				6747815A213BEDD6005C132B /* ErrorHandler.swift in Sources */,
+				6747815B213BEDD6005C132B /* Cream.swift in Sources */,
+				6747815C213BEDD6005C132B /* Manifest.swift in Sources */,
+				6747815D213BEDD6005C132B /* CreamAsset.swift in Sources */,
+				6747815E213BEDD6005C132B /* Notification+Name.swift in Sources */,
+				6747815F213BEDD6005C132B /* SyncEngine.swift in Sources */,
+				67478160213BEDD6005C132B /* SyncObject.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6747814A213BE66C005C132B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				67478166213BEF0E005C132B /* Syncable.swift in Sources */,
+				67478167213BEF0E005C132B /* CKRecordConvertible.swift in Sources */,
+				67478168213BEF0E005C132B /* CKRecordRecoverable.swift in Sources */,
+				67478169213BEF0E005C132B /* ErrorHandler.swift in Sources */,
+				6747816A213BEF0E005C132B /* Cream.swift in Sources */,
+				6747816B213BEF0E005C132B /* Manifest.swift in Sources */,
+				6747816C213BEF0E005C132B /* CreamAsset.swift in Sources */,
+				6747816D213BEF0E005C132B /* Notification+Name.swift in Sources */,
+				6747816E213BEF0E005C132B /* SyncEngine.swift in Sources */,
+				6747816F213BEF0E005C132B /* SyncObject.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -454,6 +622,120 @@
 			};
 			name = Release;
 		};
+		67478147213BCE46005C132B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = RCMHACTPLY;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/watchOS",
+				);
+				INFOPLIST_FILE = IceCream/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = me.soledad.http.IceCream;
+				PRODUCT_NAME = IceCream;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 3.0;
+			};
+			name = Debug;
+		};
+		67478148213BCE46005C132B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = RCMHACTPLY;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/watchOS",
+				);
+				INFOPLIST_FILE = IceCream/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = me.soledad.http.IceCream;
+				PRODUCT_NAME = IceCream;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 3.0;
+			};
+			name = Release;
+		};
+		67478155213BE66C005C132B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = RCMHACTPLY;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/tvOS",
+				);
+				INFOPLIST_FILE = IceCream/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = me.soledad.http.IceCream;
+				PRODUCT_NAME = IceCream;
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Debug;
+		};
+		67478156213BE66C005C132B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = RCMHACTPLY;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/tvOS",
+				);
+				INFOPLIST_FILE = IceCream/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = me.soledad.http.IceCream;
+				PRODUCT_NAME = IceCream;
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Release;
+		};
 		D826ADC2212189E0002B5C0F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -533,6 +815,24 @@
 			buildConfigurations = (
 				6743F71B202B0F0F00912163 /* Debug */,
 				6743F71C202B0F0F00912163 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		67478149213BCE46005C132B /* Build configuration list for PBXNativeTarget "IceCream-watchOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				67478147213BCE46005C132B /* Debug */,
+				67478148213BCE46005C132B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		67478154213BE66C005C132B /* Build configuration list for PBXNativeTarget "IceCream-tvOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				67478155213BE66C005C132B /* Debug */,
+				67478156213BE66C005C132B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
