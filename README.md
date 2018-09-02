@@ -35,6 +35,7 @@ IceCream helps you sync Realm Database with CloudKit.
 - [x] Large Data Syncing
 - [x] Manually Synchronization is also supported
 - [x] Many-to-one relationship support
+- [x] Available on every Apple platform(iOS/macOS/tvOS/watchOS)
 - [ ] Complete Documentation 
 
 ## Prerequisite
@@ -135,7 +136,7 @@ Due to the limit of Realm, we haven't found out a elegant way to handle `List` y
 
 ## Requirements
 
-- iOS 10.0+
+- iOS 10.0+ / macOS 10.12+ / tvOS 10.0+ / watchOS 3.0+ 
 - Swift 4
 - Realm Swift ~> 3.0
 
@@ -189,7 +190,7 @@ On your application targets’ **Build Phases** settings tab, click the “+” 
 /usr/local/bin/carthage copy-frameworks
 ```
 
-and add the paths to the frameworks you want to use under “Input Files”:
+and add the paths to the frameworks you want to use under “Input Files”(taking iOS platform for example):
 
 ```
 $(SRCROOT)/Carthage/Build/iOS/IceCream.framework
@@ -204,7 +205,7 @@ For more information about how to use Carthage, please see its [project page](ht
 IceCream is available through [CocoaPods](http://cocoapods.org). To install it, simply add the following line to your Podfile:
 
 ```ruby
-pod 'IceCream', '~> 1.5.0'
+pod 'IceCream', '~> 1.5.1'
 ```
 
 > If you want to build IceCream as a static framework, CocoaPods 1.4.0+ is required.
@@ -214,7 +215,6 @@ pod 'IceCream', '~> 1.5.0'
 This is the to-do list for the IceCream project. You can join us to become a contributor.
 
 - [ ] CloudKit Shared Database 
-- [ ] Other platforms supported, like macOS, tvOS and watchOS
 
 See the [CONTRIBUTING](docs/CONTRIBUTING.md) file for contributing guidelines.
 
