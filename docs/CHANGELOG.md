@@ -1,6 +1,31 @@
 # Change Log
 
 -----
+## [1.6.0 - Get me on every Apple platform](https://github.com/caiyue1993/IceCream/releases/tag/1.6.0)
+
+#### Add
+
+* Adding support for macOS, tvOS and watchOS. [#79](https://github.com/caiyue1993/IceCream/pull/79),[#85](https://github.com/caiyue1993/IceCream/pull/85)
+
+-----
+## [1.5.0 - Dog has an Owner](https://github.com/caiyue1993/IceCream/releases/tag/1.5.0)
+
+#### Add
+
+* Many-to-one relationship support. [#74](https://github.com/caiyue1993/IceCream/pull/74)
+
+#### Fix
+
+* Carthage nested dependency issue. [#71](https://github.com/caiyue1993/IceCream/pull/71)
+
+-----
+## [1.4.2](https://github.com/caiyue1993/IceCream/releases/tag/1.4.2)
+
+#### Add
+
+* Expose file path in CreamAsset. [#66](https://github.com/caiyue1993/IceCream/pull/66) 
+
+-----
 ## [1.4.1](https://github.com/caiyue1993/IceCream/releases/tag/1.4.1)
 
 #### Fix
