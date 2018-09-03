@@ -205,7 +205,7 @@ For more information about how to use Carthage, please see its [project page](ht
 IceCream is available through [CocoaPods](http://cocoapods.org). To install it, simply add the following line to your Podfile:
 
 ```ruby
-pod 'IceCream', '~> 1.5.1'
+pod 'IceCream', '~> 1.6.0'
 ```
 
 > If you want to build IceCream as a static framework, CocoaPods 1.4.0+ is required.
