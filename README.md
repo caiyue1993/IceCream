@@ -124,15 +124,9 @@ An example project is provided to see the detailed usage.
 
 ### Relationships 
 
-There are two main types of relationships in Realm Database: many-to-one and many-to-many.
+Thanks to the [CKReference](https://developer.apple.com/documentation/cloudkit/ckrecord/reference) in the CloudKit, IceCream has supported many-to-one relationship nicely. As the `Dog` example shows, a dog may have an owner. And we'll wrap the owner up as CKReference and push them to the CloudKit. 
 
-- Many-to-one
-
-Thanks to the [CKReference](https://developer.apple.com/documentation/cloudkit/ckrecord/reference) in the CloudKit, IceCream has supported many-to-one relationship nicely. And we implemented this feature using the **back references** which is recommended by Apple. 
-
-- Many-to-many
-
-Due to the limit of Realm, we haven't found out a elegant way to handle `List` yet. For an alternatives now(and it's recommended), you can use many-to-one relationship above inversely and [LinkingObjects](https://realm.io/docs/swift/latest#inverse-relationships). See [#74](https://github.com/caiyue1993/IceCream/pull/74) and [#68](https://github.com/caiyue1993/IceCream/pull/68) for more details.
+Inversely, the `Person` object has a `dogs` property which is the type of `LinkingObjects`. So we've successfully supported to-many relationship with a nice workaround. All make sense.
 
 ## Requirements
 
