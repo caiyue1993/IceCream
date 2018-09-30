@@ -14,7 +14,7 @@ public protocol Syncable: class {
     
     /// CKRecordZone related
     var recordType: String { get }
-    var customZoneID: CKRecordZoneID { get }
+    var customZoneID: CKRecordZone.ID { get }
     
     /// Local storage
     var zoneChangesToken: CKServerChangeToken? { get set }
@@ -24,8 +24,8 @@ public protocol Syncable: class {
     func registerLocalDatabase()
     func cleanUp()
     func add(record: CKRecord)
-    func delete(recordID: CKRecordID)
+    func delete(recordID: CKRecord.ID)
     
     /// Callback
-    var pipeToEngine: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecordID]) -> ())? { get set }
+    var pipeToEngine: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecord.ID]) -> ())? { get set }
 }
