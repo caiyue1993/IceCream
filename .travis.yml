@@ -12,9 +12,9 @@ env:
   global:
     - WORKSPACE=Example/IceCream_Example.xcworkspace
     - SCHEME=IceCream_Example
-    - SDK=iphonesimulator11.1
+    - SDK=iphonesimulator12.0
   matrix:
-    - DESTINATION="platform=iOS Simulator,name=iPhone 8,OS=11.1"
+    - DESTINATION="platform=iOS Simulator,name=iPhone SE,OS=12.0"
 podfile: Example/Podfile
 script:
   - set -o pipefail && xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -sdk "$SDK" -destination "$DESTINATION" -configuration Debug ONLY_ACTIVE_ARCH=NO build | xcpretty -c
