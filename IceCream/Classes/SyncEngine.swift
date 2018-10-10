@@ -40,50 +40,50 @@ public final class SyncEngine {
         self.syncObjects = objects
         for syncObject in syncObjects {
             syncObject.pipeToEngine = { [weak self] recordsToStore, recordIDsToDelete in
-                guard let `self` = self else { return }
-                `self`.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete)
+                guard let self = self else { return }
+                self.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete)
             }
         }
         
         /// Check iCloud status so that we can go on
         CKContainer.default().accountStatus { [weak self] (status, error) in
-            guard let `self` = self else { return }
+            guard let self = self else { return }
             if status == CKAccountStatus.available {
                 
                 /// 1. Fetch changes in the Cloud
                 /// Apple suggests that we should fetch changes in database, *especially* the very first launch.
                 /// But actually, there **might** be some rare unknown and weird reason that the data is not synced between muilty devices.
                 /// So I suggests fetch changes in database everytime app launches.
-                `self`.fetchChangesInDatabase({
+                self.fetchChangesInDatabase({
                     print("First sync done!")
                 })
 
-                `self`.resumeLongLivedOperationIfPossible()
+                self.resumeLongLivedOperationIfPossible()
 
-                `self`.createCustomZones()
+                self.createCustomZones()
                 
-                `self`.startObservingRemoteChanges()
+                self.startObservingRemoteChanges()
                 
                 /// 2. Register to local database
                 DispatchQueue.main.async {
-                    for syncObject in `self`.syncObjects {
+                    for syncObject in self.syncObjects {
                         syncObject.registerLocalDatabase()
                     }
                 }
               
                 #if os(iOS) || os(tvOS)
               
-                NotificationCenter.default.addObserver(self, selector: #selector(`self`.cleanUp), name: UIApplication.willTerminateNotification, object: nil)
+                NotificationCenter.default.addObserver(self, selector: #selector(self.cleanUp), name: UIApplication.willTerminateNotification, object: nil)
                 
                 #elseif os(macOS)
                 
-                NotificationCenter.default.addObserver(self, selector: #selector(`self`.cleanUp), name: NSApplication.willTerminateNotification, object: nil)
+                NotificationCenter.default.addObserver(self, selector: #selector(self.cleanUp), name: NSApplication.willTerminateNotification, object: nil)
                 
                 #endif
                 
                 /// 3. Create the subscription to the CloudKit database
-                if `self`.subscriptionIsLocallyCached { return }
-                `self`.createDatabaseSubscription()
+                if self.subscriptionIsLocallyCached { return }
+                self.createDatabaseSubscription()
 
             } else {
                 /// Handle when user account is not available
@@ -98,15 +98,15 @@ public final class SyncEngine {
         let zonesToCreate = syncObjects.filter { !$0.isCustomZoneCreated }.map { CKRecordZone(zoneID: $0.customZoneID) }
         let modifyOp = CKModifyRecordZonesOperation(recordZonesToSave: zonesToCreate, recordZoneIDsToDelete: nil)
         modifyOp.modifyRecordZonesCompletionBlock = { [weak self](_, _, error) in
-            guard let `self` = self else { return }
-            switch `self`.errorHandler.resultType(with: error) {
+            guard let self = self else { return }
+            switch self.errorHandler.resultType(with: error) {
             case .success:
                 DispatchQueue.main.async {
                     completion?(nil)
                 }
             case .retry(let timeToWait, _):
-                `self`.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
-                    `self`.createCustomZones(completion)
+                self.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
+                    self.createCustomZones(completion)
                 })
             default:
                 return
@@ -164,36 +164,36 @@ extension SyncEngine {
         changesOperation.fetchAllChanges = true
 
         changesOperation.changeTokenUpdatedBlock = { [weak self] newToken in
-            guard let `self` = self else { return }
+            guard let self = self else { return }
             self.databaseChangeToken = newToken
         }
 
         /// Cuz we only have one custom zone, so we don't need to store the CKRecordZoneID temporarily
         /*
          changesOperation.recordZoneWithIDChangedBlock = { [weak self] zoneID in
-         guard let `self` = self else { return }
-         `self`.changedRecordZoneID = zoneID
+         guard let self = self else { return }
+         self.changedRecordZoneID = zoneID
          }
          */
         changesOperation.fetchDatabaseChangesCompletionBlock = {
             [weak self]
             newToken, _, error in
-            guard let `self` = self else { return }
-            switch `self`.errorHandler.resultType(with: error) {
+            guard let self = self else { return }
+            switch self.errorHandler.resultType(with: error) {
             case .success:
-                `self`.databaseChangeToken = newToken
+                self.databaseChangeToken = newToken
                 // Fetch the changes in zone level
-                `self`.fetchChangesInZones(callback)
+                self.fetchChangesInZones(callback)
             case .retry(let timeToWait, _):
-                `self`.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
-                    `self`.fetchChangesInDatabase(callback)
+                self.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
+                    self.fetchChangesInDatabase(callback)
                 })
             case .recoverableError(let reason, _):
                 switch reason {
                 case .changeTokenExpired:
                     /// The previousServerChangeToken value is too old and the client must re-sync from scratch
-                    `self`.databaseChangeToken = nil
-                    `self`.fetchChangesInDatabase(callback)
+                    self.databaseChangeToken = nil
+                    self.fetchChangesInDatabase(callback)
                 default:
                     return
                 }
@@ -223,44 +223,44 @@ extension SyncEngine {
         changesOp.fetchAllChanges = true
         
         changesOp.recordZoneChangeTokensUpdatedBlock = { [weak self] zoneId, token, _ in
-            guard let `self` = self else { return }
-            guard let syncObject = `self`.syncObjects.first(where: { $0.customZoneID == zoneId }) else { return }
+            guard let self = self else { return }
+            guard let syncObject = self.syncObjects.first(where: { $0.customZoneID == zoneId }) else { return }
             syncObject.zoneChangesToken = token
         }
 
         changesOp.recordChangedBlock = { [weak self] record in
             /// The Cloud will return the modified record since the last zoneChangesToken, we need to do local cache here.
             /// Handle the record:
-            guard let `self` = self else { return }
-            guard let syncObject = `self`.syncObjects.first(where: { $0.recordType == record.recordType }) else { return }
+            guard let self = self else { return }
+            guard let syncObject = self.syncObjects.first(where: { $0.recordType == record.recordType }) else { return }
             syncObject.add(record: record)
         }
 
         changesOp.recordWithIDWasDeletedBlock = { [weak self] recordId, _ in
-            guard let `self` = self else { return }
-            guard let syncObject = `self`.syncObjects.first(where: { $0.customZoneID == recordId.zoneID }) else { return }
+            guard let self = self else { return }
+            guard let syncObject = self.syncObjects.first(where: { $0.customZoneID == recordId.zoneID }) else { return }
             syncObject.delete(recordID: recordId)
         }
 
         changesOp.recordZoneFetchCompletionBlock = { [weak self](zoneId ,token, _, _, error) in
-            guard let `self` = self else { return }
-            switch `self`.errorHandler.resultType(with: error) {
+            guard let self = self else { return }
+            switch self.errorHandler.resultType(with: error) {
             case .success:
-                guard let syncObject = `self`.syncObjects.first(where: { $0.customZoneID == zoneId }) else { return }
+                guard let syncObject = self.syncObjects.first(where: { $0.customZoneID == zoneId }) else { return }
                 syncObject.zoneChangesToken = token
                 callback?()
                 print("Sync successfully!")
             case .retry(let timeToWait, _):
-                `self`.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
-                    `self`.fetchChangesInZones(callback)
+                self.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
+                    self.fetchChangesInZones(callback)
                 })
             case .recoverableError(let reason, _):
                 switch reason {
                 case .changeTokenExpired:
                     /// The previousServerChangeToken value is too old and the client must re-sync from scratch
-                    guard let syncObject = `self`.syncObjects.first(where: { $0.customZoneID == zoneId }) else { return }
+                    guard let syncObject = self.syncObjects.first(where: { $0.customZoneID == zoneId }) else { return }
                     syncObject.zoneChangesToken = nil
-                    `self`.fetchChangesInZones(callback)
+                    self.fetchChangesInZones(callback)
                 default:
                     return
                 }
@@ -297,8 +297,8 @@ extension SyncEngine {
 
     fileprivate func startObservingRemoteChanges() {
         NotificationCenter.default.addObserver(forName: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, queue: OperationQueue.main, using: { [weak self](_) in
-            guard let `self` = self else { return }
-            `self`.fetchChangesInDatabase()
+            guard let self = self else { return }
+            self.fetchChangesInDatabase()
         })
     }
 }
@@ -360,9 +360,9 @@ extension SyncEngine {
             [weak self]
             (_, _, error) in
             
-            guard let `self` = self else { return }
+            guard let self = self else { return }
             
-            switch `self`.errorHandler.resultType(with: error) {
+            switch self.errorHandler.resultType(with: error) {
             case .success:
                 DispatchQueue.main.async {
                     completion?(nil)
@@ -370,19 +370,19 @@ extension SyncEngine {
                     /// Cause we will get a error when there is very empty in the cloudKit dashboard
                     /// which often happen when users first launch your app.
                     /// So, we put the subscription process here when we sure there is a record type in CloudKit.
-                    if `self`.subscriptionIsLocallyCached { return }
-                    `self`.createDatabaseSubscription()
+                    if self.subscriptionIsLocallyCached { return }
+                    self.createDatabaseSubscription()
                 }
             case .retry(let timeToWait, _):
-                `self`.errorHandler.retryOperationIfPossible(retryAfter: timeToWait) {
-                    `self`.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete, completion: completion)
+                self.errorHandler.retryOperationIfPossible(retryAfter: timeToWait) {
+                    self.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete, completion: completion)
                 }
             case .chunk:
                 /// CloudKit says maximum number of items in a single request is 400.
                 /// So I think 300 should be a fine by them.
                 let chunkedRecords = recordsToStore.chunkItUp(by: 300)
                 for chunk in chunkedRecords {
-                    `self`.syncRecordsToCloudKit(recordsToStore: chunk, recordIDsToDelete: recordIDsToDelete, completion: completion)
+                    self.syncRecordsToCloudKit(recordsToStore: chunk, recordIDsToDelete: recordIDsToDelete, completion: completion)
                 }
             default:
                 return

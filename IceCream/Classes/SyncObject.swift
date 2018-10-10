@@ -81,7 +81,7 @@ extension SyncObject: Syncable {
             /// https://realm.io/docs/swift/latest/#objects-with-primary-keys
             realm.beginWrite()
             realm.add(object, update: true)
-            if let token = `self`.notificationToken {
+            if let token = self.notificationToken {
                 try! realm.commitWrite(withoutNotifying: [token])
             } else {
                 try! realm.commitWrite()
@@ -99,7 +99,7 @@ extension SyncObject: Syncable {
             CreamAsset.deleteCreamAssetFile(with: recordID.recordName)
             realm.beginWrite()
             realm.delete(object)
-            if let token = `self`.notificationToken {
+            if let token = self.notificationToken {
                 try! realm.commitWrite(withoutNotifying: [token])
             } else {
                 try! realm.commitWrite()
@@ -112,7 +112,7 @@ extension SyncObject: Syncable {
     public func registerLocalDatabase() {
         let objects = Cream<T>().realm.objects(T.self)
         notificationToken = objects.observe({ [weak self](changes) in
-            guard let `self` = self else { return }
+            guard let self = self else { return }
             
             switch changes {
             case .initial(let collection):
@@ -132,7 +132,7 @@ extension SyncObject: Syncable {
                 let recordsToStore = objectsToStore.map{ $0.record }
                 let recordIDsToDelete = objectsToDelete.map{ $0.recordID }
                 
-                `self`.pipeToEngine?(recordsToStore, recordIDsToDelete)
+                self.pipeToEngine?(recordsToStore, recordIDsToDelete)
                 
             case .error(_):
                 break
