@@ -288,9 +288,11 @@ extension SyncEngine {
     }
 
     fileprivate func startObservingRemoteChanges() {
-        NotificationCenter.default.addObserver(forName: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, queue: OperationQueue.main, using: { [weak self](_) in
+        NotificationCenter.default.addObserver(forName: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, queue: nil, using: { [weak self](_) in
             guard let self = self else { return }
-            self.fetchChangesInDatabase()
+            DispatchQueue.global(qos: .utility).async {
+                self.fetchChangesInDatabase()
+            }
         })
     }
 }
