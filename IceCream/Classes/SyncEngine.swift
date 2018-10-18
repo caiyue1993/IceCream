@@ -9,7 +9,6 @@ import Foundation
 import RealmSwift
 import CloudKit
 
-
 #if os(macOS)
 import Cocoa
 #else
@@ -18,21 +17,16 @@ import UIKit
 
 /// SyncEngine talks to CloudKit directly.
 /// Logically,
-/// 1. it takes care of the operations of CKDatabase
+/// 1. it takes care of the operations of **CKDatabase**
 /// 2. it handles all of the CloudKit config stuffs, such as subscriptions
 /// 3. it hands over CKRecordZone stuffs to SyncObject so that it can have an effect on local Realm Database
 
 public final class SyncEngine {
-
-    /// Notifications are delivered as long as a reference is held to the returned notification token. You should keep a strong reference to this token on the class registering for updates, as notifications are automatically unregistered when the notification token is deallocated.
-    /// For more, reference is here: https://realm.io/docs/swift/latest/#notifications
-    private var notificationToken: NotificationToken?
-
+    
     /// Indicates the private database in default container
     private let privateDatabase = CKContainer.default().privateCloudDatabase
     
     private let errorHandler = ErrorHandler()
-    
     private let syncObjects: [Syncable]
     
     /// We recommend processing the initialization when app launches
@@ -54,9 +48,7 @@ public final class SyncEngine {
                 /// Apple suggests that we should fetch changes in database, *especially* the very first launch.
                 /// But actually, there **might** be some rare unknown and weird reason that the data is not synced between muilty devices.
                 /// So I suggests fetch changes in database everytime app launches.
-                self.fetchChangesInDatabase({
-                    print("First sync done!")
-                })
+                self.fetchChangesInDatabase()
 
                 self.resumeLongLivedOperationIfPossible()
 
@@ -109,7 +101,9 @@ public final class SyncEngine {
                     self.createCustomZones(completion)
                 })
             default:
-                return
+                DispatchQueue.main.async {
+                    completion?(error)
+                }
             }
         }
 
@@ -249,7 +243,7 @@ extension SyncEngine {
                 guard let syncObject = self.syncObjects.first(where: { $0.customZoneID == zoneId }) else { return }
                 syncObject.zoneChangesToken = token
                 callback?()
-                print("Sync successfully!")
+                print("Sync successfully: \(zoneId))")
             case .retry(let timeToWait, _):
                 self.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
                     self.fetchChangesInZones(callback)
@@ -273,8 +267,6 @@ extension SyncEngine {
     }
 
     fileprivate func createDatabaseSubscription() {
-        // The direct below is the subscribe way that Apple suggests in CloudKit Best Practices(https://developer.apple.com/videos/play/wwdc2016/231/) , but it doesn't work here in my place.
-        
         #if os(iOS) || os(tvOS) || os(macOS)
         
         let subscription = CKDatabaseSubscription(subscriptionID: IceCreamConstant.cloudKitSubscriptionID)
