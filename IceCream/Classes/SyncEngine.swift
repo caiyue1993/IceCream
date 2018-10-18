@@ -52,16 +52,16 @@ public final class SyncEngine {
 
                 self.resumeLongLivedOperationIfPossible()
 
-                self.createCustomZones()
-                
-                self.startObservingRemoteChanges()
-                
-                /// 2. Register to local database
-                DispatchQueue.main.async {
+                self.createCustomZones { [weak self] (error) in
+                    guard let self = self, error == nil else { return }
+                    /// 2. Register to local database
+                    /// We should registerLocalDatabase after custom zones were created, related issue: https://github.com/caiyue1993/IceCream/issues/83
                     for syncObject in self.syncObjects {
                         syncObject.registerLocalDatabase()
                     }
                 }
+                
+                self.startObservingRemoteChanges()
               
                 #if os(iOS) || os(tvOS)
               
