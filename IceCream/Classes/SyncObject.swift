@@ -116,24 +116,16 @@ extension SyncObject: Syncable {
             
             switch changes {
             case .initial(let collection):
-                print("Inited:" + "\(collection)")
-                break
-            case .update(let collection, let deletions, let insertions, let modifications):
-                print("collections:" + "\(collection)")
-                print("deletions:" + "\(deletions)")
-                print("insertions:" + "\(insertions)")
-                print("modifications:" + "\(modifications)")
+                let recordsToStore = (0..<collection.count).filter { $0 < collection.count }.map { collection[$0] }.filter { !$0.isDeleted }.map { $0.record }
                 
-                let objectsToStore = (insertions + modifications).filter { $0 < collection.count }.map { collection[$0] }.filter{ !$0.isDeleted }
-                let objectsToDelete = modifications.filter { $0 < collection.count }.map{ collection[$0] }.filter { $0.isDeleted }
+                guard recordsToStore.count > 0 else { return }
+                self.pipeToEngine?(recordsToStore, [])
+            case .update(let collection, _, let insertions, let modifications):
+                let recordsToStore = (insertions + modifications).filter { $0 < collection.count }.map { collection[$0] }.filter{ !$0.isDeleted }.map { $0.record }
+                let recordIDsToDelete = modifications.filter { $0 < collection.count }.map { collection[$0] }.filter { $0.isDeleted }.map { $0.recordID }
                 
-                guard objectsToStore.count > 0 || objectsToDelete.count > 0 else { return }
-                
-                let recordsToStore = objectsToStore.map{ $0.record }
-                let recordIDsToDelete = objectsToDelete.map{ $0.recordID }
-                
+                guard recordsToStore.count > 0 || recordIDsToDelete.count > 0 else { return }
                 self.pipeToEngine?(recordsToStore, recordIDsToDelete)
-                
             case .error(_):
                 break
             }
