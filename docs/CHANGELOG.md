@@ -1,5 +1,26 @@
 # Change Log
 
+## [1.7.1 - Optimizations](https://github.com/caiyue1993/IceCream/releases/tag/1.7.1)
+
+#### Add
+
+* Add `pushAll` method. 
+* change method name `sync` to `pull`. 
+
+### Fix 
+
+* Fetch changes on the non-main thread.
+* Move registerLocalDatabase to completion block of createCustomZones.
+* Fix `isCustomZoneCreated` setter logic.
+* More Swift 4.2 and optimize code style.
+
+-----
+## 1.7.0 - Swift 4.2
+
+#### Add
+
+* Xcode 10 / Swift 4.2 support
+
 -----
 ## [1.6.0 - Get me on every Apple platform](https://github.com/caiyue1993/IceCream/releases/tag/1.6.0)
 
