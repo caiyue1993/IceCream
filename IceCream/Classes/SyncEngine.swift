@@ -386,8 +386,8 @@ extension SyncEngine {
         privateDatabase.add(modifyOpe)
     }
     
-    // Manually sync data with CloudKit
-    public func sync() {
+    /// Fetch data on the CloudKit and merge with local
+    public func pull() {
         fetchChangesInDatabase()
     }
 }
