@@ -390,6 +390,12 @@ extension SyncEngine {
     public func pull() {
         fetchChangesInDatabase()
     }
+    
+    /// Push all existing local data to CloudKit
+    /// You should NOT to call this method too frequently
+    public func pushAll() {
+        self.syncObjects.forEach { $0.pushLocalObjectsToCloudKit() }
+    }
 }
 
 public enum Notifications: String, NotificationName {

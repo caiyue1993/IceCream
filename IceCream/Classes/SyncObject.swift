@@ -113,13 +113,9 @@ extension SyncObject: Syncable {
         let objects = Cream<T>().realm.objects(T.self)
         notificationToken = objects.observe({ [weak self](changes) in
             guard let self = self else { return }
-            
             switch changes {
-            case .initial(let collection):
-                let recordsToStore = (0..<collection.count).filter { $0 < collection.count }.map { collection[$0] }.filter { !$0.isDeleted }.map { $0.record }
-                
-                guard recordsToStore.count > 0 else { return }
-                self.pipeToEngine?(recordsToStore, [])
+            case .initial(_):
+                break
             case .update(let collection, _, let insertions, let modifications):
                 let recordsToStore = (insertions + modifications).filter { $0 < collection.count }.map { collection[$0] }.filter{ !$0.isDeleted }.map { $0.record }
                 let recordIDsToDelete = modifications.filter { $0 < collection.count }.map { collection[$0] }.filter { $0.isDeleted }.map { $0.recordID }
@@ -140,5 +136,11 @@ extension SyncObject: Syncable {
             // Error handles here
         }
     }
+    
+    public func pushLocalObjectsToCloudKit() {
+        let recordsToStore: [CKRecord] = Cream<T>().realm.objects(T.self).filter { !$0.isDeleted }.map { $0.record }
+        pipeToEngine?(recordsToStore, [])
+    }
+    
 }
 
