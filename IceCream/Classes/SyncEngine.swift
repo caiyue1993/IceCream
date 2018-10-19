@@ -93,6 +93,7 @@ public final class SyncEngine {
             guard let self = self else { return }
             switch self.errorHandler.resultType(with: error) {
             case .success:
+                self.syncObjects.forEach { $0.isCustomZoneCreated = true }
                 DispatchQueue.main.async {
                     completion?(nil)
                 }
