@@ -55,7 +55,7 @@ public final class SyncEngine {
                 self.createCustomZones { [weak self] (error) in
                     guard let self = self, error == nil else { return }
                     /// 2. Register to local database
-                    /// We should registerLocalDatabase after custom zones were created, related issue: https://github.com/caiyue1993/IceCream/issues/83
+                    /// We should call `registerLocalDatabase` after custom zones were created, related issue: https://github.com/caiyue1993/IceCream/issues/83
                     for syncObject in self.syncObjects {
                         syncObject.registerLocalDatabase()
                     }
@@ -374,7 +374,7 @@ extension SyncEngine {
                 }
             case .chunk:
                 /// CloudKit says maximum number of items in a single request is 400.
-                /// So I think 300 should be a fine by them.
+                /// So I think 300 should be fine by them.
                 let chunkedRecords = recordsToStore.chunkItUp(by: 300)
                 for chunk in chunkedRecords {
                     self.syncRecordsToCloudKit(recordsToStore: chunk, recordIDsToDelete: recordIDsToDelete, completion: completion)
