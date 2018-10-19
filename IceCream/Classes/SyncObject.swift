@@ -21,8 +21,6 @@ public final class SyncObject<T> where T: Object & CKRecordConvertible & CKRecor
     /// For more, reference is here: https://realm.io/docs/swift/latest/#notifications
     private var notificationToken: NotificationToken?
     
-    private let errorHandler = ErrorHandler()
-    
     public var pipeToEngine: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecord.ID]) -> ())?
     
     public init() {}
