@@ -220,8 +220,6 @@ My app [Sprint](https://itunes.apple.com/cn/app/%E5%B0%8F%E7%9B%AE%E6%A0%87-%E9%
   <img src="https://github.com/caiyue1993/Tiptoes/blob/master/images/appstore.png">
 </a>
 
-If your app has adopted IceCream, feel free to create a PR to add it to this page.
-
 ## Reference
 
 - [Synchronizing data with CloudKit](https://medium.com/@guilhermerambo/synchronizing-data-with-cloudkit-94c6246a3fda) (Recommended)
@@ -254,6 +252,14 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 This project exists thanks to all the people who contribute. [Contribute](docs/CONTRIBUTING.md).
 
 <a href="graphs/contributors"><img src="https://opencollective.com/IceCream/contributors.svg?width=890&button=false" /></a>
+
+## Donations
+
+Now IceCream has been adopted by hundreds of developers and successfully used in their apps. We're greatly humbled by your enthusiam around the projects, and want to continue to move this project forward. Your financial support will encourge me to spend more time and provide better services.
+
+[![paypal](https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-medium.png)](https://paypal.me/yuecai)
+
+Any amount you can donate today to help us reach our goal would be greatly appreciated.
 
 ## License
 
