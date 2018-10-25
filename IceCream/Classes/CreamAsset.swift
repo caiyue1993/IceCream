@@ -72,6 +72,19 @@ public class CreamAsset: Object {
     static func parse(from propName: String, record: CKRecord, asset: CKAsset) -> CreamAsset? {
         return CreamAsset(objectID: record.recordID.recordName, propName: propName, url: asset.fileURL)
     }
+    
+    /// Creates a new CreamAsset for the given object id with Data
+    ///
+    /// - Parameters:
+    ///   - objectID: The object ID (key property of the Realm object) the asset will live on
+    ///   - propName: The unique property name to identify this asset. e.g.: Dog Object may have multiple CreamAsset properties, so we need unique `propName`s to identify these.
+    ///   - data: The file data
+    /// - Returns: A CreamAsset if it was successful
+    public static func create(objectID: String, propName: String, data: Data) -> CreamAsset? {
+        return CreamAsset(objectID: objectID,
+                          propName: propName,
+                          data: data)
+    }
 
     /// Creates a new CreamAsset for the given object with Data
     ///
