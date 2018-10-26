@@ -29,7 +29,7 @@ public class CreamAsset: Object {
         self.data = nil
     }
 
-    private convenience init(objectID: String, propName: String, data: Data, force: Bool) {
+    private convenience init(objectID: String, propName: String, data: Data, force: Bool = false) {
         self.init()
         self.data = data
         self.uniqueFileName = "\(objectID)_\(propName)"
@@ -53,9 +53,9 @@ public class CreamAsset: Object {
         return CreamAsset.creamAssetDefaultURL().appendingPathComponent(uniqueFileName)
     }
 
-    func save(data: Data, to path: String, force: Bool) {
+    func save(data: Data, to path: String, force: Bool = false) {
         let url = CreamAsset.creamAssetDefaultURL().appendingPathComponent(path)
-        guard Data(contentsOf: url) == nil || force else { return }
+        guard try? Data(contentsOf: url) == nil || force else { return }
         do {
             try data.write(to: url)
         } catch {
@@ -93,7 +93,7 @@ public class CreamAsset: Object {
     ///   - data: The file data
     ///   - force: Whether to force a new save, even if the file already exists
     /// - Returns: A CreamAsset if it was successful
-    public static func create(objectID: String, propName: String, data: Data, force: Bool) -> CreamAsset? {
+    public static func create(objectID: String, propName: String, data: Data, force: Bool = false) -> CreamAsset? {
         return CreamAsset(objectID: objectID,
                           propName: propName,
                           data: data,
@@ -108,7 +108,7 @@ public class CreamAsset: Object {
     ///   - data: The file data
     ///   - force: Whether to force a new save, even if the file already exists
     /// - Returns: A CreamAsset if it was successful
-    public static func create(object: CKRecordConvertible, propName: String, data: Data, force: Bool) -> CreamAsset? {
+    public static func create(object: CKRecordConvertible, propName: String, data: Data, force: Bool = false) -> CreamAsset? {
         return CreamAsset(objectID: object.recordID.recordName,
                           propName: propName,
                           data: data,
