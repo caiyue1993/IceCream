@@ -54,15 +54,53 @@ extension CKRecordConvertible where Self: Object {
         let r = CKRecord(recordType: Self.recordType, recordID: recordID)
         let properties = objectSchema.properties
         for prop in properties {
+            
+            let item = self[prop.name]
+            
             switch prop.type {
-            case .int, .string, .bool, .date, .float, .double, .data:
-                r[prop.name] = self[prop.name] as? CKRecordValue
+            case .int, .string, .bool, .float, .double, .data:
+                if prop.isArray {
+                    switch prop.type {
+                    case .int:
+                        guard let list = item as? List<Int> else { break }
+                        let array = Array(list)
+                        r[prop.name] = array as CKRecordValue
+                    case .string:
+                        guard let list = item as? List<String> else { break }
+                        let array = Array(list)
+                        r[prop.name] = array as CKRecordValue
+                    case .bool:
+                        guard let list = item as? List<Bool> else { break }
+                        let array = Array(list)
+                        r[prop.name] = array as CKRecordValue
+                    case .float:
+                        guard let list = item as? List<Float> else { break }
+                        let array = Array(list)
+                        r[prop.name] = array as CKRecordValue
+                    case .double:
+                        guard let list = item as? List<Double> else { break }
+                        let array = Array(list)
+                        r[prop.name] = array as CKRecordValue
+                    case .data:
+                        guard let list = item as? List<Data> else { break }
+                        let array = Array(list)
+                        r[prop.name] = array as CKRecordValue
+                    default:
+                        break
+                    }
+                    
+                    break
+                } else {
+                    r[prop.name] = item as? CKRecordValue
+                }
+            case .date:
+                r[prop.name] = item as? CKRecordValue
             case .object:
                 guard let objectName = prop.objectClassName else { break }
                 // If object is CreamAsset, set record with its wrapped CKAsset value
-                if objectName == CreamAsset.className(), let creamAsset = self[prop.name] as? CreamAsset {
+                if objectName == CreamAsset.className(), let creamAsset = item as? CreamAsset {
                     r[prop.name] = creamAsset.asset
-                } else if let owner = self[prop.name] as? CKRecordConvertible {
+                } else if let owner = item as? CKRecordConvertible {
                     // Handle to-one relationship: https://realm.io/docs/swift/latest/#many-to-one
                     // So the owner Object has to conform to CKRecordConvertible protocol
                     r[prop.name] = CKRecord.Reference(recordID: owner.recordID, action: .none)
