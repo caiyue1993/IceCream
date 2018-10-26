@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "6747814E213BE66C005C132B"
-               BuildableName = "IceCream_tvOS.framework"
+               BuildableName = "IceCream.framework"
                BlueprintName = "IceCream-tvOS"
                ReferencedContainer = "container:IceCream.xcodeproj">
             </BuildableReference>
@@ -46,7 +46,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "6747814E213BE66C005C132B"
-            BuildableName = "IceCream_tvOS.framework"
+            BuildableName = "IceCream.framework"
             BlueprintName = "IceCream-tvOS"
             ReferencedContainer = "container:IceCream.xcodeproj">
          </BuildableReference>
@@ -64,7 +64,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "6747814E213BE66C005C132B"
-            BuildableName = "IceCream_tvOS.framework"
+            BuildableName = "IceCream.framework"
             BlueprintName = "IceCream-tvOS"
             ReferencedContainer = "container:IceCream.xcodeproj">
          </BuildableReference>
