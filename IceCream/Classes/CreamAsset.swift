@@ -23,6 +23,11 @@ public class CreamAsset: Object {
     override public static func ignoredProperties() -> [String] {
         return ["data", "filePath"]
     }
+    
+    private convenience init(empty: Bool) {
+        self.init()
+        self.data = nil
+    }
 
     private convenience init(objectID: String, propName: String, data: Data, force: Bool) {
         self.init()
@@ -62,6 +67,11 @@ public class CreamAsset: Object {
         get {
             return CKAsset(fileURL: filePath)
         }
+    }
+    
+    /// An empty CreamAsset, useful if you're not storing anything
+    static var empty: CreamAsset {
+        return CreamAsset(empty: true)
     }
 
     /// Parses a CKRecord and CKAsset back into a CreamAsset
