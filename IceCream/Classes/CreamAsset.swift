@@ -55,7 +55,7 @@ public class CreamAsset: Object {
 
     func save(data: Data, to path: String, force: Bool = false) {
         let url = CreamAsset.creamAssetDefaultURL().appendingPathComponent(path)
-        guard try? Data(contentsOf: url) == nil || force else { return }
+        if let existingData = try? Data(contentsOf: url), !force { return }
         do {
             try data.write(to: url)
         } catch {
