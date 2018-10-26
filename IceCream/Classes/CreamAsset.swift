@@ -70,7 +70,7 @@ public class CreamAsset: Object {
     }
     
     /// An empty CreamAsset, useful if you're not storing anything
-    static var empty: CreamAsset {
+    public static var empty: CreamAsset {
         return CreamAsset(empty: true)
     }
 
