@@ -62,27 +62,33 @@ extension CKRecordConvertible where Self: Object {
                 if prop.isArray {
                     switch prop.type {
                     case .int:
-                        guard let list = item as? List<Int> else { break }
+                        guard let list = item as? List<Int>,
+                         !list.isEmpty else { break }
                         let array = Array(list)
                         r[prop.name] = array as CKRecordValue
                     case .string:
-                        guard let list = item as? List<String> else { break }
+                        guard let list = item as? List<String>,
+                            !list.isEmpty  else { break }
                         let array = Array(list)
                         r[prop.name] = array as CKRecordValue
                     case .bool:
-                        guard let list = item as? List<Bool> else { break }
+                        guard let list = item as? List<Bool>,
+                            !list.isEmpty  else { break }
                         let array = Array(list)
                         r[prop.name] = array as CKRecordValue
                     case .float:
-                        guard let list = item as? List<Float> else { break }
+                        guard let list = item as? List<Float>,
+                            !list.isEmpty  else { break }
                         let array = Array(list)
                         r[prop.name] = array as CKRecordValue
                     case .double:
-                        guard let list = item as? List<Double> else { break }
+                        guard let list = item as? List<Double>,
+                            !list.isEmpty  else { break }
                         let array = Array(list)
                         r[prop.name] = array as CKRecordValue
                     case .data:
-                        guard let list = item as? List<Data> else { break }
+                        guard let list = item as? List<Data>,
+                            !list.isEmpty  else { break }
                         let array = Array(list)
                         r[prop.name] = array as CKRecordValue
                     default:
