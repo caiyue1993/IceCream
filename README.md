@@ -36,6 +36,7 @@ IceCream helps you sync Realm Database with CloudKit.
 - [x] Manually Synchronization is also supported
 - [x] Many-to-one relationship support
 - [x] Available on every Apple platform(iOS/macOS/tvOS/watchOS)
+- [x] Support Realm Lists of Natural Types
 - [ ] Complete Documentation 
 
 ## Prerequisite
