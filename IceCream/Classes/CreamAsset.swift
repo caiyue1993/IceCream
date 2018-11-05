@@ -40,7 +40,7 @@ public class CreamAsset: Object {
     /// Cuz we only store the path of data, so we can't access data by `data` property
     /// So use this method if you want get the data of this object
     public func storedData() -> Data? {
-        return try! Data(contentsOf: filePath)
+        return try? Data(contentsOf: filePath)
     }
 
     public var filePath: URL {
