@@ -53,7 +53,8 @@ extension CKRecordRecoverable where Self: Object {
                 default:
                     break
                 }
-                break
+                o.setValue(recordValue, forKey: prop.name)
+                continue
             }
             
             switch prop.type {
