@@ -57,49 +57,51 @@ extension CKRecordConvertible where Self: Object {
             
             let item = self[prop.name]
             
-            switch prop.type {
-            case .int, .string, .bool, .float, .double, .data:
-                if prop.isArray {
-                    switch prop.type {
-                    case .int:
-                        guard let list = item as? List<Int>,
-                         !list.isEmpty else { break }
-                        let array = Array(list)
-                        r[prop.name] = array as CKRecordValue
-                    case .string:
-                        guard let list = item as? List<String>,
-                            !list.isEmpty  else { break }
-                        let array = Array(list)
-                        r[prop.name] = array as CKRecordValue
-                    case .bool:
-                        guard let list = item as? List<Bool>,
-                            !list.isEmpty  else { break }
-                        let array = Array(list)
-                        r[prop.name] = array as CKRecordValue
-                    case .float:
-                        guard let list = item as? List<Float>,
-                            !list.isEmpty  else { break }
-                        let array = Array(list)
-                        r[prop.name] = array as CKRecordValue
-                    case .double:
-                        guard let list = item as? List<Double>,
-                            !list.isEmpty  else { break }
-                        let array = Array(list)
-                        r[prop.name] = array as CKRecordValue
-                    case .data:
-                        guard let list = item as? List<Data>,
-                            !list.isEmpty  else { break }
-                        let array = Array(list)
-                        r[prop.name] = array as CKRecordValue
-                    default:
-                        break
-                    }
-                    
+            if prop.isArray {
+                switch prop.type {
+                case .int:
+                    guard let list = item as? List<Int>,
+                        !list.isEmpty else { break }
+                    let array = Array(list)
+                    r[prop.name] = array as CKRecordValue
+                case .string:
+                    guard let list = item as? List<String>,
+                        !list.isEmpty  else { break }
+                    let array = Array(list)
+                    r[prop.name] = array as CKRecordValue
+                case .bool:
+                    guard let list = item as? List<Bool>,
+                        !list.isEmpty  else { break }
+                    let array = Array(list)
+                    r[prop.name] = array as CKRecordValue
+                case .float:
+                    guard let list = item as? List<Float>,
+                        !list.isEmpty  else { break }
+                    let array = Array(list)
+                    r[prop.name] = array as CKRecordValue
+                case .double:
+                    guard let list = item as? List<Double>,
+                        !list.isEmpty  else { break }
+                    let array = Array(list)
+                    r[prop.name] = array as CKRecordValue
+                case .data:
+                    guard let list = item as? List<Data>,
+                        !list.isEmpty  else { break }
+                    let array = Array(list)
+                    r[prop.name] = array as CKRecordValue
+                case .date:
+                    guard let list = item as? List<Date>, !list.isEmpty else { break }
+                    let array = Array(list)
+                    r[prop.name] = array as CKRecordValue
+                default:
                     break
-                } else {
-                    r[prop.name] = item as? CKRecordValue
+                    /// Other inner types of List is not supported yet
                 }
-            case .date:
+                continue
+            }
+            
+            switch prop.type {
+            case .int, .string, .bool, .date, .float, .double, .data:
                 r[prop.name] = item as? CKRecordValue
             case .object:
                 guard let objectName = prop.objectClassName else { break }
