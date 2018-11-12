@@ -53,9 +53,9 @@ public class CreamAsset: Object {
         return CreamAsset.creamAssetDefaultURL().appendingPathComponent(uniqueFileName)
     }
 
-    func save(data: Data, to path: String, force: Bool = false) {
+    private func save(data: Data, to path: String, force: Bool = false) {
         let url = CreamAsset.creamAssetDefaultURL().appendingPathComponent(path)
-        if let existingData = try? Data(contentsOf: url), !force { return }
+        if FileManager.default.fileExists(atPath: url.path), !force { return }
         do {
             try data.write(to: url)
         } catch {
