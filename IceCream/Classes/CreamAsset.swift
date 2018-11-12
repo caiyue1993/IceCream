@@ -23,18 +23,12 @@ public class CreamAsset: Object {
     override public static func ignoredProperties() -> [String] {
         return ["data", "filePath"]
     }
-    
-    private convenience init(empty: Bool) {
-        self.init()
-        self.data = nil
-    }
 
-    private convenience init(objectID: String, propName: String, data: Data, force: Bool = false) {
+    private convenience init(objectID: String, propName: String, data: Data) {
         self.init()
         self.data = data
         self.uniqueFileName = "\(objectID)_\(propName)"
-        
-        save(data: data, to: uniqueFileName, force: force)
+        save(data: data, to: uniqueFileName)
     }
 
     private convenience init?(objectID: String, propName: String, url: URL) {
@@ -53,9 +47,8 @@ public class CreamAsset: Object {
         return CreamAsset.creamAssetDefaultURL().appendingPathComponent(uniqueFileName)
     }
 
-    private func save(data: Data, to path: String, force: Bool = false) {
+    func save(data: Data, to path: String) {
         let url = CreamAsset.creamAssetDefaultURL().appendingPathComponent(path)
-        if FileManager.default.fileExists(atPath: url.path), !force { return }
         do {
             try data.write(to: url)
         } catch {
@@ -68,11 +61,6 @@ public class CreamAsset: Object {
             return CKAsset(fileURL: filePath)
         }
     }
-    
-    /// An empty CreamAsset, useful if you're not storing anything
-    public static var empty: CreamAsset {
-        return CreamAsset(empty: true)
-    }
 
     /// Parses a CKRecord and CKAsset back into a CreamAsset
     ///
@@ -84,21 +72,6 @@ public class CreamAsset: Object {
     static func parse(from propName: String, record: CKRecord, asset: CKAsset) -> CreamAsset? {
         return CreamAsset(objectID: record.recordID.recordName, propName: propName, url: asset.fileURL)
     }
-    
-    /// Creates a new CreamAsset for the given object id with Data
-    ///
-    /// - Parameters:
-    ///   - objectID: The object ID (key property of the Realm object) the asset will live on
-    ///   - propName: The unique property name to identify this asset. e.g.: Dog Object may have multiple CreamAsset properties, so we need unique `propName`s to identify these.
-    ///   - data: The file data
-    ///   - force: Whether to force a new save, even if the file already exists
-    /// - Returns: A CreamAsset if it was successful
-    public static func create(objectID: String, propName: String, data: Data, force: Bool = false) -> CreamAsset? {
-        return CreamAsset(objectID: objectID,
-                          propName: propName,
-                          data: data,
-                          force: force)
-    }
 
     /// Creates a new CreamAsset for the given object with Data
     ///
@@ -106,13 +79,11 @@ public class CreamAsset: Object {
     ///   - object: The object the asset will live on
     ///   - propName: The unique property name to identify this asset. e.g.: Dog Object may have multiple CreamAsset properties, so we need unique `propName`s to identify these.
     ///   - data: The file data
-    ///   - force: Whether to force a new save, even if the file already exists
     /// - Returns: A CreamAsset if it was successful
-    public static func create(object: CKRecordConvertible, propName: String, data: Data, force: Bool = false) -> CreamAsset? {
+    public static func create(object: CKRecordConvertible, propName: String, data: Data) -> CreamAsset? {
         return CreamAsset(objectID: object.recordID.recordName,
                           propName: propName,
-                          data: data,
-                          force: force)
+                          data: data)
     }
 
     /// Creates a new CreamAsset for the given object with a URL
