@@ -100,8 +100,8 @@ public class CreamAsset: Object {
     ///   - data: The file data
     ///   - overwriteExistingFile: Whether to try and save the file even if an existing file exists for the same object ID.
     /// - Returns: A CreamAsset if it was successful
-    public static func create(object: CKRecordConvertible, propName: String, data: Data, overwriteExistingFile shouldOverwrite: Bool = false) -> CreamAsset? {
-        return CreamAsset(objectID: object.recordID.recordName,
+    public static func create(objectID: String, propName: String, data: Data, overwriteExistingFile shouldOverwrite: Bool = false) -> CreamAsset? {
+        return CreamAsset(objectID: objectID,
                           propName: propName,
                           data: data,
                           overwriteExistingFile: shouldOverwrite)
