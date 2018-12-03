@@ -24,13 +24,17 @@ import UIKit
 public final class SyncEngine {
     
     /// Indicates the private database in default container
-    private let privateDatabase = CKContainer.default().privateCloudDatabase
+    private let defaultContainer : CKContainer
+    private let privateDatabase : CKDatabase
     
     private let errorHandler = ErrorHandler()
     private let syncObjects: [Syncable]
     
     /// We recommend processing the initialization when app launches
-    public init(objects: [Syncable]) {
+    public init(objects: [Syncable], container: CKContainer = CKContainer.default()) {
+        defaultContainer = container
+        privateDatabase = container.privateCloudDatabase
+        
         self.syncObjects = objects
         for syncObject in syncObjects {
             syncObject.pipeToEngine = { [weak self] recordsToStore, recordIDsToDelete in
@@ -40,7 +44,7 @@ public final class SyncEngine {
         }
         
         /// Check iCloud status so that we can go on
-        CKContainer.default().accountStatus { [weak self] (status, error) in
+        defaultContainer.accountStatus { [weak self] (status, error) in
             guard let self = self else { return }
             if status == CKAccountStatus.available {
                 
@@ -308,17 +312,17 @@ extension SyncEngine {
     /// 3. Back to app again
     /// The operation resumes! All works like a magic!
     fileprivate func resumeLongLivedOperationIfPossible () {
-        CKContainer.default().fetchAllLongLivedOperationIDs { ( opeIDs, error) in
+        defaultContainer.fetchAllLongLivedOperationIDs { ( opeIDs, error) in
             guard error == nil else { return }
             guard let ids = opeIDs else { return }
             for id in ids {
-                CKContainer.default().fetchLongLivedOperation(withID: id, completionHandler: { (ope, error) in
+                self.defaultContainer.fetchLongLivedOperation(withID: id, completionHandler: { (ope, error) in
                     guard error == nil else { return }
                     if let modifyOp = ope as? CKModifyRecordsOperation {
                         modifyOp.modifyRecordsCompletionBlock = { (_,_,_) in
                             print("Resume modify records success!")
                         }
-                        CKContainer.default().add(modifyOp)
+                        self.defaultContainer.add(modifyOp)
                     }
                 })
             }
