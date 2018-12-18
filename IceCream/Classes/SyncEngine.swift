@@ -29,8 +29,11 @@ public final class SyncEngine {
     private let errorHandler = ErrorHandler()
     private let syncObjects: [Syncable]
     
+    private var isEnabled = false
+    
     /// We recommend processing the initialization when app launches
-    public init(objects: [Syncable]) {
+    public init(shouldStart: Bool = true, objects: [Syncable]) {
+        self.isEnabled = shouldStart
         self.syncObjects = objects
         for syncObject in syncObjects {
             syncObject.pipeToEngine = { [weak self] recordsToStore, recordIDsToDelete in
@@ -38,6 +41,13 @@ public final class SyncEngine {
                 self.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete)
             }
         }
+        
+        beginSyncing()
+    }
+    
+    /// This will check the account status and make sure we fetch all changes, create the required zones, and add a remote observer.
+    private func beginSyncing() {
+        guard isEnabled else { return }
         
         /// Check iCloud status so that we can go on
         CKContainer.default().accountStatus { [weak self] (status, error) in
@@ -152,7 +162,7 @@ extension SyncEngine {
 
     /// Only update the changeToken when fetch process completes
     private func fetchChangesInDatabase(_ callback: (() -> Void)? = nil) {
-
+        guard isEnabled else { return }
         let changesOperation = CKFetchDatabaseChangesOperation(previousServerChangeToken: databaseChangeToken)
         
         /// For more, see the source code, it has the detailed explanation
@@ -214,6 +224,7 @@ extension SyncEngine {
     }
 
     private func fetchChangesInZones(_ callback: (() -> Void)? = nil) {
+        guard isEnabled else { return }
         let changesOp = CKFetchRecordZoneChangesOperation(recordZoneIDs: zoneIds, optionsByRecordZoneID: zoneIdOptions)
         changesOp.fetchAllChanges = true
         
@@ -268,6 +279,7 @@ extension SyncEngine {
     }
 
     fileprivate func createDatabaseSubscription() {
+        guard isEnabled else { return }
         #if os(iOS) || os(tvOS) || os(macOS)
         
         let subscription = CKDatabaseSubscription(subscriptionID: IceCreamConstant.cloudKitSubscriptionID)
@@ -289,6 +301,7 @@ extension SyncEngine {
     }
 
     fileprivate func startObservingRemoteChanges() {
+        guard isEnabled else { return }
         NotificationCenter.default.addObserver(forName: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, queue: nil, using: { [weak self](_) in
             guard let self = self else { return }
             DispatchQueue.global(qos: .utility).async {
@@ -331,6 +344,8 @@ extension SyncEngine {
     /// Sync local data to CloudKit
     /// For more about the savePolicy: https://developer.apple.com/documentation/cloudkit/ckrecordsavepolicy
     public func syncRecordsToCloudKit(recordsToStore: [CKRecord], recordIDsToDelete: [CKRecord.ID], completion: ((Error?) -> ())? = nil) {
+        guard isEnabled else { return }
+        
         let modifyOpe = CKModifyRecordsOperation(recordsToSave: recordsToStore, recordIDsToDelete: recordIDsToDelete)
       
         if #available(iOS 11.0, OSX 10.13, tvOS 11.0, watchOS 4.0, *) {
@@ -389,13 +404,37 @@ extension SyncEngine {
     
     /// Fetch data on the CloudKit and merge with local
     public func pull() {
+        guard isEnabled else { return }
         fetchChangesInDatabase()
     }
     
     /// Push all existing local data to CloudKit
     /// You should NOT to call this method too frequently
     public func pushAll() {
+        guard isEnabled else { return }
         self.syncObjects.forEach { $0.pushLocalObjectsToCloudKit() }
+    }
+    
+    public func setEnabled(_ enabled: Bool) {
+        isEnabled = enabled
+        
+        if isEnabled {
+            beginSyncing()
+        } else {
+            databaseChangeToken = nil
+            
+            privateDatabase.fetchAllSubscriptions { (subscriptions, error) in
+                guard error == nil, let subscriptions = subscriptions else { return }
+                
+                let deletionOperation = CKModifySubscriptionsOperation(subscriptionsToSave: nil, subscriptionIDsToDelete: subscriptions)
+                deletionOperation.modifySubscriptionsCompletionBlock = { _, _, error in
+                    guard error == nil else { return }
+                    self.subscriptionIsLocallyCached = false
+                }
+                deletionOperation.qualityOfService = .utility
+                privateDatabase.add(deletionOperation)
+            }
+        }
     }
 }
 
