@@ -38,6 +38,10 @@ extension SyncObject: Syncable {
         return T.customZoneID
     }
     
+    public var isPrimaryKeyInt: Bool {
+        return T()[T.primaryKey()!] as? Int != nil
+    }
+    
     public var zoneChangesToken: CKServerChangeToken? {
         get {
             /// For the very first time when launching, the token will be nil and the server will be giving everything on the Cloud to client
@@ -90,7 +94,8 @@ extension SyncObject: Syncable {
     public func delete(recordID: CKRecord.ID) {
         DispatchQueue.main.async {
             let realm = try! Realm()
-            guard let object = realm.object(ofType: T.self, forPrimaryKey: recordID.recordName) else {
+            guard let object = self.isPrimaryKeyInt ? realm.object(ofType: T.self, forPrimaryKey: Int(recordID.recordName))
+                                                    : realm.object(ofType: T.self, forPrimaryKey: recordID.recordName) else {
                 // Not found in local realm database
                 return
             }
