@@ -312,11 +312,13 @@ extension SyncEngine {
     /// 3. Back to app again
     /// The operation resumes! All works like a magic!
     fileprivate func resumeLongLivedOperationIfPossible () {
-        defaultContainer.fetchAllLongLivedOperationIDs { ( opeIDs, error) in
+        defaultContainer.fetchAllLongLivedOperationIDs { [weak self]( opeIDs, error) in
+            guard let self = self else { return }
             guard error == nil else { return }
             guard let ids = opeIDs else { return }
             for id in ids {
-                self.defaultContainer.fetchLongLivedOperation(withID: id, completionHandler: { (ope, error) in
+                self.defaultContainer.fetchLongLivedOperation(withID: id, completionHandler: { [weak self](ope, error) in
+                    guard let self = self else { return }
                     guard error == nil else { return }
                     if let modifyOp = ope as? CKModifyRecordsOperation {
                         modifyOp.modifyRecordsCompletionBlock = { (_,_,_) in
