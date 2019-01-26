@@ -49,9 +49,8 @@ public class CreamAsset: Object {
 
     func save(data: Data, to path: String, shouldOverwrite: Bool) {
         let url = CreamAsset.creamAssetDefaultURL().appendingPathComponent(path)
-        
-        // If a file already exists at the specified path and `shouldOverwrite` is `false`, cancel the save.
-        if FileManager.default.fileExists(atPath: url.path), !shouldOverwrite { return }
+
+        guard shouldOverwrite || !FileManager.default.fileExists(atPath: url.path) else { return }
         
         do {
             try data.write(to: url)
