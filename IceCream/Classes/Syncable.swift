@@ -22,7 +22,7 @@ public protocol Syncable: class {
     var isCustomZoneCreated: Bool { get set }
     
     /// Custom Realm reference
-    var realm: Realm? { get set }
+    var realm: Realm { get set }
     
     /// Realm Database related
     func registerLocalDatabase()
