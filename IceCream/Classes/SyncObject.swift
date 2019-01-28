@@ -72,7 +72,7 @@ extension SyncObject: Syncable {
     
     public func add(record: CKRecord) {
         DispatchQueue.main.async {
-            guard let object = T().parseFromRecord(record: record, realm: self.realm) else {
+            guard let object = T.parseFromRecord(record: record, realm: self.realm) else {
                 print("There is something wrong with the converson from cloud record to local object")
                 return
             }
