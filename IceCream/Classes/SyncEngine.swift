@@ -31,12 +31,13 @@ public final class SyncEngine {
     private let syncObjects: [Syncable]
     
     /// We recommend processing the initialization when app launches
-    public init(objects: [Syncable], container: CKContainer = CKContainer.default()) {
+    public init(objects: [Syncable], container: CKContainer = CKContainer.default(), in realm: Realm = try! Realm()) {
         defaultContainer = container
         privateDatabase = container.privateCloudDatabase
         
         self.syncObjects = objects
         for syncObject in syncObjects {
+            syncObject.realm = realm
             syncObject.pipeToEngine = { [weak self] recordsToStore, recordIDsToDelete in
                 guard let self = self else { return }
                 self.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete)

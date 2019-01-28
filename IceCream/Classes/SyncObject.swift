@@ -23,7 +23,11 @@ public final class SyncObject<T> where T: Object & CKRecordConvertible & CKRecor
     
     public var pipeToEngine: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecord.ID]) -> ())?
     
-    public init() {}
+    public var realm: Realm
+    
+    public init(realm: Realm = try! Realm()) {
+        self.realm = realm
+    }
 }
 
 // MARK: - Zone information
@@ -68,39 +72,36 @@ extension SyncObject: Syncable {
     
     public func add(record: CKRecord) {
         DispatchQueue.main.async {
-            let realm = try! Realm()
-            
-            guard let object = T().parseFromRecord(record: record, realm: realm) else {
+            guard let object = T().parseFromRecord(record: record, realm: self.realm) else {
                 print("There is something wrong with the converson from cloud record to local object")
                 return
             }
             
             /// If your model class includes a primary key, you can have Realm intelligently update or add objects based off of their primary key values using Realm().add(_:update:).
             /// https://realm.io/docs/swift/latest/#objects-with-primary-keys
-            realm.beginWrite()
-            realm.add(object, update: true)
+            self.realm.beginWrite()
+            self.realm.add(object, update: true)
             if let token = self.notificationToken {
-                try! realm.commitWrite(withoutNotifying: [token])
+                try! self.realm.commitWrite(withoutNotifying: [token])
             } else {
-                try! realm.commitWrite()
+                try! self.realm.commitWrite()
             }
         }
     }
     
     public func delete(recordID: CKRecord.ID) {
         DispatchQueue.main.async {
-            let realm = try! Realm()
-            guard let object = realm.object(ofType: T.self, forPrimaryKey: recordID.recordName) else {
+            guard let object = self.realm.object(ofType: T.self, forPrimaryKey: recordID.recordName) else {
                 // Not found in local realm database
                 return
             }
             CreamAsset.deleteCreamAssetFile(with: recordID.recordName)
-            realm.beginWrite()
-            realm.delete(object)
+            self.realm.beginWrite()
+            self.realm.delete(object)
             if let token = self.notificationToken {
-                try! realm.commitWrite(withoutNotifying: [token])
+                try! self.realm.commitWrite(withoutNotifying: [token])
             } else {
-                try! realm.commitWrite()
+                try! self.realm.commitWrite()
             }
         }
     }
@@ -108,8 +109,7 @@ extension SyncObject: Syncable {
     /// When you commit a write transaction to a Realm, all other instances of that Realm will be notified, and be updated automatically.
     /// For more: https://realm.io/docs/swift/latest/#writes
     public func registerLocalDatabase() {
-        let objects = Cream<T>().realm.objects(T.self)
-        notificationToken = objects.observe({ [weak self](changes) in
+        notificationToken = realm.objects(T.self).observe({ [weak self](changes) in
             guard let self = self else { return }
             switch changes {
             case .initial(_):
@@ -127,16 +127,22 @@ extension SyncObject: Syncable {
     }
     
     public func cleanUp() {
-        let cream = Cream<T>()
+        let objects = realm.objects(T.self).filter { $0.isDeleted }
+        
+        var tokens: [NotificationToken] = []
+        notificationToken.flatMap { tokens = [$0] }
+        
+        realm.beginWrite()
+        objects.forEach({ realm.delete($0) })
         do {
-            try cream.deletePreviousSoftDeleteObjects(notNotifying: notificationToken)
+            try realm.commitWrite(withoutNotifying: tokens)
         } catch {
             // Error handles here
         }
     }
     
     public func pushLocalObjectsToCloudKit() {
-        let recordsToStore: [CKRecord] = Cream<T>().realm.objects(T.self).filter { !$0.isDeleted }.map { $0.record }
+        let recordsToStore: [CKRecord] = realm.objects(T.self).filter { !$0.isDeleted }.map { $0.record }
         pipeToEngine?(recordsToStore, [])
     }
     

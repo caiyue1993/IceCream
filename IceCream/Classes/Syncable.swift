@@ -7,6 +7,7 @@
 
 import Foundation
 import CloudKit
+import RealmSwift
 
 /// Since `sync` is an informal version of `synchronize`, so we choose the `syncable` word for
 /// the ability of synchronization.
@@ -19,6 +20,9 @@ public protocol Syncable: class {
     /// Local storage
     var zoneChangesToken: CKServerChangeToken? { get set }
     var isCustomZoneCreated: Bool { get set }
+    
+    /// Custom Realm reference
+    var realm: Realm { get set }
     
     /// Realm Database related
     func registerLocalDatabase()
