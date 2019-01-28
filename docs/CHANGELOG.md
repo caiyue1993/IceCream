@@ -1,5 +1,28 @@
 # Change Log
 
+## [1.8.0]
+
+#### Add
+
+* Add a option to let developer choose whether to overwrite existing CreamAsset file(the default choice is `true`) [#103](https://github.com/caiyue1993/IceCream/pull/103)
+* Add support for custom CKContainers [#104](https://github.com/caiyue1993/IceCream/pull/104)
+* Add support for custom Realm [#108](https://github.com/caiyue1993/IceCream/pull/108)
+
+#### Fix
+
+* Fix the conversion issue of recordID to Int type primaryKey [#111](https://github.com/caiyue1993/IceCream/pull/111)
+
+## [1.7.2 - Realm List of Basic Types](https://github.com/caiyue1993/IceCream/releases/tag/1.7.2)
+
+#### Add
+
+* Add support for Lists of basic types [#98](https://github.com/caiyue1993/IceCream/pull/98)
+
+#### Fix 
+
+* Fix a crash when new no-optional property added [#92](https://github.com/caiyue1993/IceCream/pull/92)
+* Avoid force unwrapping `storedData` [#101](https://github.com/caiyue1993/IceCream/pull/101)
+
 ## [1.7.1 - Optimizations](https://github.com/caiyue1993/IceCream/releases/tag/1.7.1)
 
 #### Add
@@ -7,7 +30,7 @@
 * Add `pushAll` method. 
 * change method name `sync` to `pull`. 
 
-### Fix 
+#### Fix 
 
 * Fetch changes on the non-main thread.
 * Move registerLocalDatabase to completion block of createCustomZones.
