@@ -91,7 +91,7 @@ extension SyncObject: Syncable {
     
     public func delete(recordID: CKRecord.ID) {
         DispatchQueue.main.async {
-            guard let object = self.realm.object(ofType: T.self, forPrimaryKey: recordID.recordName) else {
+            guard let object = self.realm.object(ofType: T.self, forPrimaryKey: T.primaryKeyForRecordID(recordID: recordID)) else {
                 // Not found in local realm database
                 return
             }
