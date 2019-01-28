@@ -13,7 +13,7 @@ public protocol CKRecordRecoverable {
 }
 
 extension CKRecordRecoverable where Self: Object {
-    func parseFromRecord(record: CKRecord, realm: Realm) -> Self? {
+    static func parseFromRecord(record: CKRecord, realm: Realm) -> Self? {
         let o = Self()
         for prop in o.objectSchema.properties {
             var recordValue: Any?
