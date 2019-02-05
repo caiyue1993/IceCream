@@ -11,7 +11,6 @@
 		6743F717202B0F0F00912163 /* IceCream.h in Headers */ = {isa = PBXBuildFile; fileRef = 6743F715202B0F0F00912163 /* IceCream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6743F726202B0F9400912163 /* .gitkeep in Resources */ = {isa = PBXBuildFile; fileRef = 6743F71E202B0F9400912163 /* .gitkeep */; };
 		6743F728202B0F9400912163 /* ErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F720202B0F9400912163 /* ErrorHandler.swift */; };
-		6743F729202B0F9400912163 /* Cream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F721202B0F9400912163 /* Cream.swift */; };
 		6743F72A202B0F9400912163 /* Manifest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F722202B0F9400912163 /* Manifest.swift */; };
 		6743F72B202B0F9400912163 /* CreamAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F723202B0F9400912163 /* CreamAsset.swift */; };
 		6743F72D202B0F9400912163 /* Notification+Name.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F725202B0F9400912163 /* Notification+Name.swift */; };
@@ -19,7 +18,6 @@
 		67478158213BEDD6005C132B /* CKRecordConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6773DEFF20BD2CBD0019FF3A /* CKRecordConvertible.swift */; };
 		67478159213BEDD6005C132B /* CKRecordRecoverable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6773DEFE20BD2CBD0019FF3A /* CKRecordRecoverable.swift */; };
 		6747815A213BEDD6005C132B /* ErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F720202B0F9400912163 /* ErrorHandler.swift */; };
-		6747815B213BEDD6005C132B /* Cream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F721202B0F9400912163 /* Cream.swift */; };
 		6747815C213BEDD6005C132B /* Manifest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F722202B0F9400912163 /* Manifest.swift */; };
 		6747815D213BEDD6005C132B /* CreamAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F723202B0F9400912163 /* CreamAsset.swift */; };
 		6747815E213BEDD6005C132B /* Notification+Name.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F725202B0F9400912163 /* Notification+Name.swift */; };
@@ -32,7 +30,6 @@
 		67478167213BEF0E005C132B /* CKRecordConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6773DEFF20BD2CBD0019FF3A /* CKRecordConvertible.swift */; };
 		67478168213BEF0E005C132B /* CKRecordRecoverable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6773DEFE20BD2CBD0019FF3A /* CKRecordRecoverable.swift */; };
 		67478169213BEF0E005C132B /* ErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F720202B0F9400912163 /* ErrorHandler.swift */; };
-		6747816A213BEF0E005C132B /* Cream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F721202B0F9400912163 /* Cream.swift */; };
 		6747816B213BEF0E005C132B /* Manifest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F722202B0F9400912163 /* Manifest.swift */; };
 		6747816C213BEF0E005C132B /* CreamAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F723202B0F9400912163 /* CreamAsset.swift */; };
 		6747816D213BEF0E005C132B /* Notification+Name.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F725202B0F9400912163 /* Notification+Name.swift */; };
@@ -52,7 +49,6 @@
 		D826ADC9212189F2002B5C0F /* CKRecordConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6773DEFF20BD2CBD0019FF3A /* CKRecordConvertible.swift */; };
 		D826ADCA212189F2002B5C0F /* CKRecordRecoverable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6773DEFE20BD2CBD0019FF3A /* CKRecordRecoverable.swift */; };
 		D826ADCB212189F2002B5C0F /* ErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F720202B0F9400912163 /* ErrorHandler.swift */; };
-		D826ADCC212189F2002B5C0F /* Cream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F721202B0F9400912163 /* Cream.swift */; };
 		D826ADCD212189F2002B5C0F /* Manifest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F722202B0F9400912163 /* Manifest.swift */; };
 		D826ADCE212189F2002B5C0F /* CreamAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F723202B0F9400912163 /* CreamAsset.swift */; };
 		D826ADCF212189F2002B5C0F /* Notification+Name.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F725202B0F9400912163 /* Notification+Name.swift */; };
@@ -69,7 +65,6 @@
 		6743F716202B0F0F00912163 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6743F71E202B0F9400912163 /* .gitkeep */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
 		6743F720202B0F9400912163 /* ErrorHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorHandler.swift; sourceTree = "<group>"; };
-		6743F721202B0F9400912163 /* Cream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cream.swift; sourceTree = "<group>"; };
 		6743F722202B0F9400912163 /* Manifest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Manifest.swift; sourceTree = "<group>"; };
 		6743F723202B0F9400912163 /* CreamAsset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreamAsset.swift; sourceTree = "<group>"; };
 		6743F725202B0F9400912163 /* Notification+Name.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Notification+Name.swift"; sourceTree = "<group>"; };
@@ -168,7 +163,6 @@
 				6773DEFF20BD2CBD0019FF3A /* CKRecordConvertible.swift */,
 				6773DEFE20BD2CBD0019FF3A /* CKRecordRecoverable.swift */,
 				6743F720202B0F9400912163 /* ErrorHandler.swift */,
-				6743F721202B0F9400912163 /* Cream.swift */,
 				6743F722202B0F9400912163 /* Manifest.swift */,
 				6743F723202B0F9400912163 /* CreamAsset.swift */,
 				6743F725202B0F9400912163 /* Notification+Name.swift */,
@@ -395,7 +389,6 @@
 				6773DF0320BD2CE20019FF3A /* Syncable.swift in Sources */,
 				6773DF0020BD2CBD0019FF3A /* CKRecordRecoverable.swift in Sources */,
 				6743F72D202B0F9400912163 /* Notification+Name.swift in Sources */,
-				6743F729202B0F9400912163 /* Cream.swift in Sources */,
 				6743F728202B0F9400912163 /* ErrorHandler.swift in Sources */,
 				6767988F20BCEEB0008F98AD /* SyncObject.swift in Sources */,
 			);
@@ -409,7 +402,6 @@
 				67478158213BEDD6005C132B /* CKRecordConvertible.swift in Sources */,
 				67478159213BEDD6005C132B /* CKRecordRecoverable.swift in Sources */,
 				6747815A213BEDD6005C132B /* ErrorHandler.swift in Sources */,
-				6747815B213BEDD6005C132B /* Cream.swift in Sources */,
 				6747815C213BEDD6005C132B /* Manifest.swift in Sources */,
 				6747815D213BEDD6005C132B /* CreamAsset.swift in Sources */,
 				6747815E213BEDD6005C132B /* Notification+Name.swift in Sources */,
@@ -426,7 +418,6 @@
 				67478167213BEF0E005C132B /* CKRecordConvertible.swift in Sources */,
 				67478168213BEF0E005C132B /* CKRecordRecoverable.swift in Sources */,
 				67478169213BEF0E005C132B /* ErrorHandler.swift in Sources */,
-				6747816A213BEF0E005C132B /* Cream.swift in Sources */,
 				6747816B213BEF0E005C132B /* Manifest.swift in Sources */,
 				6747816C213BEF0E005C132B /* CreamAsset.swift in Sources */,
 				6747816D213BEF0E005C132B /* Notification+Name.swift in Sources */,
@@ -439,7 +430,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D826ADCC212189F2002B5C0F /* Cream.swift in Sources */,
 				D826ADD1212189F2002B5C0F /* SyncObject.swift in Sources */,
 				D826ADCA212189F2002B5C0F /* CKRecordRecoverable.swift in Sources */,
 				D826ADCD212189F2002B5C0F /* Manifest.swift in Sources */,
