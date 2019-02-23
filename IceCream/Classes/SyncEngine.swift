@@ -250,6 +250,8 @@ extension SyncEngine {
                 syncObject.zoneChangesToken = token
                 callback?()
                 print("Sync successfully: \(zoneId))")
+                // Notify the app to reload data
+                NotificationCenter.default.post(name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil)
             case .retry(let timeToWait, _):
                 self.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
                     self.fetchChangesInZones(callback)
@@ -408,6 +410,7 @@ extension SyncEngine {
 
 public enum Notifications: String, NotificationName {
     case cloudKitDataDidChangeRemotely
+    case cloudKitNewData
 }
 
 public enum IceCreamKey: String {
