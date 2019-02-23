@@ -251,7 +251,7 @@ extension SyncEngine {
                 callback?()
                 print("Sync successfully: \(zoneId))")
                 // Notify the app to reload data
-                NotificationCenter.default.post(name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil)
+                NotificationCenter.default.post(name: Notifications.cloudKitNewData.name, object: nil)
             case .retry(let timeToWait, _):
                 self.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
                     self.fetchChangesInZones(callback)
