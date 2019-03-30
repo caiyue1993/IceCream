@@ -209,11 +209,11 @@ extension SyncEngine {
     }
 
     private var zoneIdOptions: [CKRecordZone.ID: CKFetchRecordZoneChangesOperation.ZoneOptions] {
-        return syncObjects.reduce([CKRecordZone.ID: CKFetchRecordZoneChangesOperation.ZoneOptions]()) { (dict, syncEngine) -> [CKRecordZone.ID: CKFetchRecordZoneChangesOperation.ZoneOptions] in
+        return syncObjects.reduce([CKRecordZone.ID: CKFetchRecordZoneChangesOperation.ZoneOptions]()) { (dict, syncObject) -> [CKRecordZone.ID: CKFetchRecordZoneChangesOperation.ZoneOptions] in
             var dict = dict
             let zoneChangesOptions = CKFetchRecordZoneChangesOperation.ZoneOptions()
-            zoneChangesOptions.previousServerChangeToken = syncEngine.zoneChangesToken
-            dict[syncEngine.customZoneID] = zoneChangesOptions
+            zoneChangesOptions.previousServerChangeToken = syncObject.zoneChangesToken
+            dict[syncObject.customZoneID] = zoneChangesOptions
             return dict
         }
     }
