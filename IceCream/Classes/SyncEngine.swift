@@ -23,70 +23,87 @@ import UIKit
 
 public final class SyncEngine {
     
-    /// Indicates the private database in default container
-    private let defaultContainer : CKContainer
-    private let privateDatabase : CKDatabase
+    /// An encapsulation of content associated with an app.
+    private let container : CKContainer
+    
+    /// A conduit for accessing and performing operations on the data of an app container.
+    private let database : CKDatabase
     
     private let errorHandler = ErrorHandler()
     private let syncObjects: [Syncable]
     
     /// We recommend processing the initialization when app launches
-    public init(objects: [Syncable], container: CKContainer = CKContainer.default(), in realm: Realm = try! Realm()) {
-        defaultContainer = container
-        privateDatabase = container.privateCloudDatabase
-        
+    public init(objects: [Syncable], container: CKContainer = CKContainer.default(), databaseScope: CKDatabase.Scope = .private, in realm: Realm = try! Realm()) {
+        self.container = container
         self.syncObjects = objects
-        for syncObject in syncObjects {
-            syncObject.realm = realm
-            syncObject.pipeToEngine = { [weak self] recordsToStore, recordIDsToDelete in
+        
+        switch databaseScope {
+        case .private:
+            database = container.privateCloudDatabase
+        case .public:
+            database = container.publicCloudDatabase
+        case .shared:
+            fatalError("Sorry, syncing data in shared database is not supported now")
+        }
+        
+        syncObjects.forEach {
+            $0.realm = realm
+            $0.pipeToEngine = { [weak self] recordsToStore, recordIDsToDelete in
                 guard let self = self else { return }
                 self.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete)
             }
         }
         
-        /// Check iCloud status so that we can go on
-        defaultContainer.accountStatus { [weak self] (status, error) in
+        
+        container.accountStatus { [weak self](status, error) in
             guard let self = self else { return }
-            if status == CKAccountStatus.available {
-                
-                /// 1. Fetch changes in the Cloud
-                /// Apple suggests that we should fetch changes in database, *especially* the very first launch.
-                /// But actually, there **might** be some rare unknown and weird reason that the data is not synced between muilty devices.
-                /// So I suggests fetch changes in database everytime app launches.
-                self.fetchChangesInDatabase()
-
-                self.resumeLongLivedOperationIfPossible()
-
-                self.createCustomZones { [weak self] (error) in
-                    guard let self = self, error == nil else { return }
-                    /// 2. Register to local database
-                    /// We should call `registerLocalDatabase` after custom zones were created, related issue: https://github.com/caiyue1993/IceCream/issues/83
-                    for syncObject in self.syncObjects {
-                        syncObject.registerLocalDatabase()
+            switch databaseScope {
+            case .private:
+                if case CKAccountStatus.available = status {
+                    /// 1. Fetch changes in the Cloud
+                    /// Apple suggests that we should fetch changes in database, *especially* the very first launch.
+                    /// But actually, there **might** be some rare unknown and weird reason that the data is not synced between muilty devices.
+                    /// So I suggests fetch changes in database everytime app launches.
+                    self.fetchChangesInDatabase()
+                    
+                    self.resumeLongLivedOperationIfPossible()
+                    
+                    self.createCustomZones { [weak self] (error) in
+                        guard let self = self, error == nil else { return }
+                        /// 2. Register to local database
+                        /// We should call `registerLocalDatabase` after custom zones were created, related issue: https://github.com/caiyue1993/IceCream/issues/83
+                        for syncObject in self.syncObjects {
+                            syncObject.registerLocalDatabase()
+                        }
                     }
+                    
+                    self.startObservingRemoteChanges()
+                    
+                    #if os(iOS) || os(tvOS)
+                    
+                    NotificationCenter.default.addObserver(self, selector: #selector(self.cleanUp), name: UIApplication.willTerminateNotification, object: nil)
+                    
+                    #elseif os(macOS)
+                    
+                    NotificationCenter.default.addObserver(self, selector: #selector(self.cleanUp), name: NSApplication.willTerminateNotification, object: nil)
+                    
+                    #endif
+                    
+                    /// 3. Create the subscription to the CloudKit database
+                    if self.subscriptionIsLocallyCached { return }
+                    self.createDatabaseSubscription()
+                } else {
+                    // Handle the other situation
+                    print("Easy, my boy. You haven't logged into iCloud account on your device/simulator yet.")
                 }
-                
-                self.startObservingRemoteChanges()
-              
-                #if os(iOS) || os(tvOS)
-              
-                NotificationCenter.default.addObserver(self, selector: #selector(self.cleanUp), name: UIApplication.willTerminateNotification, object: nil)
-                
-                #elseif os(macOS)
-                
-                NotificationCenter.default.addObserver(self, selector: #selector(self.cleanUp), name: NSApplication.willTerminateNotification, object: nil)
-                
-                #endif
-                
-                /// 3. Create the subscription to the CloudKit database
-                if self.subscriptionIsLocallyCached { return }
-                self.createDatabaseSubscription()
-
-            } else {
-                /// Handle when user account is not available
-                print("Easy, my boy. You haven't logged into iCloud account on your device/simulator yet.")
+            case .public:
+                return
+            case .shared:
+                fatalError("Sorry, syncing data in shared database is not supported now")
             }
+            
         }
+        
     }
 
     /// Create new custom zones
@@ -113,7 +130,7 @@ public final class SyncEngine {
             }
         }
 
-        privateDatabase.add(modifyOp)
+        database.add(modifyOp)
     }
 
     @objc func cleanUp() {
@@ -201,7 +218,7 @@ extension SyncEngine {
                 return
             }
         }
-        privateDatabase.add(changesOperation)
+        database.add(changesOperation)
     }
 
     private var zoneIds: [CKRecordZone.ID] {
@@ -269,7 +286,7 @@ extension SyncEngine {
             }
         }
 
-        privateDatabase.add(changesOp)
+        database.add(changesOp)
     }
 
     fileprivate func createDatabaseSubscription() {
@@ -288,7 +305,7 @@ extension SyncEngine {
             self.subscriptionIsLocallyCached = true
         }
         createOp.qualityOfService = .utility
-        privateDatabase.add(createOp)
+        database.add(createOp)
         
         #endif
     }
@@ -313,19 +330,19 @@ extension SyncEngine {
     /// 3. Back to app again
     /// The operation resumes! All works like a magic!
     fileprivate func resumeLongLivedOperationIfPossible () {
-        defaultContainer.fetchAllLongLivedOperationIDs { [weak self]( opeIDs, error) in
+        container.fetchAllLongLivedOperationIDs { [weak self]( opeIDs, error) in
             guard let self = self else { return }
             guard error == nil else { return }
             guard let ids = opeIDs else { return }
             for id in ids {
-                self.defaultContainer.fetchLongLivedOperation(withID: id, completionHandler: { [weak self](ope, error) in
+                self.container.fetchLongLivedOperation(withID: id, completionHandler: { [weak self](ope, error) in
                     guard let self = self else { return }
                     guard error == nil else { return }
                     if let modifyOp = ope as? CKModifyRecordsOperation {
                         modifyOp.modifyRecordsCompletionBlock = { (_,_,_) in
                             print("Resume modify records success!")
                         }
-                        self.defaultContainer.add(modifyOp)
+                        self.container.add(modifyOp)
                     }
                 })
             }
@@ -391,7 +408,7 @@ extension SyncEngine {
             }
         }
         
-        privateDatabase.add(modifyOpe)
+        database.add(modifyOpe)
     }
     
     /// Fetch data on the CloudKit and merge with local
