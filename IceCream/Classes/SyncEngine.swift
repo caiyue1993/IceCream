@@ -97,7 +97,9 @@ public final class SyncEngine {
                     print("Easy, my boy. You haven't logged into iCloud account on your device/simulator yet.")
                 }
             case .public:
-                return
+                // 1. Fetch changes
+                self.fetchChangesInDatabase()
+                // 2.
             case .shared:
                 fatalError("Sorry, syncing data in shared database is not supported now")
             }
@@ -174,51 +176,65 @@ extension SyncEngine {
 
     /// Only update the changeToken when fetch process completes
     private func fetchChangesInDatabase(_ callback: (() -> Void)? = nil) {
-
-        let changesOperation = CKFetchDatabaseChangesOperation(previousServerChangeToken: databaseChangeToken)
         
-        /// For more, see the source code, it has the detailed explanation
-        changesOperation.fetchAllChanges = true
-
-        changesOperation.changeTokenUpdatedBlock = { [weak self] newToken in
-            guard let self = self else { return }
-            self.databaseChangeToken = newToken
-        }
-
-        /// Cuz we only have one custom zone, so we don't need to store the CKRecordZoneID temporarily
-        /*
-         changesOperation.recordZoneWithIDChangedBlock = { [weak self] zoneID in
-         guard let self = self else { return }
-         self.changedRecordZoneID = zoneID
-         }
-         */
-        changesOperation.fetchDatabaseChangesCompletionBlock = {
-            [weak self]
-            newToken, _, error in
-            guard let self = self else { return }
-            switch self.errorHandler.resultType(with: error) {
-            case .success:
+        switch database.databaseScope {
+        case .private:
+            let changesOperation = CKFetchDatabaseChangesOperation(previousServerChangeToken: databaseChangeToken)
+            
+            /// For more, see the source code, it has the detailed explanation
+            changesOperation.fetchAllChanges = true
+            
+            changesOperation.changeTokenUpdatedBlock = { [weak self] newToken in
+                guard let self = self else { return }
                 self.databaseChangeToken = newToken
-                // Fetch the changes in zone level
-                self.fetchChangesInZones(callback)
-            case .retry(let timeToWait, _):
-                self.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
-                    self.fetchChangesInDatabase(callback)
-                })
-            case .recoverableError(let reason, _):
-                switch reason {
-                case .changeTokenExpired:
-                    /// The previousServerChangeToken value is too old and the client must re-sync from scratch
-                    self.databaseChangeToken = nil
-                    self.fetchChangesInDatabase(callback)
+            }
+            
+            /// Cuz we only have one custom zone, so we don't need to store the CKRecordZoneID temporarily
+            /*
+             changesOperation.recordZoneWithIDChangedBlock = { [weak self] zoneID in
+             guard let self = self else { return }
+             self.changedRecordZoneID = zoneID
+             }
+             */
+            changesOperation.fetchDatabaseChangesCompletionBlock = {
+                [weak self]
+                newToken, _, error in
+                guard let self = self else { return }
+                switch self.errorHandler.resultType(with: error) {
+                case .success:
+                    self.databaseChangeToken = newToken
+                    // Fetch the changes in zone level
+                    self.fetchChangesInZones(callback)
+                case .retry(let timeToWait, _):
+                    self.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
+                        self.fetchChangesInDatabase(callback)
+                    })
+                case .recoverableError(let reason, _):
+                    switch reason {
+                    case .changeTokenExpired:
+                        /// The previousServerChangeToken value is too old and the client must re-sync from scratch
+                        self.databaseChangeToken = nil
+                        self.fetchChangesInDatabase(callback)
+                    default:
+                        return
+                    }
                 default:
                     return
                 }
-            default:
-                return
             }
+            database.add(changesOperation)
+        case .public:
+            syncObjects.forEach { [weak self] syncObject in
+                let predicate = NSPredicate(value: true)
+                let query = CKQuery(recordType: syncObject.recordType, predicate: predicate)
+                let queryOperation = CKQueryOperation(query: query)
+                self?.excuteQueryOperation(queryOperation: queryOperation, on: syncObject, callback: callback)
+            }
+        default:
+            break
         }
-        database.add(changesOperation)
+        
+        
     }
 
     private var zoneIds: [CKRecordZone.ID] {
@@ -317,6 +333,39 @@ extension SyncEngine {
                 self.fetchChangesInDatabase()
             }
         })
+    }
+}
+
+
+/// Interact with CloudKit action in public database
+extension SyncEngine {
+    private func excuteQueryOperation(queryOperation: CKQueryOperation,on syncObject: Syncable, callback: (() -> Void)? = nil) {
+        queryOperation.recordFetchedBlock = { record in
+            syncObject.add(record: record)
+        }
+        
+        queryOperation.queryCompletionBlock = { [weak self] cursor, error in
+            guard let self = self else { return }
+            if let cursor = cursor {
+                let subsequentQueryOperation = CKQueryOperation(cursor: cursor)
+                self.excuteQueryOperation(queryOperation: subsequentQueryOperation, on: syncObject, callback: callback)
+                return
+            }
+            switch self.errorHandler.resultType(with: error) {
+            case .success:
+                DispatchQueue.main.async {
+                    callback?()                    
+                }
+            case .retry(let timeToWait, _):
+                self.errorHandler.retryOperationIfPossible(retryAfter: timeToWait, block: {
+                    self.excuteQueryOperation(queryOperation: queryOperation, on: syncObject, callback: callback)
+                })
+            default:
+                break
+            }
+        }
+        
+        database.add(queryOperation)
     }
 }
 
