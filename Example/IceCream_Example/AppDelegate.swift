@@ -18,11 +18,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
-        syncEngine = SyncEngine(objects: [
-            SyncObject<Person>(),
-            SyncObject<Dog>(),
-            SyncObject<Cat>()
-            ])
+//        syncEngine = SyncEngine(objects: [
+//            SyncObject<Person>(),
+//            SyncObject<Dog>(),
+//            SyncObject<Cat>()
+//            ])
+        
+        // If you wanna test public Database, comment the above syncEngine code and try the following one
+        syncEngine = SyncEngine(objects: [SyncObject<Person>(databaseScope: .public)], databaseScope: .public)
         application.registerForRemoteNotifications()
         
         window = UIWindow(frame: UIScreen.main.bounds)

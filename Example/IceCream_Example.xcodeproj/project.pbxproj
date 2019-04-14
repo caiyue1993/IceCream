@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0DFDEF8022622B47002C7CC9 /* UsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DFDEF7F22622B47002C7CC9 /* UsersViewController.swift */; };
 		6743F6EC202B0CB600912163 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F6EB202B0CB600912163 /* AppDelegate.swift */; };
 		6743F6EE202B0CB600912163 /* DogsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F6ED202B0CB600912163 /* DogsViewController.swift */; };
 		6743F6FE202B0D1400912163 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6743F6FD202B0D1400912163 /* Images.xcassets */; };
@@ -21,6 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0DFDEF7F22622B47002C7CC9 /* UsersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersViewController.swift; sourceTree = "<group>"; };
 		52D6E28956DA59A9148CC104 /* Pods-IceCream_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IceCream_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-IceCream_Example/Pods-IceCream_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		57E01F0AF05DF4AB5FF9CCDF /* Pods_IceCream_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IceCream_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6743F6E8202B0CB600912163 /* IceCream_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IceCream_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -84,6 +86,7 @@
 				6743F6FD202B0D1400912163 /* Images.xcassets */,
 				6743F6EB202B0CB600912163 /* AppDelegate.swift */,
 				6743F6F7202B0CB600912163 /* Info.plist */,
+				0DFDEF7F22622B47002C7CC9 /* UsersViewController.swift */,
 			);
 			path = IceCream_Example;
 			sourceTree = "<group>";
@@ -210,6 +213,7 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-IceCream_Example/Pods-IceCream_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/RxAtomic/RxAtomic.framework",
 				"${BUILT_PRODUCTS_DIR}/RxRealm/RxRealm.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
 			);
@@ -217,6 +221,7 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxAtomic.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxRealm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
 			);
@@ -237,6 +242,7 @@
 				67AA236120B84C9700953F09 /* Cat.swift in Sources */,
 				6743F6EC202B0CB600912163 /* AppDelegate.swift in Sources */,
 				67851AF920FAFE0F00D5142C /* Person.swift in Sources */,
+				0DFDEF8022622B47002C7CC9 /* UsersViewController.swift in Sources */,
 				67AA236320B84CB600953F09 /* TabBarViewController.swift in Sources */,
 				6743F703202B0D2400912163 /* Dog.swift in Sources */,
 			);
