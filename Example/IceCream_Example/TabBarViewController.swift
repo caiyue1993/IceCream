@@ -20,13 +20,18 @@ class TabBarViewController: UITabBarController {
         return nav
     }()
     
+    lazy var usersViewController: UIViewController = {
+        let nav = UINavigationController(rootViewController: UsersViewController())
+        return nav
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
     }
     
     private func setupUI() {
-        viewControllers = [dogsViewController, catsViewController]
+        viewControllers = [dogsViewController, catsViewController, usersViewController]
     }
 
 }
