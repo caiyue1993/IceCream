@@ -100,6 +100,29 @@ public final class SyncEngine {
                 // 1. Fetch changes
                 self.fetchChangesInDatabase()
                 // 2.
+                self.resumeLongLivedOperationIfPossible()
+                
+                // 3. Register local database
+                DispatchQueue.main.async {
+                    self.syncObjects.forEach { $0.registerLocalDatabase() }
+                }
+                
+                // 4.
+                self.startObservingRemoteChanges()
+                
+                #if os(iOS) || os(tvOS)
+                
+                NotificationCenter.default.addObserver(self, selector: #selector(self.cleanUp), name: UIApplication.willTerminateNotification, object: nil)
+                
+                #elseif os(macOS)
+                
+                NotificationCenter.default.addObserver(self, selector: #selector(self.cleanUp), name: NSApplication.willTerminateNotification, object: nil)
+                
+                #endif
+                
+                /// 3. Create the subscription to the CloudKit database
+                if self.subscriptionIsLocallyCached { return }
+                self.createDatabaseSubscription()
             case .shared:
                 fatalError("Sorry, syncing data in shared database is not supported now")
             }

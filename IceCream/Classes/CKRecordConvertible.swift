@@ -15,6 +15,7 @@ public protocol CKRecordConvertible {
     
     var recordID: CKRecord.ID { get }
     var record: CKRecord { get }
+//    var publicRecord: CKRecord { get }
     
     var isDeleted: Bool { get }
 }
