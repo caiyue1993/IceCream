@@ -25,7 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //            ])
         
         // If you wanna test public Database, comment the above syncEngine code and try the following one
-        syncEngine = SyncEngine(objects: [SyncObject<Person>(databaseScope: .public)], databaseScope: .public)
+        syncEngine = SyncEngine(objects: [SyncObject<Person>()], databaseScope: .public)
         application.registerForRemoteNotifications()
         
         window = UIWindow(frame: UIScreen.main.bounds)
