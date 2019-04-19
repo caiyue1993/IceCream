@@ -21,7 +21,7 @@ class TabBarViewController: UITabBarController {
     }()
     
     lazy var usersViewController: UIViewController = {
-        let nav = UINavigationController(rootViewController: UsersViewController())
+        let nav = UINavigationController(rootViewController: DevelopersViewController())
         return nav
     }()
     

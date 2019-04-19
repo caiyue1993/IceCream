@@ -1,5 +1,5 @@
 //
-//  UsersViewController.swift
+//  DevelopersViewController.swift
 //  IceCream_Example
 //
 //  Created by Soledad on 2019/4/13.
@@ -11,7 +11,7 @@ import RealmSwift
 import RxRealm
 import RxSwift
 
-class UsersViewController: UIViewController {
+class DevelopersViewController: UIViewController {
 
     var users: [Person] = []
     let bag = DisposeBag()
@@ -36,7 +36,7 @@ class UsersViewController: UIViewController {
         
         view.addSubview(tableView)
         navigationItem.rightBarButtonItem = addBarItem
-        title = "Users"
+        title = "Developers"
         
         bind()
     }
@@ -63,7 +63,7 @@ class UsersViewController: UIViewController {
     
     @objc func add() {
         let user = Person()
-        user.name = "Cai Yue"
+        user.name = "Yue Cai"
         
         try! realm.write {
             realm.add(user)
@@ -71,11 +71,11 @@ class UsersViewController: UIViewController {
     }
 }
 
-extension UsersViewController: UITableViewDelegate {
+extension DevelopersViewController: UITableViewDelegate {
     
 }
 
-extension UsersViewController: UITableViewDataSource {
+extension DevelopersViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return users.count
     }

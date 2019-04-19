@@ -23,13 +23,10 @@ public final class SyncObject<T> where T: Object & CKRecordConvertible & CKRecor
     
     public var pipeToEngine: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecord.ID]) -> ())?
     
-    public let databaseScope: CKDatabase.Scope
-    
     public var realm: Realm
     
-    public init(realm: Realm = try! Realm(), databaseScope: CKDatabase.Scope = .private) {
+    public init(realm: Realm = try! Realm()) {
         self.realm = realm
-        self.databaseScope = databaseScope
     }
 }
 
