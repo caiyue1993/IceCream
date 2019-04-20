@@ -54,7 +54,6 @@ public final class SyncEngine {
             }
         }
         
-        
         container.accountStatus { [weak self](status, error) in
             guard let self = self else { return }
             switch databaseScope {
@@ -99,6 +98,7 @@ public final class SyncEngine {
             case .public:
                 // 1. Fetch changes
                 self.fetchChangesInDatabase()
+                
                 // 2.
                 self.resumeLongLivedOperationIfPossible()
                 
@@ -123,8 +123,8 @@ public final class SyncEngine {
                 /// 3. Create the subscription to the CloudKit database
                 if self.subscriptionIsLocallyCached { return }
                 self.createDatabaseSubscription()
-            case .shared:
-                fatalError("Sorry, syncing data in shared database is not supported now")
+                default:
+                    break
             }
             
         }
@@ -165,7 +165,7 @@ public final class SyncEngine {
     }
 }
 
-/// Chat to the CloudKit API directly
+/// Talk to the CloudKit API directly
 extension SyncEngine {
     
     /// The changes token, for more please reference to https://developer.apple.com/videos/play/wwdc2016/231/
@@ -257,7 +257,6 @@ extension SyncEngine {
             break
         }
         
-        
     }
 
     private var zoneIds: [CKRecordZone.ID] {
@@ -330,22 +329,27 @@ extension SyncEngine {
 
     fileprivate func createDatabaseSubscription() {
         #if os(iOS) || os(tvOS) || os(macOS)
-        
-        let subscription = CKDatabaseSubscription(subscriptionID: IceCreamConstant.cloudKitSubscriptionID)
-
-        let notificationInfo = CKSubscription.NotificationInfo()
-        notificationInfo.shouldSendContentAvailable = true // Silent Push
-
-        subscription.notificationInfo = notificationInfo
-
-        let createOp = CKModifySubscriptionsOperation(subscriptionsToSave: [subscription], subscriptionIDsToDelete: [])
-        createOp.modifySubscriptionsCompletionBlock = { _, _, error in
-            guard error == nil else { return }
-            self.subscriptionIsLocallyCached = true
+        switch database.databaseScope {
+        case .private:
+            let subscription = CKDatabaseSubscription(subscriptionID: IceCreamConstant.cloudKitSubscriptionID)
+            
+            let notificationInfo = CKSubscription.NotificationInfo()
+            notificationInfo.shouldSendContentAvailable = true // Silent Push
+            
+            subscription.notificationInfo = notificationInfo
+            
+            let createOp = CKModifySubscriptionsOperation(subscriptionsToSave: [subscription], subscriptionIDsToDelete: [])
+            createOp.modifySubscriptionsCompletionBlock = { _, _, error in
+                guard error == nil else { return }
+                self.subscriptionIsLocallyCached = true
+            }
+            createOp.qualityOfService = .utility
+            database.add(createOp)
+        case .public:
+            syncObjects.forEach { createSubscriptionInPublicDatabase(on: $0) }
+        default:
+            break
         }
-        createOp.qualityOfService = .utility
-        database.add(createOp)
-        
         #endif
     }
 
@@ -358,7 +362,6 @@ extension SyncEngine {
         })
     }
 }
-
 
 /// Interact with CloudKit action in public database
 extension SyncEngine {
@@ -389,6 +392,24 @@ extension SyncEngine {
         }
         
         database.add(queryOperation)
+    }
+    
+    private func createSubscriptionInPublicDatabase(on syncObject: Syncable) {
+        let predict = NSPredicate(value: true)
+        let subscription = CKQuerySubscription(recordType: syncObject.recordType, predicate: predict, subscriptionID: IceCreamConstant.cloudKitSubscriptionID, options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion])
+        
+        let notificationInfo = CKSubscription.NotificationInfo()
+        notificationInfo.shouldSendContentAvailable = true // Silent Push
+        
+        subscription.notificationInfo = notificationInfo
+        
+        let createOp = CKModifySubscriptionsOperation(subscriptionsToSave: [subscription], subscriptionIDsToDelete: [])
+        createOp.modifySubscriptionsCompletionBlock = { _, _, error in
+            guard error == nil else { return }
+            self.subscriptionIsLocallyCached = true
+        }
+        createOp.qualityOfService = .utility
+        database.add(createOp)
     }
 }
 

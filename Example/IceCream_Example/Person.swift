@@ -7,6 +7,7 @@
 //
 
 import RealmSwift
+import CloudKit
 import IceCream
 
 class Person: Object {
@@ -22,7 +23,9 @@ class Person: Object {
 }
 
 extension Person: CKRecordConvertible {
-    
+    static var databaseScope: CKDatabase.Scope {
+        return .public
+    }
 }
 
 extension Person: CKRecordRecoverable {

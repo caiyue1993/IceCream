@@ -35,4 +35,5 @@ public protocol Syncable: class {
     
     /// Callback
     var pipeToEngine: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecord.ID]) -> ())? { get set }
+    
 }
