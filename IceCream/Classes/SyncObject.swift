@@ -23,11 +23,10 @@ public final class SyncObject<T> where T: Object & CKRecordConvertible & CKRecor
     
     public var pipeToEngine: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecord.ID]) -> ())?
     
-    public var realm: Realm
+    public var realm: Realm = try! Realm()
+    public var databaseScope: CKDatabase.Scope = .private
     
-    public init(realm: Realm = try! Realm()) {
-        self.realm = realm
-    }
+    public init() {}
 }
 
 // MARK: - Zone information
