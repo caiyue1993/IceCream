@@ -13,6 +13,8 @@ import CloudKit
 
 struct ErrorHandler {
     
+    static let shared = ErrorHandler()
+    
     /// We could classify all the result that CKOperation returns into the following five CKOperationResultTypes
     enum CKOperationResultType {
         case success
