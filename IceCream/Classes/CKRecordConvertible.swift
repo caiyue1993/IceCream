@@ -11,7 +11,7 @@ import RealmSwift
 
 public protocol CKRecordConvertible {
     static var recordType: String { get }
-    static var customZoneID: CKRecordZone.ID { get }
+    static var zoneID: CKRecordZone.ID { get }
     static var databaseScope: CKDatabase.Scope { get }
     
     var recordID: CKRecord.ID { get }
@@ -30,7 +30,7 @@ extension CKRecordConvertible where Self: Object {
         return className()
     }
     
-    public static var customZoneID: CKRecordZone.ID {
+    public static var zoneID: CKRecordZone.ID {
         switch Self.databaseScope {
         case .private:
             return CKRecordZone.ID(zoneName: "\(recordType)sZone", ownerName: CKCurrentUserDefaultName)
@@ -53,9 +53,9 @@ extension CKRecordConvertible where Self: Object {
         }
         
         if let primaryValueString = self[primaryKeyProperty.name] as? String {
-            return CKRecord.ID(recordName: primaryValueString, zoneID: Self.customZoneID)
+            return CKRecord.ID(recordName: primaryValueString, zoneID: Self.zoneID)
         } else if let primaryValueInt = self[primaryKeyProperty.name] as? Int {
-            return CKRecord.ID(recordName: "\(primaryValueInt)", zoneID: Self.customZoneID)
+            return CKRecord.ID(recordName: "\(primaryValueInt)", zoneID: Self.zoneID)
         } else {
             fatalError("Primary key should be String or Int")
         }
