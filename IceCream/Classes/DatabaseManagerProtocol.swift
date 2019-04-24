@@ -54,13 +54,10 @@ extension DatabaseManager {
     
     func resumeLongLivedOperationIfPossible() {
         container.fetchAllLongLivedOperationIDs { [weak self]( opeIDs, error) in
-            guard let self = self else { return }
-            guard error == nil else { return }
-            guard let ids = opeIDs else { return }
+            guard let self = self, error == nil, let ids = opeIDs else { return }
             for id in ids {
                 self.container.fetchLongLivedOperation(withID: id, completionHandler: { [weak self](ope, error) in
-                    guard let self = self else { return }
-                    guard error == nil else { return }
+                    guard let self = self, error == nil else { return }
                     if let modifyOp = ope as? CKModifyRecordsOperation {
                         modifyOp.modifyRecordsCompletionBlock = { (_,_,_) in
                             print("Resume modify records success!")
