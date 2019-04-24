@@ -76,9 +76,11 @@ final class PrivateDatabaseManager: DatabaseManager {
             guard let self = self else { return }
             switch ErrorHandler.shared.resultType(with: error) {
             case .success:
-                self.syncObjects.forEach {
-                    $0.isCustomZoneCreated = true
-                    $0.registerLocalDatabase()
+                self.syncObjects.forEach { object in
+                    object.isCustomZoneCreated = true
+                    DispatchQueue.main.async {
+                        object.registerLocalDatabase()
+                    }
                 }
                 DispatchQueue.main.async {
                     completion?(nil)
@@ -99,7 +101,7 @@ final class PrivateDatabaseManager: DatabaseManager {
     
     func createDatabaseSubscriptionIfHaveNot() {
         guard !subscriptionIsLocallyCached else { return }
-        let subscription = CKDatabaseSubscription(subscriptionID: IceCreamConstant.cloudKitSubscriptionID)
+        let subscription = CKDatabaseSubscription(subscriptionID: IceCreamSubscription.cloudKitPrivateDatabaseSubscriptionID.id)
         
         let notificationInfo = CKSubscription.NotificationInfo()
         notificationInfo.shouldSendContentAvailable = true // Silent Push
