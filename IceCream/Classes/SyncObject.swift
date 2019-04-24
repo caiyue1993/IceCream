@@ -37,8 +37,8 @@ extension SyncObject: Syncable {
         return T.recordType
     }
     
-    public var customZoneID: CKRecordZone.ID {
-        return T.customZoneID
+    public var zoneID: CKRecordZone.ID {
+        return T.zoneID
     }
     
     public var zoneChangesToken: CKServerChangeToken? {
