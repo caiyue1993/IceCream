@@ -50,8 +50,10 @@ final class PublicDatabaseManager: DatabaseManager {
     }
     
     func registerLocalDatabase() {
-        syncObjects.forEach {
-            $0.registerLocalDatabase()
+        syncObjects.forEach { object in
+            DispatchQueue.main.async {
+                object.registerLocalDatabase()
+            }
         }
     }
     
@@ -87,7 +89,7 @@ final class PublicDatabaseManager: DatabaseManager {
     
     private func createSubscriptionInPublicDatabase(on syncObject: Syncable) {
         let predict = NSPredicate(value: true)
-        let subscription = CKQuerySubscription(recordType: syncObject.recordType, predicate: predict, subscriptionID: IceCreamConstant.cloudKitSubscriptionID, options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion])
+        let subscription = CKQuerySubscription(recordType: syncObject.recordType, predicate: predict, subscriptionID: IceCreamSubscription.cloudKitPublicDatabaseSubscriptionID.id, options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion])
         
         let notificationInfo = CKSubscription.NotificationInfo()
         notificationInfo.shouldSendContentAvailable = true // Silent Push
@@ -95,10 +97,8 @@ final class PublicDatabaseManager: DatabaseManager {
         subscription.notificationInfo = notificationInfo
         
         let createOp = CKModifySubscriptionsOperation(subscriptionsToSave: [subscription], subscriptionIDsToDelete: [])
-        createOp.modifySubscriptionsCompletionBlock = { _, _, error in
-            guard error == nil else { return }
-            // TODO: add subscription flag in public database manager
-//            self.subscriptionIsLocallyCached = true
+        createOp.modifySubscriptionsCompletionBlock = { _, _, _ in
+            
         }
         createOp.qualityOfService = .utility
         database.add(createOp)

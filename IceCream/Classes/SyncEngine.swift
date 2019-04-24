@@ -38,11 +38,12 @@ public final class SyncEngine {
     
     private init(databaseManager: DatabaseManager) {
         self.databaseManager = databaseManager
+        setup()
     }
     
     public func setup() {
         databaseManager.prepare()
-        databaseManager.container.accountStatus { [weak self](status, error) in
+        databaseManager.container.accountStatus { [weak self] (status, error) in
             guard let self = self else { return }
             if case CKAccountStatus.available = status {
                 self.databaseManager.registerLocalDatabase()
@@ -87,7 +88,7 @@ public enum IceCreamKey: String {
     case subscriptionIsLocallyCachedKey
     case hasCustomZoneCreatedKey
     
-    public var value: String {
+    var value: String {
         return "icecream.keys." + rawValue
     }
 }
@@ -97,7 +98,15 @@ public enum IceCreamKey: String {
 /// e.g.: the cloudKitSubscriptionID, if you don't want to use "private_changes" and use another string. You should remove the old subsription first.
 /// Or your user will not save the same subscription again. So you got trouble.
 /// The right way is remove old subscription first and then save new subscription.
-public struct IceCreamConstant {
-    public static let cloudKitSubscriptionID = "private_changes"
+public enum IceCreamSubscription: String, CaseIterable {
+    case cloudKitPrivateDatabaseSubscriptionID = "private_changes"
+    case cloudKitPublicDatabaseSubscriptionID = "cloudKitPublicDatabaseSubcriptionID"
+    
+    var id: String {
+        return rawValue
+    }
+    
+    public static var allIDs: [String] {
+        return IceCreamSubscription.allCases.map { $0.rawValue }
+    }
 }
-
