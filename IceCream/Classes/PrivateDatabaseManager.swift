@@ -67,12 +67,14 @@ final class PrivateDatabaseManager: DatabaseManager {
             guard let self = self else { return }
             switch ErrorHandler.shared.resultType(with: error) {
             case .success:
-                self.syncObjects.filter { !$0.isCustomZoneCreated }.forEach {
-                    $0.isCustomZoneCreated = true
+                self.syncObjects.forEach { object in
+                    object.isCustomZoneCreated = true
                     
                     // As we register local database in the first step, we have to force push local objects which
                     // have not been caught to CloudKit to make data in sync
-                    $0.pushLocalObjectsToCloudKit()
+                    DispatchQueue.main.async {
+                        object.pushLocalObjectsToCloudKit()
+                    }
                 }
             case .retry(let timeToWait, _):
                 ErrorHandler.shared.retryOperationIfPossible(retryAfter: timeToWait, block: {
