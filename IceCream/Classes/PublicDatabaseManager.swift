@@ -29,7 +29,7 @@ final class PublicDatabaseManager: DatabaseManager {
         }
     }
     
-    func createCustomZonesIfAllowed(_ completion: ((Error?) -> ())?) {
+    func createCustomZonesIfAllowed() {
         
     }
     

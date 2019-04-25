@@ -45,16 +45,28 @@ public final class SyncEngine {
         databaseManager.prepare()
         databaseManager.container.accountStatus { [weak self] (status, error) in
             guard let self = self else { return }
-            if case CKAccountStatus.available = status {
+            switch status {
+            case .available:
                 self.databaseManager.registerLocalDatabase()
+                self.databaseManager.createCustomZonesIfAllowed()
                 self.databaseManager.fetchChangesInDatabase(nil)
                 self.databaseManager.resumeLongLivedOperationIfPossible()
-                self.databaseManager.createCustomZonesIfAllowed(nil)
                 self.databaseManager.startObservingRemoteChanges()
                 self.databaseManager.startObservingTermination()
                 #if os(iOS) || os(tvOS) || os(macOS)
                 self.databaseManager.createDatabaseSubscriptionIfHaveNot()
                 #endif
+            case .noAccount, .restricted:
+                guard self.databaseManager is PublicDatabaseManager else { break }
+                self.databaseManager.fetchChangesInDatabase(nil)
+                self.databaseManager.resumeLongLivedOperationIfPossible()
+                self.databaseManager.startObservingRemoteChanges()
+                self.databaseManager.startObservingTermination()
+                #if os(iOS) || os(tvOS) || os(macOS)
+                self.databaseManager.createDatabaseSubscriptionIfHaveNot()
+                #endif
+            case .couldNotDetermine:
+                break
             }
         }
     }
