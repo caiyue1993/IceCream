@@ -23,9 +23,9 @@ class Person: Object {
 }
 
 extension Person: CKRecordConvertible {
-    static var databaseScope: CKDatabase.Scope {
-        return .public
-    }
+//    static var databaseScope: CKDatabase.Scope {
+//        return .public
+//    }
 }
 
 extension Person: CKRecordRecoverable {

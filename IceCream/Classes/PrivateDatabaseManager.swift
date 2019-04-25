@@ -23,22 +23,11 @@ final class PrivateDatabaseManager: DatabaseManager {
     func fetchChangesInDatabase(_ callback: (() -> Void)?) {
         let changesOperation = CKFetchDatabaseChangesOperation(previousServerChangeToken: databaseChangeToken)
         
-        /// For more, see the source code, it has the detailed explanation
-        changesOperation.fetchAllChanges = true
-        
         /// Only update the changeToken when fetch process completes
         changesOperation.changeTokenUpdatedBlock = { [weak self] newToken in
-            guard let self = self else { return }
-            self.databaseChangeToken = newToken
+            self?.databaseChangeToken = newToken
         }
         
-        /// Cuz we only have one custom zone, so we don't need to store the CKRecordZoneID temporarily
-        /*
-         changesOperation.recordZoneWithIDChangedBlock = { [weak self] zoneID in
-         guard let self = self else { return }
-         self.changedRecordZoneID = zoneID
-         }
-         */
         changesOperation.fetchDatabaseChangesCompletionBlock = {
             [weak self]
             newToken, _, error in
@@ -69,30 +58,28 @@ final class PrivateDatabaseManager: DatabaseManager {
         database.add(changesOperation)
     }
     
-    func createCustomZonesIfAllowed(_ completion: ((Error?) -> ())?) {
+    func createCustomZonesIfAllowed() {
         let zonesToCreate = syncObjects.filter { !$0.isCustomZoneCreated }.map { CKRecordZone(zoneID: $0.zoneID) }
+        guard zonesToCreate.count > 0 else { return }
+        
         let modifyOp = CKModifyRecordZonesOperation(recordZonesToSave: zonesToCreate, recordZoneIDsToDelete: nil)
         modifyOp.modifyRecordZonesCompletionBlock = { [weak self](_, _, error) in
             guard let self = self else { return }
             switch ErrorHandler.shared.resultType(with: error) {
             case .success:
-                self.syncObjects.forEach { object in
-                    object.isCustomZoneCreated = true
-                    DispatchQueue.main.async {
-                        object.registerLocalDatabase()
-                    }
-                }
-                DispatchQueue.main.async {
-                    completion?(nil)
+                self.syncObjects.filter { !$0.isCustomZoneCreated }.forEach {
+                    $0.isCustomZoneCreated = true
+                    
+                    // As we register local database in the first step, we have to force push local objects which
+                    // have not been caught to CloudKit to make data in sync
+                    $0.pushLocalObjectsToCloudKit()
                 }
             case .retry(let timeToWait, _):
                 ErrorHandler.shared.retryOperationIfPossible(retryAfter: timeToWait, block: {
-                    self.createCustomZonesIfAllowed(completion)
+                    self.createCustomZonesIfAllowed()
                 })
             default:
-                DispatchQueue.main.async {
-                    completion?(error)
-                }
+                return
             }
         }
         
@@ -115,6 +102,26 @@ final class PrivateDatabaseManager: DatabaseManager {
         }
         createOp.qualityOfService = .utility
         database.add(createOp)
+    }
+    
+    func startObservingTermination() {
+        #if os(iOS) || os(tvOS)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.cleanUp), name: UIApplication.willTerminateNotification, object: nil)
+        
+        #elseif os(macOS)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.cleanUp), name: NSApplication.willTerminateNotification, object: nil)
+        
+        #endif
+    }
+    
+    func registerLocalDatabase() {
+        self.syncObjects.forEach { object in
+            DispatchQueue.main.async {
+                object.registerLocalDatabase()
+            }
+        }
     }
     
     private func fetchChangesInZones(_ callback: (() -> Void)? = nil) {
@@ -148,7 +155,7 @@ final class PrivateDatabaseManager: DatabaseManager {
                 guard let syncObject = self.syncObjects.first(where: { $0.zoneID == zoneId }) else { return }
                 syncObject.zoneChangesToken = token
                 callback?()
-                print("Sync successfully: \(zoneId))")
+                print("Fetch records successfully in zone: \(zoneId))")
             case .retry(let timeToWait, _):
                 ErrorHandler.shared.retryOperationIfPossible(retryAfter: timeToWait, block: {
                     self.fetchChangesInZones(callback)
@@ -169,22 +176,6 @@ final class PrivateDatabaseManager: DatabaseManager {
         }
         
         database.add(changesOp)
-    }
-    
-    func startObservingTermination() {
-        #if os(iOS) || os(tvOS)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(self.cleanUp), name: UIApplication.willTerminateNotification, object: nil)
-        
-        #elseif os(macOS)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(self.cleanUp), name: NSApplication.willTerminateNotification, object: nil)
-        
-        #endif
-    }
-    
-    func registerLocalDatabase() {
-        
     }
 }
 

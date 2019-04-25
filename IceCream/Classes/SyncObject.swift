@@ -58,7 +58,6 @@ extension SyncObject: Syncable {
         }
     }
 
-
     public var isCustomZoneCreated: Bool {
         get {
             guard let flag = UserDefaults.standard.object(forKey: T.className() + IceCreamKey.hasCustomZoneCreatedKey.value) as? Bool else { return false }
