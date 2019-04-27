@@ -6,7 +6,7 @@ osx_image: xcode10
 
 deploy:
   provider: script
-  script: ./push.sh
+  script: ./scripts/push.sh
   on:
     tags: true
 
