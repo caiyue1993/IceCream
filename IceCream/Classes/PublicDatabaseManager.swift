@@ -88,6 +88,7 @@ final class PublicDatabaseManager: DatabaseManager {
     }
     
     private func createSubscriptionInPublicDatabase(on syncObject: Syncable) {
+        #if os(iOS) || os(tvOS) || os(macOS)
         let predict = NSPredicate(value: true)
         let subscription = CKQuerySubscription(recordType: syncObject.recordType, predicate: predict, subscriptionID: IceCreamSubscription.cloudKitPublicDatabaseSubscriptionID.id, options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion])
         
@@ -102,6 +103,7 @@ final class PublicDatabaseManager: DatabaseManager {
         }
         createOp.qualityOfService = .utility
         database.add(createOp)
+        #endif
     }
     
     @objc func cleanUp() {

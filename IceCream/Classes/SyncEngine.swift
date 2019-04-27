@@ -53,18 +53,14 @@ public final class SyncEngine {
                 self.databaseManager.resumeLongLivedOperationIfPossible()
                 self.databaseManager.startObservingRemoteChanges()
                 self.databaseManager.startObservingTermination()
-                #if os(iOS) || os(tvOS) || os(macOS)
                 self.databaseManager.createDatabaseSubscriptionIfHaveNot()
-                #endif
             case .noAccount, .restricted:
                 guard self.databaseManager is PublicDatabaseManager else { break }
                 self.databaseManager.fetchChangesInDatabase(nil)
                 self.databaseManager.resumeLongLivedOperationIfPossible()
                 self.databaseManager.startObservingRemoteChanges()
                 self.databaseManager.startObservingTermination()
-                #if os(iOS) || os(tvOS) || os(macOS)
                 self.databaseManager.createDatabaseSubscriptionIfHaveNot()
-                #endif
             case .couldNotDetermine:
                 break
             }

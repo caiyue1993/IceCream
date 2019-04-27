@@ -89,6 +89,7 @@ final class PrivateDatabaseManager: DatabaseManager {
     }
     
     func createDatabaseSubscriptionIfHaveNot() {
+        #if os(iOS) || os(tvOS) || os(macOS)
         guard !subscriptionIsLocallyCached else { return }
         let subscription = CKDatabaseSubscription(subscriptionID: IceCreamSubscription.cloudKitPrivateDatabaseSubscriptionID.id)
         
@@ -104,6 +105,7 @@ final class PrivateDatabaseManager: DatabaseManager {
         }
         createOp.qualityOfService = .utility
         database.add(createOp)
+        #endif
     }
     
     func startObservingTermination() {
