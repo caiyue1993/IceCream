@@ -1,6 +1,12 @@
 # Change Log
 
-## [1.8.0]
+## [1.9.0 - Make It Public](https://github.com/caiyue1993/IceCream/releases/tag/1.9.0)
+
+#### Add
+
+* Add support for public database [124](https://github.com/caiyue1993/IceCream/pull/124)
+
+## [1.8.0 - Customization](https://github.com/caiyue1993/IceCream/releases/tag/1.8.0)
 
 #### Add
 

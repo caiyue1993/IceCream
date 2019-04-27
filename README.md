@@ -32,6 +32,7 @@ IceCream helps you sync Realm Database with CloudKit.
 - [x] Powerful Error Handling 
 - [x] Sync Automatically
 - [x] Multiple object models support
+- [x] Public/Private Database support
 - [x] Large Data Syncing
 - [x] Manually Synchronization is also supported
 - [x] Many-to-one relationship support
@@ -73,11 +74,15 @@ class Dog: Object {
 
 ```swift
 extension Dog: CKRecordConvertible {
-    // Yep, leave it blank!    
+    // Leave it blank if you are using private database
+    // For public database users, uncomment the following code:
+    // static var databaseScope: CKDatabase.Scope {
+    //     return .public
+    // } 
 }
 
 extension Dog: CKRecordRecoverable {
-    // Leave it blank, too.
+    // Leave it blank
 }
 ```
 
@@ -93,7 +98,7 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
             SyncObject<Person>(),
             SyncObject<Dog>(),
             SyncObject<Cat>()
-        ])
+        ], databaseScope: .private)
     application.registerForRemoteNotifications()
     ...
 }
@@ -133,7 +138,6 @@ Inversely, the `Person` object has a `dogs` property which is the type of `Linki
 
 - iOS 10.0+ / macOS 10.12+ / tvOS 10.0+ / watchOS 3.0+ 
 - Swift 4.2
-(For Swift 4.0, lock IceCream to 1.6.0 version)
 
 ## Debug Suggestions
 
