@@ -4,6 +4,12 @@
 
 osx_image: xcode10
 
+deploy:
+  provider: script
+  script: ./push.sh
+  on:
+    tags: true
+
 language: swift
 
 sudo: required
