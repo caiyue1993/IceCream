@@ -5,12 +5,6 @@
 //  Created by 蔡越 on 08/11/2017.
 //
 
-#if os(macOS)
-import Cocoa
-#else
-import UIKit
-#endif
-
 import CloudKit
 
 /// SyncEngine talks to CloudKit directly.
