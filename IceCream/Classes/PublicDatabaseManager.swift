@@ -5,6 +5,12 @@
 //  Created by caiyue on 2019/4/22.
 //
 
+#if os(macOS)
+import Cocoa
+#else
+import UIKit
+#endif
+
 import CloudKit
 
 final class PublicDatabaseManager: DatabaseManager {
