@@ -25,6 +25,7 @@ public protocol Syncable: class {
     var realm: Realm { get set }
     
     /// Realm Database related
+    var backgroundWorker: BackgroundWorker! { get set }
     func registerLocalDatabase()
     func cleanUp()
     func add(record: CKRecord)

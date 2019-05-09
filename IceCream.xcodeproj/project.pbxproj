@@ -17,6 +17,10 @@
 		0DF861D922D0563800B20AEA /* PublicDatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673B1E6D2273EECF00EB4FEE /* PublicDatabaseManager.swift */; };
 		0DF861DA22D0563800B20AEA /* PublicDatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673B1E6D2273EECF00EB4FEE /* PublicDatabaseManager.swift */; };
 		41767BFD209863BA00178513 /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41767BFC209863BA00178513 /* SyncEngine.swift */; };
+		474FF0E32284B6F700921CF6 /* BackgroundWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 474FF0E22284B6F700921CF6 /* BackgroundWorker.swift */; };
+		474FF0E42284B72400921CF6 /* BackgroundWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 474FF0E22284B6F700921CF6 /* BackgroundWorker.swift */; };
+		474FF0E52284B72400921CF6 /* BackgroundWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 474FF0E22284B6F700921CF6 /* BackgroundWorker.swift */; };
+		474FF0E62284B72500921CF6 /* BackgroundWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 474FF0E22284B6F700921CF6 /* BackgroundWorker.swift */; };
 		673B1E6E2273EECF00EB4FEE /* DatabaseManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673B1E6B2273EECE00EB4FEE /* DatabaseManagerProtocol.swift */; };
 		673B1E6F2273EECF00EB4FEE /* PrivateDatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673B1E6C2273EECF00EB4FEE /* PrivateDatabaseManager.swift */; };
 		673B1E702273EECF00EB4FEE /* PublicDatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673B1E6D2273EECF00EB4FEE /* PublicDatabaseManager.swift */; };
@@ -72,6 +76,7 @@
 
 /* Begin PBXFileReference section */
 		41767BFC209863BA00178513 /* SyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngine.swift; sourceTree = "<group>"; };
+		474FF0E22284B6F700921CF6 /* BackgroundWorker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundWorker.swift; sourceTree = "<group>"; };
 		673B1E6B2273EECE00EB4FEE /* DatabaseManagerProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseManagerProtocol.swift; sourceTree = "<group>"; };
 		673B1E6C2273EECF00EB4FEE /* PrivateDatabaseManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateDatabaseManager.swift; sourceTree = "<group>"; };
 		673B1E6D2273EECF00EB4FEE /* PublicDatabaseManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicDatabaseManager.swift; sourceTree = "<group>"; };
@@ -173,6 +178,7 @@
 		6743F71D202B0F9400912163 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				474FF0E22284B6F700921CF6 /* BackgroundWorker.swift */,
 				6743F71E202B0F9400912163 /* .gitkeep */,
 				6773DF0220BD2CE10019FF3A /* Syncable.swift */,
 				673B1E6B2273EECE00EB4FEE /* DatabaseManagerProtocol.swift */,
@@ -402,6 +408,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				474FF0E32284B6F700921CF6 /* BackgroundWorker.swift in Sources */,
 				41767BFD209863BA00178513 /* SyncEngine.swift in Sources */,
 				6743F72A202B0F9400912163 /* Manifest.swift in Sources */,
 				673B1E6E2273EECF00EB4FEE /* DatabaseManagerProtocol.swift in Sources */,
@@ -433,6 +440,7 @@
 				6747815F213BEDD6005C132B /* SyncEngine.swift in Sources */,
 				0DF861D622D0563400B20AEA /* PrivateDatabaseManager.swift in Sources */,
 				67478160213BEDD6005C132B /* SyncObject.swift in Sources */,
+				474FF0E52284B72400921CF6 /* BackgroundWorker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -452,6 +460,7 @@
 				6747816E213BEF0E005C132B /* SyncEngine.swift in Sources */,
 				0DF861D722D0563500B20AEA /* PrivateDatabaseManager.swift in Sources */,
 				6747816F213BEF0E005C132B /* SyncObject.swift in Sources */,
+				474FF0E62284B72500921CF6 /* BackgroundWorker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -471,6 +480,7 @@
 				D826ADC8212189F2002B5C0F /* Syncable.swift in Sources */,
 				0DF861D522D0563300B20AEA /* PrivateDatabaseManager.swift in Sources */,
 				D826ADD0212189F2002B5C0F /* SyncEngine.swift in Sources */,
+				474FF0E42284B72400921CF6 /* BackgroundWorker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
