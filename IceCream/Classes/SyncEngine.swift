@@ -68,8 +68,8 @@ public final class SyncEngine {
 // MARK: Public Method
 extension SyncEngine {
     /// Fetch data on the CloudKit and merge with local
-    public func pull() {
-        databaseManager.fetchChangesInDatabase(nil)
+    public func pull(completion: (() -> Void)? = nil) {
+        databaseManager.fetchChangesInDatabase(completion)
     }
     
     /// Push all existing local data to CloudKit
