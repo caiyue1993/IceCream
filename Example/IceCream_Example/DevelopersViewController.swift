@@ -19,7 +19,7 @@ class DevelopersViewController: UIViewController {
     let realm = try! Realm()
     
     lazy var addBarItem: UIBarButtonItem = {
-        let b = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.add, target: self, action: #selector(add))
+        let b = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: self, action: #selector(add))
         return b
     }()
     

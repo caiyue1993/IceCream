@@ -20,7 +20,7 @@ class CatsViewController: UIViewController {
     let realm = try! Realm()
     
     lazy var addBarItem: UIBarButtonItem = {
-        let b = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.add, target: self, action: #selector(add))
+        let b = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: self, action: #selector(add))
         return b
     }()
     
@@ -67,7 +67,7 @@ class CatsViewController: UIViewController {
         cat.name = "Cat Number " + "\(cats.count)"
         cat.age = cats.count + 1
         
-        let data = UIImageJPEGRepresentation(UIImage(named: cat.age % 2 == 1 ? "heart_cat" : "dull_cat")!, 1.0) as Data!
+        let data = UIImage(named: cat.age % 2 == 1 ? "heart_cat" : "dull_cat")!.jpegData(compressionQuality: 1.0)
         cat.avatar = CreamAsset.create(object: cat, propName: Cat.AVATAR_KEY, data: data!)
         
         try! realm.write {
@@ -107,7 +107,7 @@ extension CatsViewController: UITableViewDelegate {
             guard ip.row < `self`.cats.count else { return }
             let cat = `self`.cats[ip.row]
             try! `self`.realm.write {
-                if let imageData = UIImageJPEGRepresentation(UIImage(named: cat.age % 2 == 0 ? "heart_cat" : "dull_cat")!, 1.0) {
+                if let imageData = UIImage(named: cat.age % 2 == 0 ? "heart_cat" : "dull_cat")!.jpegData(compressionQuality: 1.0) {
                     cat.avatar = CreamAsset.create(object: cat, propName: Cat.AVATAR_KEY, data: imageData)
                 }
             }
