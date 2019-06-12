@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'caiyue1993' => 'yuecai.nju@gmail.com' }
   s.source           = { :git => 'https://github.com/caiyue1993/IceCream.git', :tag => s.version.to_s }
-  
+
   s.social_media_url = 'https://twitter.com/caiyue5'
 
   s.ios.deployment_target = '10.0'
@@ -27,7 +27,7 @@ Pod::Spec.new do |s|
   s.source_files = ["IceCream/Classes/**/*","IceCream/IceCream.h"]
   s.public_header_files = ["IceCream/IceCream.h"]
   s.static_framework = true
-  s.swift_version = '4.2'
+  s.swift_version = '5.0'
 
   s.dependency 'RealmSwift'
 end
