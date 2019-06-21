@@ -80,7 +80,7 @@ extension SyncObject: Syncable {
             /// If your model class includes a primary key, you can have Realm intelligently update or add objects based off of their primary key values using Realm().add(_:update:).
             /// https://realm.io/docs/swift/latest/#objects-with-primary-keys
             self.realm.beginWrite()
-            self.realm.add(object, update: .all)
+            self.realm.add(object, update: .modified)
             if let token = self.notificationToken {
                 try! self.realm.commitWrite(withoutNotifying: [token])
             } else {
