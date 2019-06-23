@@ -137,7 +137,7 @@ Inversely, the `Person` object has a `dogs` property which is the type of `Linki
 ## Requirements
 
 - iOS 10.0+ / macOS 10.12+ / tvOS 10.0+ / watchOS 3.0+ 
-- Swift 4.2
+- Swift 5
 
 ## Debug Suggestions
 
