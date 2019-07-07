@@ -1,5 +1,5 @@
 PODS:
-  - IceCream (1.10.0):
+  - IceCream (1.10.1):
     - RealmSwift
   - Realm (3.16.2):
     - Realm/Headers (= 3.16.2)
@@ -27,7 +27,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  IceCream: b0d8e4a9d4b793072b12cfe32ada817d32581f01
+  IceCream: edff6c0ea185a66ecb648079f12484e22f7612c8
   Realm: 0e73b4edeb5b6a90da3d83206883b2e34e00eb38
   RealmSwift: a81e650171ef0a5f999df1ed8d39ba8d6fce88a4
   RxRealm: 1e81dcfca1fb50c3e9b3e1f8102bc875c5156a2e
