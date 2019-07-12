@@ -65,9 +65,12 @@ public final class SyncEngine {
 
 // MARK: Public Method
 extension SyncEngine {
+    
     /// Fetch data on the CloudKit and merge with local
-    public func pull(completion: (() -> Void)? = nil) {
-        databaseManager.fetchChangesInDatabase(completion)
+    ///
+    /// - Parameter completionHandler: Supported in the `privateCloudDatabase` when the fetch data process completes successfully, completionHandler will be called.
+    public func pull(completionHandler: (() -> Void)? = nil) {
+        databaseManager.fetchChangesInDatabase(completionHandler)
     }
     
     /// Push all existing local data to CloudKit
@@ -75,6 +78,7 @@ extension SyncEngine {
     public func pushAll() {
         databaseManager.syncObjects.forEach { $0.pushLocalObjectsToCloudKit() }
     }
+    
 }
 
 public enum Notifications: String, NotificationName {
