@@ -164,8 +164,6 @@ final class PrivateDatabaseManager: DatabaseManager {
             case .success:
                 guard let syncObject = self.syncObjects.first(where: { $0.zoneID == zoneId }) else { return }
                 syncObject.zoneChangesToken = token
-                callback?()
-                print("Fetch records successfully in zone: \(zoneId))")
             case .retry(let timeToWait, _):
                 ErrorHandler.shared.retryOperationIfPossible(retryAfter: timeToWait, block: {
                     self.fetchChangesInZones(callback)
@@ -182,6 +180,12 @@ final class PrivateDatabaseManager: DatabaseManager {
                 }
             default:
                 return
+            }
+        }
+        
+        changesOp.fetchRecordZoneChangesCompletionBlock = { error in
+            if error == nil {
+                callback?()
             }
         }
         
