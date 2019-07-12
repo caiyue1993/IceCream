@@ -26,7 +26,7 @@ final class PublicDatabaseManager: DatabaseManager {
         self.database = container.publicCloudDatabase
     }
     
-    func fetchChangesInDatabase(_ callback: (() -> Void)?) {
+    func fetchChangesInDatabase(_ callback: ((Error?) -> Void)?) {
         syncObjects.forEach { [weak self] syncObject in
             let predicate = NSPredicate(value: true)
             let query = CKQuery(recordType: syncObject.recordType, predicate: predicate)
@@ -64,7 +64,7 @@ final class PublicDatabaseManager: DatabaseManager {
     }
     
     // MARK: - Private Methods
-    private func excuteQueryOperation(queryOperation: CKQueryOperation,on syncObject: Syncable, callback: (() -> Void)? = nil) {
+    private func excuteQueryOperation(queryOperation: CKQueryOperation,on syncObject: Syncable, callback: ((Error?) -> Void)? = nil) {
         queryOperation.recordFetchedBlock = { record in
             syncObject.add(record: record)
         }
@@ -79,7 +79,7 @@ final class PublicDatabaseManager: DatabaseManager {
             switch ErrorHandler.shared.resultType(with: error) {
             case .success:
                 DispatchQueue.main.async {
-                    callback?()
+                    callback?(nil)
                 }
             case .retry(let timeToWait, _):
                 ErrorHandler.shared.retryOperationIfPossible(retryAfter: timeToWait, block: {

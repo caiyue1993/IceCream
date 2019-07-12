@@ -21,7 +21,7 @@ public protocol DatabaseManager: class {
     
     func prepare()
     
-    func fetchChangesInDatabase(_ callback: (() -> Void)?)
+    func fetchChangesInDatabase(_ callback: ((Error?) -> Void)?)
     
     /// The CloudKit Best Practice is out of date, now use this:
     /// https://developer.apple.com/documentation/cloudkit/ckoperation

@@ -70,8 +70,8 @@ extension SyncEngine {
     
     /// Fetch data on the CloudKit and merge with local
     ///
-    /// - Parameter completionHandler: Supported in the `privateCloudDatabase` when the fetch data process completes successfully, completionHandler will be called.
-    public func pull(completionHandler: (() -> Void)? = nil) {
+    /// - Parameter completionHandler: Supported in the `privateCloudDatabase` when the fetch data process completes, completionHandler will be called. The error will be returned when anything wrong happens. Otherwise the error will be `nil`.
+    public func pull(completionHandler: ((Error?) -> Void)? = nil) {
         databaseManager.fetchChangesInDatabase(completionHandler)
     }
     
