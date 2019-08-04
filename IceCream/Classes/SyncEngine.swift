@@ -16,7 +16,6 @@ import CloudKit
 public final class SyncEngine {
     
     private let databaseManager: DatabaseManager
-    private let backgroundWorker = BackgroundWorker()
     
     public convenience init(objects: [Syncable], databaseScope: CKDatabase.Scope = .private, container: CKContainer = .default()) {
         switch databaseScope {
@@ -29,8 +28,6 @@ public final class SyncEngine {
         default:
             fatalError("Not supported yet")
         }
-        
-        objects.forEach { $0.backgroundWorker = self.backgroundWorker }
     }
     
     private init(databaseManager: DatabaseManager) {
