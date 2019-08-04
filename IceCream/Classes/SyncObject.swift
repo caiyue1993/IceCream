@@ -23,12 +23,17 @@ public final class SyncObject<T> where T: Object & CKRecordConvertible & CKRecor
     
     public var pipeToEngine: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecord.ID]) -> ())?
     
-    public var realm: Realm
+    public var realm: Realm!
     public var databaseScope: CKDatabase.Scope = .private
-    public var backgroundWorker: BackgroundWorker!
     
-    public init(realm: Realm = try! Realm()) {
-      self.realm = realm
+    public init(realm: Realm? = nil) {
+        if realm == nil {
+            BackgroundWorker.shared.start {
+                self.realm = try! Realm()
+            }
+        } else {
+            self.realm = realm!
+        }
   }
 }
 
@@ -72,44 +77,38 @@ extension SyncObject: Syncable {
     }
     
     public func add(record: CKRecord) {
-        backgroundWorker.perform {
-            let realm = try! Realm()
-            
-            guard let object = T.parseFromRecord(record: record, realm: realm) else {
+        BackgroundWorker.shared.start {
+            guard let object = T.parseFromRecord(record: record, realm: self.realm) else {
                 print("There is something wrong with the converson from cloud record to local object")
                 return
             }
             
             /// If your model class includes a primary key, you can have Realm intelligently update or add objects based off of their primary key values using Realm().add(_:update:).
             /// https://realm.io/docs/swift/latest/#objects-with-primary-keys
-            realm.beginWrite()
-            realm.add(object, update: .modified)
-            try! realm.commitWrite(withoutNotifying: self.backgroundWorker.notificationTokens)
+            self.realm.beginWrite()
+            self.realm.add(object, update: .modified)
+            try! self.realm.commitWrite(withoutNotifying: BackgroundWorker.shared.notificationTokens)
         }
     }
     
     public func delete(recordID: CKRecord.ID) {
-        backgroundWorker.perform {
-            let realm = try! Realm()
-            
-            guard let object = realm.object(ofType: T.self, forPrimaryKey: T.primaryKeyForRecordID(recordID: recordID)) else {
+        BackgroundWorker.shared.start {
+            guard let object = self.realm.object(ofType: T.self, forPrimaryKey: T.primaryKeyForRecordID(recordID: recordID)) else {
                 // Not found in local realm database
                 return
             }
             CreamAsset.deleteCreamAssetFile(with: recordID.recordName)
-            realm.beginWrite()
-            realm.delete(object)
-            try! realm.commitWrite(withoutNotifying: self.backgroundWorker.notificationTokens)
+            self.realm.beginWrite()
+            self.realm.delete(object)
+            try! self.realm.commitWrite(withoutNotifying: BackgroundWorker.shared.notificationTokens)
         }
     }
     
     /// When you commit a write transaction to a Realm, all other instances of that Realm will be notified, and be updated automatically.
     /// For more: https://realm.io/docs/swift/latest/#writes
     public func registerLocalDatabase() {
-        backgroundWorker.perform {
-            let realm = try! Realm()
-            
-            let notificationToken = realm.objects(T.self).observe({ [weak self](changes) in
+        BackgroundWorker.shared.start {
+            let notificationToken = self.realm.objects(T.self).observe({ [weak self](changes) in
                 guard let self = self else { return }
                 switch changes {
                 case .initial(_):
@@ -125,22 +124,20 @@ extension SyncObject: Syncable {
                 }
             })
             
-            self.backgroundWorker.notificationTokens.append(notificationToken)
+            BackgroundWorker.shared.notificationTokens.append(notificationToken)
         }
     }
     
     public func cleanUp() {
-        backgroundWorker.perform {
-            let realm = try! Realm()
+        BackgroundWorker.shared.start {
+            let objects = self.realm.objects(T.self).filter { $0.isDeleted }
 
-            let objects = realm.objects(T.self).filter { $0.isDeleted }
-
-            realm.beginWrite()
-            objects.forEach({ realm.delete($0) })
+            self.realm.beginWrite()
+            objects.forEach({ self.realm.delete($0) })
             do {
-                try realm.commitWrite(withoutNotifying: self.backgroundWorker.notificationTokens)
+                try self.realm.commitWrite(withoutNotifying: BackgroundWorker.shared.notificationTokens)
             } catch {
-                // Error handles here
+                
             }
         }
     }

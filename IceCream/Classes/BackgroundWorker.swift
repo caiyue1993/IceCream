@@ -9,40 +9,51 @@ import Foundation
 import RealmSwift
 
 // Based on https://academy.realm.io/posts/realm-notifications-on-background-threads-with-swift/
-// But extended so it's able to perform multiple blocks.
+// Tweaked a little by Yue Cai
+
 public class BackgroundWorker: NSObject {
-    private var thread: Thread!
-    private var block: (() -> Void)!
+    
+    static let shared = BackgroundWorker()
+    
     var notificationTokens = [NotificationToken]()
-    var runLoop: RunLoop!
     
-    @objc internal func runBlock() { block() }
+    private var thread: Thread?
+    private var block: (() -> Void)?
     
-    override init() {
-        super.init()
+    func start(_ block: @escaping () -> Void) {
+        self.block = block
         
-        let threadName = String(describing: self)
-            .components(separatedBy: .punctuationCharacters)[1]
-        
-        thread = Thread { [weak self] in
-            self?.runLoop = RunLoop.current
-            
-            while self != nil && !self!.thread.isCancelled {
-                RunLoop.current.run(
-                    mode: RunLoop.Mode.default,
-                    before: Date.distantFuture)
+        if thread == nil {
+            thread = Thread { [weak self] in
+                guard let self = self, let th = self.thread else {
+                    Thread.exit()
+                    return
+                }
+                while (!th.isCancelled) {
+                    RunLoop.current.run(
+                        mode: .default,
+                        before: Date.distantFuture)
+                }
+                Thread.exit()
             }
-            Thread.exit()
+            thread?.name = "\(String(describing: self).components(separatedBy: .punctuationCharacters)[1])-\(UUID().uuidString)"
+            thread?.start()
         }
-        thread.name = "\(threadName)-\(UUID().uuidString)"
-        thread.start()
+        
+        if let thread = thread {
+            perform(#selector(runBlock),
+                    on: thread,
+                    with: nil,
+                    waitUntilDone: true,
+                    modes: [RunLoop.Mode.default.rawValue])
+        }
     }
     
-    public func perform(_ block: @escaping () -> Void) {
-        runLoop.perform(block)
+    func stop() {
+        thread?.cancel()
     }
     
-    public func stop() {
-        thread.cancel()
+    @objc private func runBlock() {
+        block?()
     }
 }
