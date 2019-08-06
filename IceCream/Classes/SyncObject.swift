@@ -23,18 +23,11 @@ public final class SyncObject<T> where T: Object & CKRecordConvertible & CKRecor
     
     public var pipeToEngine: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecord.ID]) -> ())?
     
-    public var realm: Realm!
-    public var databaseScope: CKDatabase.Scope = .private
+    public let realmConfiguration: Realm.Configuration
     
-    public init(realm: Realm? = nil) {
-        if realm == nil {
-            BackgroundWorker.shared.start {
-                self.realm = try! Realm()
-            }
-        } else {
-            self.realm = realm!
-        }
-  }
+    public init(realmConfiguration: Realm.Configuration = Realm.Configuration.defaultConfiguration) {
+        self.realmConfiguration = realmConfiguration
+    }
 }
 
 // MARK: - Zone information
@@ -78,29 +71,31 @@ extension SyncObject: Syncable {
     
     public func add(record: CKRecord) {
         BackgroundWorker.shared.start {
-            guard let object = T.parseFromRecord(record: record, realm: self.realm) else {
+            let realm = try! Realm(configuration: self.realmConfiguration)
+            guard let object = T.parseFromRecord(record: record, realm: realm) else {
                 print("There is something wrong with the converson from cloud record to local object")
                 return
             }
             
             /// If your model class includes a primary key, you can have Realm intelligently update or add objects based off of their primary key values using Realm().add(_:update:).
             /// https://realm.io/docs/swift/latest/#objects-with-primary-keys
-            self.realm.beginWrite()
-            self.realm.add(object, update: .modified)
-            try! self.realm.commitWrite(withoutNotifying: BackgroundWorker.shared.notificationTokens)
+            realm.beginWrite()
+            realm.add(object, update: .modified)
+            try! realm.commitWrite(withoutNotifying: BackgroundWorker.shared.notificationTokens)
         }
     }
     
     public func delete(recordID: CKRecord.ID) {
         BackgroundWorker.shared.start {
-            guard let object = self.realm.object(ofType: T.self, forPrimaryKey: T.primaryKeyForRecordID(recordID: recordID)) else {
+            let realm = try! Realm(configuration: self.realmConfiguration)
+            guard let object = realm.object(ofType: T.self, forPrimaryKey: T.primaryKeyForRecordID(recordID: recordID)) else {
                 // Not found in local realm database
                 return
             }
             CreamAsset.deleteCreamAssetFile(with: recordID.recordName)
-            self.realm.beginWrite()
-            self.realm.delete(object)
-            try! self.realm.commitWrite(withoutNotifying: BackgroundWorker.shared.notificationTokens)
+            realm.beginWrite()
+            realm.delete(object)
+            try! realm.commitWrite(withoutNotifying: BackgroundWorker.shared.notificationTokens)
         }
     }
     
@@ -108,7 +103,8 @@ extension SyncObject: Syncable {
     /// For more: https://realm.io/docs/swift/latest/#writes
     public func registerLocalDatabase() {
         BackgroundWorker.shared.start {
-            let notificationToken = self.realm.objects(T.self).observe({ [weak self](changes) in
+            let realm = try! Realm(configuration: self.realmConfiguration)
+            let notificationToken = realm.objects(T.self).observe({ [weak self](changes) in
                 guard let self = self else { return }
                 switch changes {
                 case .initial(_):
@@ -130,12 +126,13 @@ extension SyncObject: Syncable {
     
     public func cleanUp() {
         BackgroundWorker.shared.start {
-            let objects = self.realm.objects(T.self).filter { $0.isDeleted }
+            let realm = try! Realm(configuration: self.realmConfiguration)
+            let objects = realm.objects(T.self).filter { $0.isDeleted }
 
-            self.realm.beginWrite()
-            objects.forEach({ self.realm.delete($0) })
+            realm.beginWrite()
+            objects.forEach({ realm.delete($0) })
             do {
-                try self.realm.commitWrite(withoutNotifying: BackgroundWorker.shared.notificationTokens)
+                try realm.commitWrite(withoutNotifying: BackgroundWorker.shared.notificationTokens)
             } catch {
                 
             }
@@ -143,6 +140,7 @@ extension SyncObject: Syncable {
     }
     
     public func pushLocalObjectsToCloudKit() {
+        let realm = try! Realm(configuration: self.realmConfiguration)
         let recordsToStore: [CKRecord] = realm.objects(T.self).filter { !$0.isDeleted }.map { $0.record }
         pipeToEngine?(recordsToStore, [])
     }
