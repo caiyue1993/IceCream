@@ -8,6 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		0DFDEF8022622B47002C7CC9 /* DevelopersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DFDEF7F22622B47002C7CC9 /* DevelopersViewController.swift */; };
+		67084C6422FADA950073F0EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67084C6322FADA950073F0EE /* AppDelegate.swift */; };
+		67084C6622FADA960073F0EE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 67084C6522FADA960073F0EE /* Assets.xcassets */; };
+		67084C6922FADA960073F0EE /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67084C6722FADA960073F0EE /* MainMenu.xib */; };
+		67084C7022FAE0B20073F0EE /* IceCream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67084C6F22FAE0B20073F0EE /* IceCream.framework */; };
+		67084C7222FAE0B50073F0EE /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67084C7122FAE0B50073F0EE /* Realm.framework */; };
+		67084C7422FAE0B70073F0EE /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67084C7322FAE0B70073F0EE /* RealmSwift.framework */; };
 		6743F6EC202B0CB600912163 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F6EB202B0CB600912163 /* AppDelegate.swift */; };
 		6743F6EE202B0CB600912163 /* DogsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F6ED202B0CB600912163 /* DogsViewController.swift */; };
 		6743F6FE202B0D1400912163 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6743F6FD202B0D1400912163 /* Images.xcassets */; };
@@ -25,6 +31,15 @@
 		0DFDEF7F22622B47002C7CC9 /* DevelopersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevelopersViewController.swift; sourceTree = "<group>"; };
 		52D6E28956DA59A9148CC104 /* Pods-IceCream_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IceCream_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-IceCream_Example/Pods-IceCream_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		57E01F0AF05DF4AB5FF9CCDF /* Pods_IceCream_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IceCream_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		67084C6122FADA950073F0EE /* IceCream_Example-macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "IceCream_Example-macOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		67084C6322FADA950073F0EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		67084C6522FADA960073F0EE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		67084C6822FADA960073F0EE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		67084C6A22FADA960073F0EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		67084C6B22FADA960073F0EE /* IceCream_Example_macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = IceCream_Example_macOS.entitlements; sourceTree = "<group>"; };
+		67084C6F22FAE0B20073F0EE /* IceCream.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IceCream.framework; path = Carthage/Build/Mac/IceCream.framework; sourceTree = "<group>"; };
+		67084C7122FAE0B50073F0EE /* Realm.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Realm.framework; path = Carthage/Build/Mac/Realm.framework; sourceTree = "<group>"; };
+		67084C7322FAE0B70073F0EE /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealmSwift.framework; path = Carthage/Build/Mac/RealmSwift.framework; sourceTree = "<group>"; };
 		6743F6E8202B0CB600912163 /* IceCream_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IceCream_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6743F6EB202B0CB600912163 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6743F6ED202B0CB600912163 /* DogsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DogsViewController.swift; sourceTree = "<group>"; };
@@ -42,6 +57,16 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		67084C5E22FADA950073F0EE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				67084C7022FAE0B20073F0EE /* IceCream.framework in Frameworks */,
+				67084C7222FAE0B50073F0EE /* Realm.framework in Frameworks */,
+				67084C7422FAE0B70073F0EE /* RealmSwift.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6743F6E5202B0CB600912163 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -54,10 +79,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		67084C6222FADA950073F0EE /* IceCream_Example-macOS */ = {
+			isa = PBXGroup;
+			children = (
+				67084C6322FADA950073F0EE /* AppDelegate.swift */,
+				67084C6522FADA960073F0EE /* Assets.xcassets */,
+				67084C6722FADA960073F0EE /* MainMenu.xib */,
+				67084C6A22FADA960073F0EE /* Info.plist */,
+				67084C6B22FADA960073F0EE /* IceCream_Example_macOS.entitlements */,
+			);
+			path = "IceCream_Example-macOS";
+			sourceTree = "<group>";
+		};
 		6743F6DF202B0CB600912163 = {
 			isa = PBXGroup;
 			children = (
 				6743F6EA202B0CB600912163 /* IceCream_Example */,
+				67084C6222FADA950073F0EE /* IceCream_Example-macOS */,
 				6743F6E9202B0CB600912163 /* Products */,
 				6743F705202B0D4500912163 /* Frameworks */,
 				81576C3B1C16509EACC23DB7 /* Pods */,
@@ -68,6 +106,7 @@
 			isa = PBXGroup;
 			children = (
 				6743F6E8202B0CB600912163 /* IceCream_Example.app */,
+				67084C6122FADA950073F0EE /* IceCream_Example-macOS.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -94,6 +133,9 @@
 		6743F705202B0D4500912163 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				67084C7322FAE0B70073F0EE /* RealmSwift.framework */,
+				67084C7122FAE0B50073F0EE /* Realm.framework */,
+				67084C6F22FAE0B20073F0EE /* IceCream.framework */,
 				6743F706202B0D4500912163 /* CloudKit.framework */,
 				57E01F0AF05DF4AB5FF9CCDF /* Pods_IceCream_Example.framework */,
 			);
@@ -112,6 +154,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		67084C6022FADA950073F0EE /* IceCream_Example-macOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 67084C6E22FADA960073F0EE /* Build configuration list for PBXNativeTarget "IceCream_Example-macOS" */;
+			buildPhases = (
+				67084C5D22FADA950073F0EE /* Sources */,
+				67084C5E22FADA950073F0EE /* Frameworks */,
+				67084C5F22FADA950073F0EE /* Resources */,
+				67084C7522FAE13E0073F0EE /* Carthage: Copy Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "IceCream_Example-macOS";
+			productName = "IceCream_Example-macOS";
+			productReference = 67084C6122FADA950073F0EE /* IceCream_Example-macOS.app */;
+			productType = "com.apple.product-type.application";
+		};
 		6743F6E7202B0CB600912163 /* IceCream_Example */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6743F6FA202B0CB600912163 /* Build configuration list for PBXNativeTarget "IceCream_Example" */;
@@ -137,10 +197,14 @@
 		6743F6E0202B0CB600912163 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0920;
+				LastSwiftUpdateCheck = 1020;
 				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = "蔡越";
 				TargetAttributes = {
+					67084C6022FADA950073F0EE = {
+						CreatedOnToolsVersion = 10.2.1;
+						ProvisioningStyle = Automatic;
+					};
 					6743F6E7202B0CB600912163 = {
 						CreatedOnToolsVersion = 9.2;
 						LastSwiftMigration = 1020;
@@ -170,11 +234,21 @@
 			projectRoot = "";
 			targets = (
 				6743F6E7202B0CB600912163 /* IceCream_Example */,
+				67084C6022FADA950073F0EE /* IceCream_Example-macOS */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		67084C5F22FADA950073F0EE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				67084C6622FADA960073F0EE /* Assets.xcassets in Resources */,
+				67084C6922FADA960073F0EE /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6743F6E6202B0CB600912163 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -229,9 +303,38 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-IceCream_Example/Pods-IceCream_Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		67084C7522FAE13E0073F0EE /* Carthage: Copy Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/Mac/IceCream.framework",
+				"$(SRCROOT)/Carthage/Build/Mac/Realm.framework",
+				"$(SRCROOT)/Carthage/Build/Mac/RealmSwift.framework",
+			);
+			name = "Carthage: Copy Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		67084C5D22FADA950073F0EE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				67084C6422FADA950073F0EE /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6743F6E4202B0CB600912163 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -250,6 +353,14 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		67084C6722FADA960073F0EE /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				67084C6822FADA960073F0EE /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
 		6743F6FF202B0D1C00912163 /* LaunchScreen.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -261,6 +372,57 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		67084C6C22FADA960073F0EE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = "IceCream_Example-macOS/IceCream_Example_macOS.entitlements";
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = RCMHACTPLY;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
+				INFOPLIST_FILE = "IceCream_Example-macOS/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "me.soledad.IceCream-Example-macOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		67084C6D22FADA960073F0EE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = "IceCream_Example-macOS/IceCream_Example_macOS.entitlements";
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = RCMHACTPLY;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
+				INFOPLIST_FILE = "IceCream_Example-macOS/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "me.soledad.IceCream-Example-macOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 		6743F6F8202B0CB600912163 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -409,6 +571,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		67084C6E22FADA960073F0EE /* Build configuration list for PBXNativeTarget "IceCream_Example-macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				67084C6C22FADA960073F0EE /* Debug */,
+				67084C6D22FADA960073F0EE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		6743F6E3202B0CB600912163 /* Build configuration list for PBXProject "IceCream_Example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
