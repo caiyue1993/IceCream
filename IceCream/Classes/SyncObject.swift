@@ -81,7 +81,11 @@ extension SyncObject: Syncable {
             /// https://realm.io/docs/swift/latest/#objects-with-primary-keys
             realm.beginWrite()
             realm.add(object, update: .modified)
-            try! realm.commitWrite(withoutNotifying: BackgroundWorker.shared.notificationTokens)
+            if let token = self.notificationToken {
+                try! realm.commitWrite(withoutNotifying: [token])
+            } else {
+                try! realm.commitWrite()
+            }
         }
     }
     
@@ -95,7 +99,11 @@ extension SyncObject: Syncable {
             CreamAsset.deleteCreamAssetFile(with: recordID.recordName)
             realm.beginWrite()
             realm.delete(object)
-            try! realm.commitWrite(withoutNotifying: BackgroundWorker.shared.notificationTokens)
+            if let token = self.notificationToken {
+                try! realm.commitWrite(withoutNotifying: [token])
+            } else {
+                try! realm.commitWrite()
+            }
         }
     }
     
@@ -104,7 +112,7 @@ extension SyncObject: Syncable {
     public func registerLocalDatabase() {
         BackgroundWorker.shared.start {
             let realm = try! Realm(configuration: self.realmConfiguration)
-            let notificationToken = realm.objects(T.self).observe({ [weak self](changes) in
+            self.notificationToken = realm.objects(T.self).observe({ [weak self](changes) in
                 guard let self = self else { return }
                 switch changes {
                 case .initial(_):
@@ -119,8 +127,6 @@ extension SyncObject: Syncable {
                     break
                 }
             })
-            
-            BackgroundWorker.shared.notificationTokens.append(notificationToken)
         }
     }
     
@@ -128,11 +134,14 @@ extension SyncObject: Syncable {
         BackgroundWorker.shared.start {
             let realm = try! Realm(configuration: self.realmConfiguration)
             let objects = realm.objects(T.self).filter { $0.isDeleted }
-
+            
+            var tokens: [NotificationToken] = []
+            self.notificationToken.flatMap { tokens = [$0] }
+            
             realm.beginWrite()
             objects.forEach({ realm.delete($0) })
             do {
-                try realm.commitWrite(withoutNotifying: BackgroundWorker.shared.notificationTokens)
+                try realm.commitWrite(withoutNotifying: tokens)
             } catch {
                 
             }

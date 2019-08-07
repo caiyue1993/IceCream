@@ -15,8 +15,6 @@ public class BackgroundWorker: NSObject {
     
     static let shared = BackgroundWorker()
     
-    var notificationTokens = [NotificationToken]()
-    
     private var thread: Thread?
     private var block: (() -> Void)?
     
