@@ -17,7 +17,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var syncEngine: SyncEngine?
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        
+        syncEngine = SyncEngine(objects: [SyncObject<Dog>()], container: CKContainer(identifier: "iCloud.me.soledad.http.IceCream-Example"))
+        NSApp.registerForRemoteNotifications()
     }
 
     func application(_ application: NSApplication, didReceiveRemoteNotification userInfo: [String : Any]) {
