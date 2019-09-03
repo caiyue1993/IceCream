@@ -50,6 +50,11 @@ extension CKRecordRecoverable where Self: Object {
                     let list = List<Data>()
                     list.append(objectsIn: value)
                     recordValue = list
+                case .date:
+                    guard let value = record.value(forKey: prop.name) as? [Date] else { break }
+                    let list = List<Date>()
+                    list.append(objectsIn: value)
+                    recordValue = list
                 default:
                     break
                 }
