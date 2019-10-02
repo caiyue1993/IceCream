@@ -34,7 +34,7 @@ public class BackgroundWorker: NSObject {
                 }
                 Thread.exit()
             }
-            thread?.name = "\(String(describing: self).components(separatedBy: .punctuationCharacters)[1])-\(UUID().uuidString)"
+            thread?.name = "\(String(describing: self))-\(UUID().uuidString)"
             thread?.start()
         }
         
