@@ -52,13 +52,23 @@ extension CKRecordConvertible where Self: Object {
             fatalError("You should set a primary key on your Realm object")
         }
         
-        if let primaryValueString = self[primaryKeyProperty.name] as? String {
-            return CKRecord.ID(recordName: primaryValueString, zoneID: Self.zoneID)
-        } else if let primaryValueInt = self[primaryKeyProperty.name] as? Int {
-            return CKRecord.ID(recordName: "\(primaryValueInt)", zoneID: Self.zoneID)
-        } else {
-            fatalError("Primary key should be String or Int")
+        switch primaryKeyProperty.type {
+        case .string:
+            if let primaryValueString = self[primaryKeyProperty.name] as? String {
+                return CKRecord.ID(recordName: primaryValueString, zoneID: Self.zoneID)
+            } else {
+                assertionFailure("\(primaryKeyProperty.name)'s value should be String type")
+            }
+        case .int:
+            if let primaryValueInt = self[primaryKeyProperty.name] as? Int {
+                return CKRecord.ID(recordName: "\(primaryValueInt)", zoneID: Self.zoneID)
+            } else {
+                assertionFailure("\(primaryKeyProperty.name)'s value should be Int type")
+            }
+        default:
+            assertionFailure("Primary key should be String or Int")
         }
+        fatalError("Should have a reasonable recordID")
     }
     
     // Simultaneously init CKRecord with zoneID and recordID, thanks to this guy: https://stackoverflow.com/questions/45429133/how-to-initialize-ckrecord-with-both-zoneid-and-recordid
