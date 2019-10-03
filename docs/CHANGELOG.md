@@ -4,17 +4,17 @@
 
 #### Add
 
-* Implement background synchronization [155](https://github.com/caiyue1993/IceCream/pull/155)
+* Implement background synchronization [#155](https://github.com/caiyue1993/IceCream/pull/155)
 
 #### Fix 
 
-* Fix primaryKey wrongly convertion issue [165](https://github.com/caiyue1993/IceCream/pull/165)
+* Fix primaryKey wrongly convertion issue [#165](https://github.com/caiyue1993/IceCream/pull/165)
 
 ## [1.11.0 - You Want This Completion Handler](https://github.com/caiyue1993/IceCream/releases/tag/1.11.0)
 
 #### Add
 
-* Add a completionHandler in the pull method [141](https://github.com/caiyue1993/IceCream/pull/141)
+* Add a completionHandler in the pull method [#141](https://github.com/caiyue1993/IceCream/pull/141)
 
 ## [1.10.1](https://github.com/caiyue1993/IceCream/releases/tag/1.10.1)
 
@@ -32,7 +32,7 @@
 
 #### Add
 
-* Add support for public database [124](https://github.com/caiyue1993/IceCream/pull/124)
+* Add support for public database [#124](https://github.com/caiyue1993/IceCream/pull/124)
 
 ## [1.8.0 - Customization](https://github.com/caiyue1993/IceCream/releases/tag/1.8.0)
 
