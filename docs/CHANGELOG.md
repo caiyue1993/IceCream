@@ -1,5 +1,33 @@
 # Change Log
 
+## [1.12.0 - Background Worker](https://github.com/caiyue1993/IceCream/releases/tag/1.12.0)
+
+#### Add
+
+* Implement background synchronization [155](https://github.com/caiyue1993/IceCream/pull/155)
+
+#### Fix 
+
+* Fix primaryKey wrongly convertion issue [165](https://github.com/caiyue1993/IceCream/pull/165)
+
+## [1.11.0 - You Want This Completion Handler](https://github.com/caiyue1993/IceCream/releases/tag/1.11.0)
+
+#### Add
+
+* Add a completionHandler in the pull method [141](https://github.com/caiyue1993/IceCream/pull/141)
+
+## [1.10.1](https://github.com/caiyue1993/IceCream/releases/tag/1.10.1)
+
+#### Fix
+
+* Fix Carthage build failing issue on macOS, watchOS and tvOS
+
+## [1.10.0 - Swift 5](https://github.com/caiyue1993/IceCream/releases/tag/1.10.0)
+
+#### Add
+
+* Now IceCream builds against Swift 5.0 and Xcode 10.2.
+
 ## [1.9.0 - Make It Public](https://github.com/caiyue1993/IceCream/releases/tag/1.9.0)
 
 #### Add
