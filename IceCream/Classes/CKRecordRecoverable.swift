@@ -75,8 +75,11 @@ extension CKRecordRecoverable where Self: Object {
             case .object:
                 if let asset = record.value(forKey: prop.name) as? CKAsset {
                     recordValue = CreamAsset.parse(from: prop.name, record: record, asset: asset)
-                } else if let owner = record.value(forKey: prop.name) as? CKRecord.Reference, let ownerType = prop.objectClassName {
-                    primaryKeyForRecordID(recordID: owner.recordID).flatMap {
+                } else if let owner = record.value(forKey: prop.name) as? CKRecord.Reference,
+                    let ownerType = prop.objectClassName,
+                    let schema = realm.schema.objectSchema.first(where: { $0.className == ownerType })
+                {
+                    primaryKeyForRecordID(recordID: owner.recordID, schema: schema).flatMap {
                         recordValue = realm.dynamicObject(ofType: ownerType, forPrimaryKey: $0)
                     }
                     // Because we use the primaryKey as recordName when object converting to CKRecord
@@ -96,9 +99,9 @@ extension CKRecordRecoverable where Self: Object {
     ///
     /// - Parameter recordID: the recordID that CloudKit sent to us
     /// - Returns: the specific value of primaryKey in Realm
-    static func primaryKeyForRecordID(recordID: CKRecord.ID) -> Any? {
-        let o = Self()
-        guard let objectPrimaryKeyType = o.objectSchema.primaryKeyProperty?.type else { return nil }
+    static func primaryKeyForRecordID(recordID: CKRecord.ID, schema: ObjectSchema? = nil) -> Any? {
+        let schema = schema ?? Self().objectSchema
+        guard let objectPrimaryKeyType = schema.primaryKeyProperty?.type else { return nil }
         switch objectPrimaryKeyType {
         case .string:
             return recordID.recordName
