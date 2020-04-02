@@ -161,20 +161,21 @@ extension CreamAsset {
     /// xxx/Document/CreamAsset/
     public static func creamAssetDefaultURL() -> URL {
         // use creamAssetURL if specified by the user
-        if creamAssetURL != nil {
-            return creamAssetURL!
-        }
+        var commonAssetPath = creamAssetURL
         
-        let documentDir = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
-        let commonAssetPath = documentDir.appendingPathComponent(className())
-        if !FileManager.default.fileExists(atPath: commonAssetPath.path) {
+        if commonAssetPath == nil {
+            let documentDir = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+            commonAssetPath = documentDir.appendingPathComponent(className())
+        }
+
+        if !FileManager.default.fileExists(atPath: commonAssetPath!.path) {
             do {
-                try FileManager.default.createDirectory(atPath: commonAssetPath.path, withIntermediateDirectories: false, attributes: nil)
+                try FileManager.default.createDirectory(atPath: commonAssetPath!.path, withIntermediateDirectories: false, attributes: nil)
             } catch {
                 /// Log: create directory failed
             }
         }
-        return commonAssetPath
+        return commonAssetPath!
     }
 
     /// Fetch all CreamAsset files' path
