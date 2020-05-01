@@ -11,7 +11,7 @@ import RealmSwift
 // Based on https://academy.realm.io/posts/realm-notifications-on-background-threads-with-swift/
 // Tweaked a little by Yue Cai
 
-public class BackgroundWorker: NSObject {
+class BackgroundWorker: NSObject {
     
     static let shared = BackgroundWorker()
     
