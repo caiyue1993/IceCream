@@ -35,7 +35,7 @@ public final class SyncEngine {
         setup()
     }
     
-    public func setup() {
+    private func setup() {
         databaseManager.prepare()
         databaseManager.container.accountStatus { [weak self] (status, error) in
             guard let self = self else { return }
