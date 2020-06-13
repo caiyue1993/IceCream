@@ -155,7 +155,7 @@ extension SyncObject: Syncable {
     }
     
     public func pushLocalObjectsToCloudKit() {
-        let recordsToStore: [CKRecord] = self.recordsToSync()
+        let recordsToStore: [CKRecord] = self.recordsToSync() ?? []
         pipeToEngine?(recordsToStore, [])
     }
     
