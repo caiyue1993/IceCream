@@ -86,7 +86,7 @@ extension SyncEngine {
                 recordsToStore += tmp
             }
         }
-        databaseManager.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: [], completion: completion)
+        databaseManager.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: [], completion: completionHandler)
     }
     
 }
