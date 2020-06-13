@@ -15,7 +15,7 @@ import CloudKit
 
 public final class SyncEngine {
     
-    private let databaseManager: DatabaseManager
+    public let databaseManager: DatabaseManager
     
     public convenience init(objects: [Syncable], databaseScope: CKDatabase.Scope = .private, container: CKContainer = .default()) {
         switch databaseScope {

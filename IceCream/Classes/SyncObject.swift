@@ -148,6 +148,12 @@ extension SyncObject: Syncable {
         }
     }
     
+    public func recordsToSync() -> [CKRecord]? {
+        let realm = try! Realm(configuration: self.realmConfiguration)
+        let recordsToStore: [CKRecord] = realm.objects(T.self).filter { !$0.isDeleted }.map { $0.record }
+        return recordsToStore
+    }
+    
     public func pushLocalObjectsToCloudKit() {
         let realm = try! Realm(configuration: self.realmConfiguration)
         let recordsToStore: [CKRecord] = realm.objects(T.self).filter { !$0.isDeleted }.map { $0.record }

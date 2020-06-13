@@ -29,6 +29,7 @@ public protocol Syncable: class {
     
     /// CloudKit related
     func pushLocalObjectsToCloudKit()
+    func recordsToSync() -> [CKRecord]?
     
     /// Callback
     var pipeToEngine: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecord.ID]) -> ())? { get set }
