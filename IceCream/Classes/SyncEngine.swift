@@ -77,7 +77,9 @@ extension SyncEngine {
     
     /// Push all existing local data to CloudKit
     /// You should NOT to call this method too frequently
-    public func pushAll(completion: ((Error?) -> ())? = nil) {
+    ///
+    /// - Parameter completionHandler: When the push data process completes, completionHandler will be called. The error will be returned when anything wrong happens. Otherwise the error will be `nil`.
+    public func pushAll(completionHandler: ((Error?) -> ())? = nil) {
         var recordsToStore: [CKRecord] = []
         for syncObject in databaseManager.syncObjects {
             if let tmp = syncObject.recordsToSync() {
