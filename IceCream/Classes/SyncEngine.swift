@@ -15,7 +15,7 @@ import CloudKit
 
 public final class SyncEngine {
     
-    public let databaseManager: DatabaseManager
+    private let databaseManager: DatabaseManager
     
     public convenience init(objects: [Syncable], databaseScope: CKDatabase.Scope = .private, container: CKContainer = .default()) {
         switch databaseScope {
@@ -77,8 +77,14 @@ extension SyncEngine {
     
     /// Push all existing local data to CloudKit
     /// You should NOT to call this method too frequently
-    public func pushAll() {
-        databaseManager.syncObjects.forEach { $0.pushLocalObjectsToCloudKit() }
+    public func pushAll(completion: ((Error?) -> ())? = nil) {
+        var recordsToStore: [CKRecord] = []
+        for syncObject in databaseManager.syncObjects {
+            if let tmp = syncObject.recordsToSync() {
+                recordsToStore += tmp
+            }
+        }
+        databaseManager.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: [], completion: completion)
     }
     
 }
