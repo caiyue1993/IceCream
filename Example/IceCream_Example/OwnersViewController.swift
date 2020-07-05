@@ -11,19 +11,19 @@ import RealmSwift
 import RxRealm
 import RxSwift
 
-class DevelopersViewController: UIViewController {
+final class OwnersViewController: UIViewController {
 
-    var developers: [Person] = []
+    var owners: [Person] = []
     let bag = DisposeBag()
     
     let realm = try! Realm()
     
-    lazy var addBarItem: UIBarButtonItem = {
+    private lazy var addBarItem: UIBarButtonItem = {
         let b = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: self, action: #selector(add))
         return b
     }()
     
-    lazy var tableView: UITableView = {
+    private lazy var tableView: UITableView = {
         let tv = UITableView()
         tv.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tv.delegate = self
@@ -36,7 +36,7 @@ class DevelopersViewController: UIViewController {
         
         view.addSubview(tableView)
         navigationItem.rightBarButtonItem = addBarItem
-        title = "Developers"
+        title = "Owners"
         
         bind()
     }
@@ -46,22 +46,22 @@ class DevelopersViewController: UIViewController {
         tableView.frame = view.frame
     }
     
-    func bind() {
+    private func bind() {
         let realm = try! Realm()
         
         /// Results instances are live, auto-updating views into the underlying data, which means results never have to be re-fetched.
         /// https://realm.io/docs/swift/latest/#objects-with-primary-keys
-        let developers = realm.objects(Person.self)
+        let owners = realm.objects(Person.self)
         
-        Observable.array(from: developers).subscribe(onNext: { (developers) in
+        Observable.array(from: owners).subscribe(onNext: { (owners) in
             /// When developers data changes in Realm, the following code will be executed
             /// It works like magic.
-            self.developers = developers.filter { !$0.isDeleted }
+            self.owners = owners.filter { !$0.isDeleted }
             self.tableView.reloadData()
         }).disposed(by: bag)
     }
     
-    @objc func add() {
+    @objc private func add() {
         let user = Person()
         user.name = "Yue Cai"
         
@@ -71,15 +71,15 @@ class DevelopersViewController: UIViewController {
     }
 }
 
-extension DevelopersViewController: UITableViewDelegate {
+extension OwnersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let deleteAction = UITableViewRowAction(style: .destructive, title: "Delete") { (_, ip) in
             let alert = UIAlertController(title: NSLocalizedString("caution", comment: "caution"), message: NSLocalizedString("sure_to_delete", comment: "sure_to_delete"), preferredStyle: .alert)
             let deleteAction = UIAlertAction(title: NSLocalizedString("delete", comment: "delete"), style: .destructive, handler: { (action) in
-                guard ip.row < self.developers.count else { return }
-                let developer = self.developers[ip.row]
+                guard ip.row < self.owners.count else { return }
+                let owner = self.owners[ip.row]
                 try! self.realm.write {
-                    developer.isDeleted = true
+                    owner.isDeleted = true
                 }
             })
             let defaultAction = UIAlertAction(title: NSLocalizedString("cancel", comment: "cancel"), style: .default, handler: nil)
@@ -91,14 +91,14 @@ extension DevelopersViewController: UITableViewDelegate {
     }
 }
 
-extension DevelopersViewController: UITableViewDataSource {
+extension OwnersViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return developers.count
+        return owners.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell")
-        cell?.textLabel?.text = developers[indexPath.row].name
+        cell?.textLabel?.text = owners[indexPath.row].name
         return cell ?? UITableViewCell()
     }
 }
