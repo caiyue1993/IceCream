@@ -13,7 +13,7 @@ public protocol CKRecordRecoverable {
 }
 
 extension CKRecordRecoverable where Self: Object {
-    static func parseFromRecord(record: CKRecord, realm: Realm) -> Self? {
+    static func parseFromRecord(record: CKRecord, realm: Realm, notificationToken: NotificationToken?) -> Self? {
         let o = Self()
         for prop in o.objectSchema.properties {
             var recordValue: Any?
@@ -54,6 +54,29 @@ extension CKRecordRecoverable where Self: Object {
                     guard let value = record.value(forKey: prop.name) as? [Date] else { break }
                     let list = List<Date>()
                     list.append(objectsIn: value)
+                    recordValue = list
+                case .object:
+                    guard let value = record.value(forKey: prop.name) as? [CKRecord.Reference] else { break }
+                    let list = o.dynamicList(prop.name)
+                    for reference in value {
+                        if let objectClassName = prop.objectClassName,
+                            let schema = realm.schema.objectSchema.first(where: { $0.className == objectClassName }),
+                            let primaryKeyValue = primaryKeyForRecordID(recordID: reference.recordID, schema: schema) {
+                            if let existObject = realm.dynamicObject(ofType: objectClassName, forPrimaryKey: primaryKeyValue) {
+                                /// if object already exists in the local realm database
+                                /// just append it to the list
+                                list.append(existObject)
+                            } else {
+                                // otherwise create a new one
+                                if let notificationToken = notificationToken, let primaryKeyName = schema.primaryKeyProperty?.name {
+                                    realm.beginWrite()
+                                    let object = realm.dynamicCreate(objectClassName, value: [primaryKeyName: primaryKeyValue], update: .modified)
+                                    list.append(object)
+                                    try? realm.commitWrite(withoutNotifying: [notificationToken])
+                                }
+                            }
+                        }
+                    }
                     recordValue = list
                 default:
                     break
