@@ -19,9 +19,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         syncEngine = SyncEngine(objects: [
-            SyncObject<Person>(),
             SyncObject<Dog>(),
-            SyncObject<Cat>()
+            SyncObject<Cat>(),
+            SyncObject<Person>(),
             ])
       
         /// If you wanna test public Database, comment the above syncEngine code and uncomment the following one

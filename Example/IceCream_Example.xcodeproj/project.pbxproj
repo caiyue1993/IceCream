@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0DFDEF8022622B47002C7CC9 /* DevelopersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DFDEF7F22622B47002C7CC9 /* DevelopersViewController.swift */; };
+		0D4EF51B24B228570036FD90 /* OwnersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D4EF51A24B228570036FD90 /* OwnersViewController.swift */; };
 		6743F6EC202B0CB600912163 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F6EB202B0CB600912163 /* AppDelegate.swift */; };
 		6743F6EE202B0CB600912163 /* DogsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F6ED202B0CB600912163 /* DogsViewController.swift */; };
 		6743F6FE202B0D1400912163 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6743F6FD202B0D1400912163 /* Images.xcassets */; };
@@ -25,7 +25,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0DFDEF7F22622B47002C7CC9 /* DevelopersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevelopersViewController.swift; sourceTree = "<group>"; };
+		0D4EF51A24B228570036FD90 /* OwnersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OwnersViewController.swift; sourceTree = "<group>"; };
 		6743F6E8202B0CB600912163 /* IceCream_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IceCream_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6743F6EB202B0CB600912163 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6743F6ED202B0CB600912163 /* DogsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DogsViewController.swift; sourceTree = "<group>"; };
@@ -86,7 +86,7 @@
 				6743F702202B0D2400912163 /* Dog.swift */,
 				67AA235E20B84C9700953F09 /* CatsViewController.swift */,
 				6743F6ED202B0CB600912163 /* DogsViewController.swift */,
-				0DFDEF7F22622B47002C7CC9 /* DevelopersViewController.swift */,
+				0D4EF51A24B228570036FD90 /* OwnersViewController.swift */,
 				6743F6FF202B0D1C00912163 /* LaunchScreen.xib */,
 				6743F6FD202B0D1400912163 /* Images.xcassets */,
 				6743F6EB202B0CB600912163 /* AppDelegate.swift */,
@@ -195,10 +195,10 @@
 			files = (
 				6743F6EE202B0CB600912163 /* DogsViewController.swift in Sources */,
 				67AA236020B84C9700953F09 /* CatsViewController.swift in Sources */,
+				0D4EF51B24B228570036FD90 /* OwnersViewController.swift in Sources */,
 				67AA236120B84C9700953F09 /* Cat.swift in Sources */,
 				6743F6EC202B0CB600912163 /* AppDelegate.swift in Sources */,
 				67851AF920FAFE0F00D5142C /* Person.swift in Sources */,
-				0DFDEF8022622B47002C7CC9 /* DevelopersViewController.swift in Sources */,
 				67AA236320B84CB600953F09 /* TabBarViewController.swift in Sources */,
 				6743F703202B0D2400912163 /* Dog.swift in Sources */,
 			);

@@ -8,14 +8,14 @@
 
 import UIKit
 
-class TabBarViewController: UITabBarController {
+final class TabBarViewController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
          viewControllers = [
             UINavigationController(rootViewController: DogsViewController()),
             UINavigationController(rootViewController: CatsViewController()),
-            UINavigationController(rootViewController: DevelopersViewController())
+            UINavigationController(rootViewController: OwnersViewController())
         ]
     }
 
