@@ -19,7 +19,7 @@ import CloudKit
 /// So this is the deal.
 public class CreamAsset: Object {
     @objc dynamic var uniqueFileName = ""
-    @objc dynamic var data: Data?
+    @objc dynamic private var data: Data?
     override public static func ignoredProperties() -> [String] {
         return ["data", "filePath"]
     }
@@ -31,16 +31,33 @@ public class CreamAsset: Object {
         save(data: data, to: uniqueFileName, shouldOverwrite: shouldOverwrite)
     }
 
-    private convenience init?(objectID: String, propName: String, url: URL) {
+    private convenience init?(objectID: String, propName: String, url: URL, copyFile: Bool) {
         guard let data = try? Data(contentsOf: url) else { return nil }
-        self.init(objectID: objectID, propName: propName, data: data)
-    }
 
+        if copyFile {
+            self.init()
+            self.uniqueFileName = "\(objectID)_\(propName).\(url.pathExtension)"
+
+            do {
+                try FileManager.default.copyItem(at: url, to: filePath)
+            } catch {
+                print("Error writing asset to temporary directory: \(error)")
+            }
+        }
+        else {
+            self.init(objectID: objectID, propName: propName, data: data)
+        }
+    }
+    
     /// There is an important point that we need to consider:
     /// Cuz we only store the path of data, so we can't access data by `data` property
     /// So use this method if you want get the data of this object
     public func storedData() -> Data? {
-        return try? Data(contentsOf: filePath)
+        if data == nil {
+            data = try? Data(contentsOf: filePath)
+        }
+        
+        return data
     }
 
     public var filePath: URL {
@@ -55,7 +72,7 @@ public class CreamAsset: Object {
         do {
             try data.write(to: url)
         } catch {
-            print("Error writing avatar to temporary directory: \(error)")
+            print("Error writing asset to temporary directory: \(error)")
         }
     }
 
@@ -74,7 +91,7 @@ public class CreamAsset: Object {
     /// - Returns: A CreamAsset if it was successful
     static func parse(from propName: String, record: CKRecord, asset: CKAsset) -> CreamAsset? {
         guard let url = asset.fileURL else { return nil }
-        return CreamAsset(objectID: record.recordID.recordName, propName: propName, url: url)
+        return CreamAsset(objectID: record.recordID.recordName, propName: propName, url: url, copyFile: true)
     }
 
     /// Creates a new CreamAsset for the given object with Data
@@ -114,11 +131,12 @@ public class CreamAsset: Object {
     ///   - propName: The unique property name to identify this asset. e.g.: Dog Object may have multiple CreamAsset properties, so we need unique `propName`s to identify these.
     ///   - url: The URL of the file to store. Any path extension on the file (e.g. "mov") will be maintained
     /// - Returns: A CreamAsset if it was successful
-    public static func create(object: CKRecordConvertible, propName: String, url: URL) -> CreamAsset? {
+    public static func create(object: CKRecordConvertible, propName: String, url: URL, copyFile: Bool = false) -> CreamAsset? {
 
         return CreamAsset(objectID: object.recordID.recordName,
                           propName: propName,
-                          url: url)
+                          url: url,
+                          copyFile: copyFile)
     }
 }
 
