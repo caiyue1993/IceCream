@@ -18,61 +18,36 @@ import CloudKit
 /// We choose the latter, that's storing it directly on the file system, storing paths to these files in the Realm.
 /// So this is the deal.
 public class CreamAsset: Object {
-    @objc dynamic var uniqueFileName = ""
+    @objc dynamic private var uniqueFileName = ""
     @objc dynamic private var data: Data?
     override public static func ignoredProperties() -> [String] {
         return ["data", "filePath"]
     }
 
-    private convenience init(objectID: String, propName: String, data: Data, shouldOverwrite: Bool = true) {
+    private convenience init(objectID: String, propName: String, data: Data? = nil) {
         self.init()
         self.data = data
         self.uniqueFileName = "\(objectID)_\(propName)"
-        save(data: data, to: uniqueFileName, shouldOverwrite: shouldOverwrite)
-    }
-
-    private convenience init?(objectID: String, propName: String, url: URL, copyFile: Bool) {
-        guard let data = try? Data(contentsOf: url) else { return nil }
-
-        if copyFile {
-            self.init()
-            self.uniqueFileName = "\(objectID)_\(propName).\(url.pathExtension)"
-
-            do {
-                try FileManager.default.copyItem(at: url, to: filePath)
-            } catch {
-                print("Error writing asset to temporary directory: \(error)")
-            }
-        }
-        else {
-            self.init(objectID: objectID, propName: propName, data: data)
-        }
     }
     
     /// There is an important point that we need to consider:
     /// Cuz we only store the path of data, so we can't access data by `data` property
     /// So use this method if you want get the data of this object
     public func storedData() -> Data? {
-        if data == nil {
-            data = try? Data(contentsOf: filePath)
-        }
-        
-        return data
+        return try? Data(contentsOf: filePath)
     }
 
     public var filePath: URL {
         return CreamAsset.creamAssetDefaultURL().appendingPathComponent(uniqueFileName)
     }
 
-    func save(data: Data, to path: String, shouldOverwrite: Bool) {
+    private static func save(data: Data, to path: String, shouldOverwrite: Bool) {
         let url = CreamAsset.creamAssetDefaultURL().appendingPathComponent(path)
-
         guard shouldOverwrite || !FileManager.default.fileExists(atPath: url.path) else { return }
-        
         do {
             try data.write(to: url)
         } catch {
-            print("Error writing asset to temporary directory: \(error)")
+            /// Os.log output data infos here
         }
     }
 
@@ -91,7 +66,9 @@ public class CreamAsset: Object {
     /// - Returns: A CreamAsset if it was successful
     static func parse(from propName: String, record: CKRecord, asset: CKAsset) -> CreamAsset? {
         guard let url = asset.fileURL else { return nil }
-        return CreamAsset(objectID: record.recordID.recordName, propName: propName, url: url, copyFile: true)
+        return CreamAsset.create(objectID: record.recordID.recordName,
+                                 propName: propName,
+                                 url: url)
     }
 
     /// Creates a new CreamAsset for the given object with Data
@@ -103,10 +80,11 @@ public class CreamAsset: Object {
     ///   - shouldOverwrite: Whether to try and save the file even if an existing file exists for the same object.
     /// - Returns: A CreamAsset if it was successful
     public static func create(object: CKRecordConvertible, propName: String, data: Data, shouldOverwrite: Bool = true) -> CreamAsset? {
-        return CreamAsset(objectID: object.recordID.recordName,
-                          propName: propName,
-                          data: data,
-                          shouldOverwrite: shouldOverwrite)
+        let creamAsset = CreamAsset(objectID: object.recordID.recordName,
+                                    propName: propName,
+                                    data: data)
+        save(data: data, to: creamAsset.uniqueFileName, shouldOverwrite: shouldOverwrite)
+        return creamAsset
     }
     
     /// Creates a new CreamAsset for the given object id with Data
@@ -118,10 +96,11 @@ public class CreamAsset: Object {
     ///   - shouldOverwrite: Whether to try and save the file even if an existing file exists for the same object ID.
     /// - Returns: A CreamAsset if it was successful
     public static func create(objectID: String, propName: String, data: Data, shouldOverwrite: Bool = true) -> CreamAsset? {
-        return CreamAsset(objectID: objectID,
-                          propName: propName,
-                          data: data,
-                          shouldOverwrite: shouldOverwrite)
+        let creamAsset = CreamAsset(objectID: objectID,
+                                    propName: propName,
+                                    data: data)
+        save(data: data, to: creamAsset.uniqueFileName, shouldOverwrite: shouldOverwrite)
+        return creamAsset
     }
 
     /// Creates a new CreamAsset for the given object with a URL
@@ -129,14 +108,35 @@ public class CreamAsset: Object {
     /// - Parameters:
     ///   - object: The object the asset will live on
     ///   - propName: The unique property name to identify this asset. e.g.: Dog Object may have multiple CreamAsset properties, so we need unique `propName`s to identify these.
-    ///   - url: The URL of the file to store. Any path extension on the file (e.g. "mov") will be maintained
+    ///   - url: The URL where the file located
     /// - Returns: A CreamAsset if it was successful
-    public static func create(object: CKRecordConvertible, propName: String, url: URL, copyFile: Bool = false) -> CreamAsset? {
-
-        return CreamAsset(objectID: object.recordID.recordName,
-                          propName: propName,
-                          url: url,
-                          copyFile: copyFile)
+    public static func create(object: CKRecordConvertible, propName: String, url: URL) -> CreamAsset? {
+        let creamAsset = CreamAsset(objectID: object.recordID.recordName, propName: propName)
+        do {
+          try FileManager.default.copyItem(at: url, to: creamAsset.filePath)
+        } catch {
+            /// Log: copy item failed
+            return nil
+        }
+        return creamAsset
+    }
+    
+    
+    /// Creates a new CreamAsset for the given objectID with a URL where asset locates
+    /// - Parameters:
+    ///   - objectID: The key to identify the object. Normally it's the recordName property of CKRecord.ID when recovering from CloudKit
+    ///   - propName: The unique property name to identify this asset. e.g.: Dog Object may have multiple CreamAsset properties, so we need unique `propName`s to identify these.
+    ///   - url: The location where asset locates
+    /// - Returns: The CreamAsset if creates successful
+    public static func create(objectID: String, propName: String, url: URL) -> CreamAsset? {
+        let creamAsset = CreamAsset(objectID: objectID, propName: propName)
+        do {
+            try FileManager.default.copyItem(at: url, to: creamAsset.filePath)
+        } catch {
+            /// Log: copy item failed
+            return nil
+        }
+        return creamAsset
     }
 }
 
@@ -150,7 +150,7 @@ extension CreamAsset {
             do {
                 try FileManager.default.createDirectory(atPath: commonAssetPath.path, withIntermediateDirectories: false, attributes: nil)
             } catch {
-
+                /// Log: create directory failed
             }
         }
         return commonAssetPath
@@ -161,7 +161,7 @@ extension CreamAsset {
         do {
             return try FileManager.default.contentsOfDirectory(atPath: CreamAsset.creamAssetDefaultURL().path)
         } catch {
-
+            
         }
         return [String]()
     }
@@ -171,10 +171,9 @@ extension CreamAsset {
         for fileName in filesNames {
             let absolutePath = CreamAsset.creamAssetDefaultURL().appendingPathComponent(fileName).path
             do {
-                print("deleteCacheFiles.removeItem:", absolutePath)
                 try FileManager.default.removeItem(atPath: absolutePath)
             } catch {
-
+                /// Log: remove item failed at given path
             }
         }
     }
