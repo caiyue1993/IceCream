@@ -19,14 +19,12 @@ import CloudKit
 /// So this is the deal.
 public class CreamAsset: Object {
     @objc dynamic private var uniqueFileName = ""
-    @objc dynamic private var data: Data?
     override public static func ignoredProperties() -> [String] {
-        return ["data", "filePath"]
+        return ["filePath"]
     }
 
-    private convenience init(objectID: String, propName: String, data: Data? = nil) {
+    private convenience init(objectID: String, propName: String) {
         self.init()
-        self.data = data
         self.uniqueFileName = "\(objectID)_\(propName)"
     }
     
@@ -80,11 +78,9 @@ public class CreamAsset: Object {
     ///   - shouldOverwrite: Whether to try and save the file even if an existing file exists for the same object.
     /// - Returns: A CreamAsset if it was successful
     public static func create(object: CKRecordConvertible, propName: String, data: Data, shouldOverwrite: Bool = true) -> CreamAsset? {
-        let creamAsset = CreamAsset(objectID: object.recordID.recordName,
-                                    propName: propName,
-                                    data: data)
-        save(data: data, to: creamAsset.uniqueFileName, shouldOverwrite: shouldOverwrite)
-        return creamAsset
+        return create(objectID: object.recordID.recordName,
+                      propName: propName,
+                      data: data)
     }
     
     /// Creates a new CreamAsset for the given object id with Data
@@ -97,8 +93,7 @@ public class CreamAsset: Object {
     /// - Returns: A CreamAsset if it was successful
     public static func create(objectID: String, propName: String, data: Data, shouldOverwrite: Bool = true) -> CreamAsset? {
         let creamAsset = CreamAsset(objectID: objectID,
-                                    propName: propName,
-                                    data: data)
+                                    propName: propName)
         save(data: data, to: creamAsset.uniqueFileName, shouldOverwrite: shouldOverwrite)
         return creamAsset
     }
@@ -111,14 +106,9 @@ public class CreamAsset: Object {
     ///   - url: The URL where the file located
     /// - Returns: A CreamAsset if it was successful
     public static func create(object: CKRecordConvertible, propName: String, url: URL) -> CreamAsset? {
-        let creamAsset = CreamAsset(objectID: object.recordID.recordName, propName: propName)
-        do {
-          try FileManager.default.copyItem(at: url, to: creamAsset.filePath)
-        } catch {
-            /// Log: copy item failed
-            return nil
-        }
-        return creamAsset
+        return create(objectID: object.recordID.recordName,
+                      propName: propName,
+                      url: url)
     }
     
     
@@ -130,11 +120,13 @@ public class CreamAsset: Object {
     /// - Returns: The CreamAsset if creates successful
     public static func create(objectID: String, propName: String, url: URL) -> CreamAsset? {
         let creamAsset = CreamAsset(objectID: objectID, propName: propName)
-        do {
-            try FileManager.default.copyItem(at: url, to: creamAsset.filePath)
-        } catch {
-            /// Log: copy item failed
-            return nil
+        if !FileManager.default.fileExists(atPath: creamAsset.filePath.path) {
+            do {
+                try FileManager.default.copyItem(at: url, to: creamAsset.filePath)
+            } catch {
+                /// Log: copy item failed
+                return nil
+            }
         }
         return creamAsset
     }
