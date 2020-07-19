@@ -86,7 +86,7 @@ public class CreamAsset: Object {
         let creamAsset = CreamAsset(objectID: objectID,
                                     propName: propName)
         do {
-            save(data: data, to: creamAsset.uniqueFileName, shouldOverwrite: shouldOverwrite)
+            try save(data: data, to: creamAsset.uniqueFileName, shouldOverwrite: shouldOverwrite)
             return creamAsset
         } catch {
             // Os.log error here
@@ -115,11 +115,13 @@ public class CreamAsset: Object {
     ///   - object: The object the asset will live on
     ///   - propName: The unique property name to identify this asset. e.g.: Dog Object may have multiple CreamAsset properties, so we need unique `propName`s to identify these.
     ///   - url: The URL where the file located
+    ///   - shouldOverwrite: Whether to try and save the file even if an existing file exists for the same object.
     /// - Returns: A CreamAsset if it was successful
-    public static func create(object: CKRecordConvertible, propName: String, url: URL) -> CreamAsset? {
+    public static func create(object: CKRecordConvertible, propName: String, url: URL, shouldOverwrite: Bool = true) -> CreamAsset? {
         return create(objectID: object.recordID.recordName,
                       propName: propName,
-                      url: url)
+                      url: url,
+                      shouldOverwrite: shouldOverwrite)
     }
     
     
@@ -128,9 +130,13 @@ public class CreamAsset: Object {
     ///   - objectID: The key to identify the object. Normally it's the recordName property of CKRecord.ID when recovering from CloudKit
     ///   - propName: The unique property name to identify this asset. e.g.: Dog Object may have multiple CreamAsset properties, so we need unique `propName`s to identify these.
     ///   - url: The location where asset locates
+    ///   - shouldOverwrite: Whether to try and save the file even if an existing file exists for the same object.
     /// - Returns: The CreamAsset if creates successful
-    public static func create(objectID: String, propName: String, url: URL) -> CreamAsset? {
+    public static func create(objectID: String, propName: String, url: URL, shouldOverwrite: Bool = true) -> CreamAsset? {
         let creamAsset = CreamAsset(objectID: objectID, propName: propName)
+        if shouldOverwrite {
+            try? FileManager.default.removeItem(at: url)
+        }
         if !FileManager.default.fileExists(atPath: creamAsset.filePath.path) {
             do {
                 try FileManager.default.copyItem(at: url, to: creamAsset.filePath)
