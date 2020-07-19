@@ -129,7 +129,7 @@ public class CreamAsset: Object {
     ///   - propName: The unique property name to identify this asset. e.g.: Dog Object may have multiple CreamAsset properties, so we need unique `propName`s to identify these.
     ///   - url: The location where asset locates
     /// - Returns: The CreamAsset if creates successful
-    static func create(objectID: String, propName: String, url: URL) -> CreamAsset? {
+    public static func create(objectID: String, propName: String, url: URL) -> CreamAsset? {
         let creamAsset = CreamAsset(objectID: objectID, propName: propName)
         if !FileManager.default.fileExists(atPath: creamAsset.filePath.path) {
             do {
