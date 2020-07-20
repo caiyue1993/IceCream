@@ -14,6 +14,8 @@ struct TestMenuView: View {
     @ObservedObject var cats           = BindableResults(Cat.all)
     @ObservedObject var deletedCats    = BindableResults(Cat.allDeleted)
 
+    let app = UIApplication.shared.delegate as! AppDelegate
+
     func refresh() {
         // Just an experiment - Should not be needed, as the results should automatically update
         persons.refresh()
@@ -50,6 +52,17 @@ struct TestMenuView: View {
                         TestData.removeCatsWithNoOwners()
                     }
                 }
+                
+                Section(header: Text("IceCream:").font(.headline) ) {
+                    ButtonView(text: "Pull", imageSystemName:"arrow.down") {
+                        self.app.syncEngine?.pull()
+                    }
+                    ButtonView(text: "Push All", imageSystemName:"arrow.up") {
+                        self.app.syncEngine?.pull()
+                    }
+
+                }
+                
             }.navigationBarTitle("Test Lab")
              .navigationBarItems(trailing: refreshButton )
         }

@@ -30,12 +30,12 @@ final class Person: Object, Identifiable, ObjectKeyIdentifiable, SoftDeletable, 
 extension Person {
     /// Return all owned cats
     func listOfCats() -> AnyRealmCollection<Cat> {
-        return AnyRealmCollection(self.cats.filter("isDeleted == false"))
+        return AnyRealmCollection(self.cats.filter("isDeleted == false").sorted(byKeyPath: "name"))
     }
     
     /// Return all owned cats in a way that can be used as a SwiftUI @ObservedObject
     func observableListOfCats() -> BindableResults<Cat> {
-        return BindableResults(self.cats.filter("isDeleted == false"))
+        return BindableResults(self.cats.filter("isDeleted == false").sorted(byKeyPath: "name"))
     }
     
     /// Cascading 'soft delete' of a persons and all owned cats
