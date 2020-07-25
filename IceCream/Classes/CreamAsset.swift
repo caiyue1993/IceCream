@@ -135,7 +135,7 @@ public class CreamAsset: Object {
     public static func create(objectID: String, propName: String, url: URL, shouldOverwrite: Bool = true) -> CreamAsset? {
         let creamAsset = CreamAsset(objectID: objectID, propName: propName)
         if shouldOverwrite {
-            try? FileManager.default.removeItem(at: url)
+            try? FileManager.default.removeItem(at: creamAsset.filePath)
         }
         if !FileManager.default.fileExists(atPath: creamAsset.filePath.path) {
             do {
