@@ -128,8 +128,8 @@ extension CKRecordConvertible where Self: Object {
                 // If object is CreamAsset, set record with its wrapped CKAsset value
                 if objectName == CreamAsset.className(), let creamAsset = item as? CreamAsset {
                     r[prop.name] = creamAsset.asset
-                    if creamAsset.shouldOverwrite {
-                        r[ASSET_SHOULD_OVERWRITE] = true
+                    if !creamAsset.shouldOverwrite {
+                        r[ASSET_SHOULD_OVERWRITE] = false
                     }
                     if let fileExtension = creamAsset.fileExtension {
                         r[ASSET_EXTENSION] = fileExtension
