@@ -128,6 +128,12 @@ extension CKRecordConvertible where Self: Object {
                 // If object is CreamAsset, set record with its wrapped CKAsset value
                 if objectName == CreamAsset.className(), let creamAsset = item as? CreamAsset {
                     r[prop.name] = creamAsset.asset
+                    if creamAsset.shouldOverwrite {
+                        r[ASSET_SHOULD_OVERWRITE] = true
+                    }
+                    if let fileExtension = creamAsset.fileExtension {
+                        r[ASSET_EXTENSION] = fileExtension
+                    }
                 } else if let owner = item as? CKRecordConvertible {
                     // Handle to-one relationship: https://realm.io/docs/swift/latest/#many-to-one
                     // So the owner Object has to conform to CKRecordConvertible protocol
