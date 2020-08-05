@@ -2,22 +2,8 @@
 # * http://www.objc.io/issue-6/travis-ci.html
 # * https://github.com/supermarin/xcpretty#usage
 
-osx_image: xcode10.2
-
 language: swift
-
-sudo: required
-
-env:
-  global:
-    - WORKSPACE=Example/IceCream_Example.xcworkspace
-    - SCHEME=IceCream_Example
-    - SDK=iphonesimulator12.2
-  matrix:
-    - DESTINATION="platform=iOS Simulator,name=iPhone SE,OS=12.2"
-before_install:
-  - pod repo update
-podfile: Example/Podfile
+osx_image: xcode11.3
 script:
-  - set -o pipefail && xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -sdk "$SDK" -destination "$DESTINATION" -configuration Debug ONLY_ACTIVE_ARCH=NO build | xcpretty -c
+  - swift build
 
