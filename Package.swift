@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "IceCream",
     platforms: [
-        .macOS(.v10_12), .iOS(.v10), .tvOS(.v10), .watchOS(.v3)
+        .macOS(.v10_12), .iOS(.v11), .tvOS(.v10), .watchOS(.v3)
     ],
     products: [
         .library(
