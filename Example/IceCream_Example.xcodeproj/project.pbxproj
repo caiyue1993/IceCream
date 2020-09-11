@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0D4EF51B24B228570036FD90 /* OwnersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D4EF51A24B228570036FD90 /* OwnersViewController.swift */; };
+		0DE487FB2509302400396A59 /* OwnerDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE487FA2509302400396A59 /* OwnerDetailViewController.swift */; };
 		6743F6EC202B0CB600912163 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F6EB202B0CB600912163 /* AppDelegate.swift */; };
 		6743F6EE202B0CB600912163 /* DogsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F6ED202B0CB600912163 /* DogsViewController.swift */; };
 		6743F6FE202B0D1400912163 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6743F6FD202B0D1400912163 /* Images.xcassets */; };
@@ -26,6 +27,7 @@
 
 /* Begin PBXFileReference section */
 		0D4EF51A24B228570036FD90 /* OwnersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OwnersViewController.swift; sourceTree = "<group>"; };
+		0DE487FA2509302400396A59 /* OwnerDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OwnerDetailViewController.swift; sourceTree = "<group>"; };
 		6743F6E8202B0CB600912163 /* IceCream_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IceCream_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6743F6EB202B0CB600912163 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6743F6ED202B0CB600912163 /* DogsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DogsViewController.swift; sourceTree = "<group>"; };
@@ -91,6 +93,7 @@
 				6743F6FD202B0D1400912163 /* Images.xcassets */,
 				6743F6EB202B0CB600912163 /* AppDelegate.swift */,
 				6743F6F7202B0CB600912163 /* Info.plist */,
+				0DE487FA2509302400396A59 /* OwnerDetailViewController.swift */,
 			);
 			path = IceCream_Example;
 			sourceTree = "<group>";
@@ -194,6 +197,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6743F6EE202B0CB600912163 /* DogsViewController.swift in Sources */,
+				0DE487FB2509302400396A59 /* OwnerDetailViewController.swift in Sources */,
 				67AA236020B84C9700953F09 /* CatsViewController.swift in Sources */,
 				0D4EF51B24B228570036FD90 /* OwnersViewController.swift in Sources */,
 				67AA236120B84C9700953F09 /* Cat.swift in Sources */,
