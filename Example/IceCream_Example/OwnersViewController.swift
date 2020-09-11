@@ -72,7 +72,24 @@ final class OwnersViewController: UIViewController {
 }
 
 extension OwnersViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard indexPath.row < owners.count else { return }
+        let owner = owners[indexPath.row]
+        let viewController = OwnerDetailViewController(cats: Array(owner.cats))
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+    
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        let addAction = UITableViewRowAction(style: .default, title: "Add cat") { (_, ip) in
+            guard ip.row < self.owners.count else { return }
+            let owner = self.owners[ip.row]
+            let newCat = Cat()
+            newCat.name = "Cat No.\(ip.row)"
+            try! self.realm.write {
+                owner.cats.append(newCat)
+            }
+        }
         let deleteAction = UITableViewRowAction(style: .destructive, title: "Delete") { (_, ip) in
             let alert = UIAlertController(title: NSLocalizedString("caution", comment: "caution"), message: NSLocalizedString("sure_to_delete", comment: "sure_to_delete"), preferredStyle: .alert)
             let deleteAction = UIAlertAction(title: NSLocalizedString("delete", comment: "delete"), style: .destructive, handler: { (action) in
@@ -87,7 +104,7 @@ extension OwnersViewController: UITableViewDelegate {
             alert.addAction(deleteAction)
             self.present(alert, animated: true, completion: nil)
         }
-        return [deleteAction]
+        return [addAction, deleteAction]
     }
 }
 
