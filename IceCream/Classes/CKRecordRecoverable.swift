@@ -13,7 +13,7 @@ public protocol CKRecordRecoverable {
 }
 
 extension CKRecordRecoverable where Self: Object {
-    static func parseFromRecord(record: CKRecord, realm: Realm, notificationToken: NotificationToken?) -> Self? {
+    static func parseFromRecord<U: Object>(record: CKRecord, realm: Realm, notificationToken: NotificationToken?, listType: U.Type) -> Self? {
         let o = Self()
         for prop in o.objectSchema.properties {
             var recordValue: Any?
@@ -57,24 +57,20 @@ extension CKRecordRecoverable where Self: Object {
                     recordValue = list
                 case .object:
                     guard let value = record.value(forKey: prop.name) as? [CKRecord.Reference] else { break }
-                    let list = o.dynamicList(prop.name)
+                    // 这里应该根据 List 去创建一个 unmanaged 版本的 List，而不是使用 dynamicList 获取 managed 版本的 list
+                    // 另外需要考虑的就是类型问题
+                    let list = List<U>()
+//                    guard let list = o.value(forKey: prop.name) as? List<Object> else { break }
+//                    let list = o.dynamicList(prop.name)
                     for reference in value {
                         if let objectClassName = prop.objectClassName,
-                            let schema = realm.schema.objectSchema.first(where: { $0.className == objectClassName }),
-                            let primaryKeyValue = primaryKeyForRecordID(recordID: reference.recordID, schema: schema) {
-                            if let existObject = realm.dynamicObject(ofType: objectClassName, forPrimaryKey: primaryKeyValue) {
-                                /// if object already exists in the local realm database
-                                /// just append it to the list
-                                list.append(existObject)
-                            } else {
-                                // otherwise create a new one
-                                if let notificationToken = notificationToken, let primaryKeyName = schema.primaryKeyProperty?.name {
-                                    realm.beginWrite()
-                                    let object = realm.dynamicCreate(objectClassName, value: [primaryKeyName: primaryKeyValue], update: .modified)
-                                    list.append(object)
-                                    try? realm.commitWrite(withoutNotifying: [notificationToken])
-                                }
-                            }
+                        let schema = realm.schema.objectSchema.first(where: { $0.className == objectClassName }),
+                        let primaryKeyValue = primaryKeyForRecordID(recordID: reference.recordID, schema: schema),
+                        let existObject = realm.object(ofType: listType, forPrimaryKey: primaryKeyValue) {
+                            list.append(existObject)
+                        } else {
+                            let object = realm.create(listType)
+                            list.append(object)
                         }
                     }
                     recordValue = list

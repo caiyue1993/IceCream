@@ -85,7 +85,8 @@ extension OwnersViewController: UITableViewDelegate {
             guard ip.row < self.owners.count else { return }
             let owner = self.owners[ip.row]
             let newCat = Cat()
-            newCat.name = "Cat No.\(ip.row)"
+            newCat.name = "Cat No.\(owner.cats.count)"
+            newCat.age = ip.row
             try! self.realm.write {
                 owner.cats.append(newCat)
             }
