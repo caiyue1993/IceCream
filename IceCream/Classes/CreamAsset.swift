@@ -34,9 +34,7 @@ public class CreamAsset: Object {
     }
 
     /// Where the asset locates in the file system
-    public var filePath: URL {
-        return CreamAsset.creamAssetDefaultURL().appendingPathComponent(uniqueFileName)
-    }
+    lazy public var filePath = CreamAsset.creamAssetDefaultURL().appendingPathComponent(uniqueFileName)
 
     /// Save the given data to local file system
     /// - Parameters:
@@ -135,6 +133,7 @@ public class CreamAsset: Object {
     /// - Returns: The CreamAsset if creates successful
     public static func create(objectID: String, propName: String, url: URL, shouldOverwrite: Bool = true) -> CreamAsset? {
         let creamAsset = CreamAsset(objectID: objectID, propName: propName)
+        creamAsset.filePath = url
         if shouldOverwrite {
             do {
                 try FileManager.default.removeItem(at: creamAsset.filePath)
