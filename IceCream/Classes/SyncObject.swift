@@ -15,19 +15,27 @@ import CloudKit
 /// 2. it detects the changeSets of Realm Database and directly talks to it.
 /// 3. it hands over to SyncEngine so that it can talk to CloudKit.
 
-public final class SyncObject<T, U> where T: Object & CKRecordConvertible & CKRecordRecoverable, U: Object {
+public final class SyncObject<T, U, V, W> where T: Object & CKRecordConvertible & CKRecordRecoverable, U: Object, V: Object, W: Object {
     
     /// Notifications are delivered as long as a reference is held to the returned notification token. We should keep a strong reference to this token on the class registering for updates, as notifications are automatically unregistered when the notification token is deallocated.
     /// For more, reference is here: https://realm.io/docs/swift/latest/#notifications
     private var notificationToken: NotificationToken?
     
     public var pipeToEngine: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecord.ID]) -> ())?
+//    let listNameTypePairStore = ListNameTypePairStore(className: T.className())
     
     public let realmConfiguration: Realm.Configuration
     
-    public init(realmConfiguration: Realm.Configuration = Realm.Configuration.defaultConfiguration) {
+    public init(
+        realmConfiguration: Realm.Configuration = .defaultConfiguration,
+        type: T.Type,
+        uObjectClassType: U.Type? = nil,
+        vObjectClassType: V.Type? = nil,
+        wObjectClassType: W.Type? = nil
+    ) {
         self.realmConfiguration = realmConfiguration
     }
+    
 }
 
 // MARK: - Zone information
@@ -72,7 +80,7 @@ extension SyncObject: Syncable {
     public func add(record: CKRecord) {
         BackgroundWorker.shared.start {
             let realm = try! Realm(configuration: self.realmConfiguration)
-            guard let object = T.parseFromRecord(record: record, realm: realm, notificationToken: self.notificationToken, listType: U.self) else {
+            guard let object = T.parseFromRecord(record: record, realm: realm, notificationToken: self.notificationToken, uListType: U.self, vListType: V.self, wListType: W.self) else {
                 print("There is something wrong with the converson from cloud record to local object")
                 return
             }
