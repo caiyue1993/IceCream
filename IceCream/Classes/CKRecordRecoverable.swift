@@ -13,7 +13,7 @@ public protocol CKRecordRecoverable {
 }
 
 extension CKRecordRecoverable where Self: Object {
-    static func parseFromRecord<U: Object>(record: CKRecord, realm: Realm, notificationToken: NotificationToken?, listType: U.Type) -> Self? {
+    static func parseFromRecord<U: Object, V: Object, W: Object>(record: CKRecord, realm: Realm, notificationToken: NotificationToken?, uListType: U.Type, vListType: V.Type, wListType: W.Type) -> Self? {
         let o = Self()
         for prop in o.objectSchema.properties {
             var recordValue: Any?
@@ -59,21 +59,61 @@ extension CKRecordRecoverable where Self: Object {
                     guard let value = record.value(forKey: prop.name) as? [CKRecord.Reference] else { break }
                     // 这里应该根据 List 去创建一个 unmanaged 版本的 List，而不是使用 dynamicList 获取 managed 版本的 list
                     // 另外需要考虑的就是类型问题
-                    let list = List<U>()
+                    let uList = List<U>()
+                    let vList = List<V>()
+                    let wList = List<W>()
+                    
 //                    guard let list = o.value(forKey: prop.name) as? List<Object> else { break }
 //                    let list = o.dynamicList(prop.name)
                     for reference in value {
                         if let objectClassName = prop.objectClassName,
-                        let schema = realm.schema.objectSchema.first(where: { $0.className == objectClassName }),
-                        let primaryKeyValue = primaryKeyForRecordID(recordID: reference.recordID, schema: schema),
-                        let existObject = realm.object(ofType: listType, forPrimaryKey: primaryKeyValue) {
-                            list.append(existObject)
-                        } else {
-                            let object = realm.create(listType)
-                            list.append(object)
+                           let schema = realm.schema.objectSchema.first(where: { $0.className == objectClassName }),
+                           let primaryKeyValue = primaryKeyForRecordID(recordID: reference.recordID, schema: schema) {
+                            
+                            // 其实在这里一个数组里所有的 className 都只会是一种
+                            
+                            if schema.className == uListType.className() {
+                                if let existObject = realm.object(ofType: uListType, forPrimaryKey: primaryKeyValue) {
+                                    uList.append(existObject)
+                                } else {
+                                    let object = realm.create(uListType)
+                                    uList.append(object)
+                                }
+                            }
+                            
+                            if schema.className == vListType.className() {
+                                if let existObject = realm.object(ofType: vListType, forPrimaryKey: primaryKeyValue) {
+                                    vList.append(existObject)
+                                } else {
+                                    let object = realm.create(vListType)
+                                    vList.append(object)
+                                }
+                            }
+                            
+                            if schema.className == wListType.className() {
+                                if let existObject = realm.object(ofType: wListType, forPrimaryKey: primaryKeyValue) {
+                                    wList.append(existObject)
+                                } else {
+                                    let object = realm.create(wListType)
+                                    wList.append(object)
+                                }
+                            }
+                            
                         }
                     }
-                    recordValue = list
+                    
+                    if prop.objectClassName == uListType.className() {
+                        recordValue = uList
+                    }
+                    
+                    if prop.objectClassName == vListType.className() {
+                        recordValue = vList
+                    }
+                    
+                    if prop.objectClassName == wListType.className() {
+                        recordValue = wList
+                    }
+                    
                 default:
                     break
                 }
