@@ -69,6 +69,12 @@ extension CKRecordConvertible where Self: Object {
             } else {
                 assertionFailure("\(primaryKeyProperty.name)'s value should be Int type")
             }
+        case .objectId:
+            if let primaryValueObjectId = self[primaryKeyProperty.name] as? ObjectId {
+                return CKRecord.ID(recordName: "\(primaryValueObjectId.stringValue)", zoneID: Self.zoneID)
+            } else {
+                assertionFailure("\(primaryKeyProperty.name)'s value should be ObjectId type")
+            }
         default:
             assertionFailure("Primary key should be String or Int")
         }
@@ -112,6 +118,14 @@ extension CKRecordConvertible where Self: Object {
                 case .date:
                     guard let list = item as? List<Date>, !list.isEmpty else { break }
                     let array = Array(list)
+                    r[prop.name] = array as CKRecordValue
+                case .decimal128:
+                    guard let list = item as? List<Decimal128>, !list.isEmpty else { break }
+                    let array = Array(list.map { $0.stringValue })
+                    r[prop.name] = array as CKRecordValue
+                case .objectId:
+                    guard let list = item as? List<ObjectId>, !list.isEmpty else { break }
+                    let array = Array(list.map { $0.stringValue })
                     r[prop.name] = array as CKRecordValue
                 default:
                     break
