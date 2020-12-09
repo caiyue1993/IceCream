@@ -9,7 +9,7 @@ target 'IceCream' do
   use_frameworks!
 
   # Pods for IceCream
-  pod 'RealmSwift', '< 5.0'
+  pod 'RealmSwift'
 
 end
 
@@ -19,7 +19,7 @@ target 'IceCream-macOS' do
   use_frameworks!
 
   # Pods for IceCream-macOS
-  pod 'RealmSwift', '< 5.0'
+  pod 'RealmSwift'
 
 end
 
@@ -29,7 +29,7 @@ target 'IceCream-tvOS' do
   use_frameworks!
 
   # Pods for IceCream-tvOS
-  pod 'RealmSwift', '< 5.0'
+  pod 'RealmSwift'
 
 end
 
@@ -39,6 +39,6 @@ target 'IceCream-watchOS' do
   use_frameworks!
 
   # Pods for IceCream-watchOS
-  pod 'RealmSwift', '< 5.0'
+  pod 'RealmSwift'
 
 end
