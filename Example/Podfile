@@ -1,0 +1,15 @@
+source 'https://github.com/CocoaPods/Specs.git'
+
+# Uncomment the next line to define a global platform for your project
+platform :ios, '11.2'
+
+target 'IceCream_Example' do
+  # Comment the next line if you don't want to use dynamic frameworks
+  use_frameworks!
+
+  # Pods for IceCream_Example
+  pod 'RealmSwift', '< 5.0'
+  pod 'RxRealm', '< 3.0'
+  pod 'IceCream', :git => 'https://github.com/owenzhao/IceCream.git'
+
+end

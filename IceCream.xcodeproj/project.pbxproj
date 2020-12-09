@@ -16,11 +16,15 @@
 		0DF861D822D0563700B20AEA /* PublicDatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673B1E6D2273EECF00EB4FEE /* PublicDatabaseManager.swift */; };
 		0DF861D922D0563800B20AEA /* PublicDatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673B1E6D2273EECF00EB4FEE /* PublicDatabaseManager.swift */; };
 		0DF861DA22D0563800B20AEA /* PublicDatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673B1E6D2273EECF00EB4FEE /* PublicDatabaseManager.swift */; };
+		36FC39571852BD267BA23599 /* Pods_IceCream_tvOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5179FBAA60BDFCC46F69C77 /* Pods_IceCream_tvOS.framework */; };
 		41767BFD209863BA00178513 /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41767BFC209863BA00178513 /* SyncEngine.swift */; };
 		474FF0E32284B6F700921CF6 /* BackgroundWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 474FF0E22284B6F700921CF6 /* BackgroundWorker.swift */; };
 		474FF0E42284B72400921CF6 /* BackgroundWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 474FF0E22284B6F700921CF6 /* BackgroundWorker.swift */; };
 		474FF0E52284B72400921CF6 /* BackgroundWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 474FF0E22284B6F700921CF6 /* BackgroundWorker.swift */; };
 		474FF0E62284B72500921CF6 /* BackgroundWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 474FF0E22284B6F700921CF6 /* BackgroundWorker.swift */; };
+		5BD43BF5A5205EE48D013F4B /* Pods_IceCream_watchOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD4918F156BAC82C58ED530F /* Pods_IceCream_watchOS.framework */; };
+		6122BC0EBD2087CD0B1FDC1B /* Pods_IceCream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30A2B25BBE236ACAC0FB185A /* Pods_IceCream.framework */; };
+		642A0BB8DBB04BC6A80CCA93 /* Pods_IceCream_macOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 427FA3C91F0D418228AFD8FB /* Pods_IceCream_macOS.framework */; };
 		673B1E6E2273EECF00EB4FEE /* DatabaseManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673B1E6B2273EECE00EB4FEE /* DatabaseManagerProtocol.swift */; };
 		673B1E6F2273EECF00EB4FEE /* PrivateDatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673B1E6C2273EECF00EB4FEE /* PrivateDatabaseManager.swift */; };
 		673B1E702273EECF00EB4FEE /* PublicDatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673B1E6D2273EECF00EB4FEE /* PublicDatabaseManager.swift */; };
@@ -39,8 +43,6 @@
 		6747815E213BEDD6005C132B /* Notification+Name.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F725202B0F9400912163 /* Notification+Name.swift */; };
 		6747815F213BEDD6005C132B /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41767BFC209863BA00178513 /* SyncEngine.swift */; };
 		67478160213BEDD6005C132B /* SyncObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6767988E20BCEEB0008F98AD /* SyncObject.swift */; };
-		67478163213BEE0D005C132B /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67478161213BEE0D005C132B /* RealmSwift.framework */; };
-		67478164213BEE0D005C132B /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67478162213BEE0D005C132B /* Realm.framework */; };
 		67478165213BEE17005C132B /* IceCream.h in Headers */ = {isa = PBXBuildFile; fileRef = 6743F715202B0F0F00912163 /* IceCream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		67478166213BEF0E005C132B /* Syncable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6773DF0220BD2CE10019FF3A /* Syncable.swift */; };
 		67478167213BEF0E005C132B /* CKRecordConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6773DEFF20BD2CBD0019FF3A /* CKRecordConvertible.swift */; };
@@ -52,15 +54,11 @@
 		6747816E213BEF0E005C132B /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41767BFC209863BA00178513 /* SyncEngine.swift */; };
 		6747816F213BEF0E005C132B /* SyncObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6767988E20BCEEB0008F98AD /* SyncObject.swift */; };
 		67478170213BEF16005C132B /* IceCream.h in Headers */ = {isa = PBXBuildFile; fileRef = 6743F715202B0F0F00912163 /* IceCream.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		67478173213BEF2A005C132B /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67478171213BEF2A005C132B /* Realm.framework */; };
-		67478174213BEF2A005C132B /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67478172213BEF2A005C132B /* RealmSwift.framework */; };
 		67478175213BF1F1005C132B /* IceCream.h in Headers */ = {isa = PBXBuildFile; fileRef = 6743F715202B0F0F00912163 /* IceCream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6767988F20BCEEB0008F98AD /* SyncObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6767988E20BCEEB0008F98AD /* SyncObject.swift */; };
 		6773DF0020BD2CBD0019FF3A /* CKRecordRecoverable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6773DEFE20BD2CBD0019FF3A /* CKRecordRecoverable.swift */; };
 		6773DF0120BD2CBD0019FF3A /* CKRecordConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6773DEFF20BD2CBD0019FF3A /* CKRecordConvertible.swift */; };
 		6773DF0320BD2CE20019FF3A /* Syncable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6773DF0220BD2CE10019FF3A /* Syncable.swift */; };
-		67FE320F202B505000125432 /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67FE320E202B505000125432 /* Realm.framework */; };
-		67FE3211202B505600125432 /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67FE3210202B505600125432 /* RealmSwift.framework */; };
 		D826ADC8212189F2002B5C0F /* Syncable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6773DF0220BD2CE10019FF3A /* Syncable.swift */; };
 		D826ADC9212189F2002B5C0F /* CKRecordConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6773DEFF20BD2CBD0019FF3A /* CKRecordConvertible.swift */; };
 		D826ADCA212189F2002B5C0F /* CKRecordRecoverable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6773DEFE20BD2CBD0019FF3A /* CKRecordRecoverable.swift */; };
@@ -70,13 +68,59 @@
 		D826ADCF212189F2002B5C0F /* Notification+Name.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F725202B0F9400912163 /* Notification+Name.swift */; };
 		D826ADD0212189F2002B5C0F /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41767BFC209863BA00178513 /* SyncEngine.swift */; };
 		D826ADD1212189F2002B5C0F /* SyncObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6767988E20BCEEB0008F98AD /* SyncObject.swift */; };
-		D826ADD421218A1C002B5C0F /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D826ADD221218A1C002B5C0F /* RealmSwift.framework */; };
-		D826ADD521218A1C002B5C0F /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D826ADD321218A1C002B5C0F /* Realm.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		DCCB9306251C2F1100BE89F3 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DCCB930B251C2F7400BE89F3 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DCCB9310251C2F9B00BE89F3 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DCCB9315251C2FB600BE89F3 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		1319AAF7FBC31F1A4EE644FF /* Pods-IceCream.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IceCream.release.xcconfig"; path = "Target Support Files/Pods-IceCream/Pods-IceCream.release.xcconfig"; sourceTree = "<group>"; };
+		30A2B25BBE236ACAC0FB185A /* Pods_IceCream.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IceCream.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		41767BFC209863BA00178513 /* SyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngine.swift; sourceTree = "<group>"; };
+		427FA3C91F0D418228AFD8FB /* Pods_IceCream_macOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IceCream_macOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		474FF0E22284B6F700921CF6 /* BackgroundWorker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundWorker.swift; sourceTree = "<group>"; };
+		4AAD4DA8A37FDE390A25887A /* Pods-IceCream.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IceCream.debug.xcconfig"; path = "Target Support Files/Pods-IceCream/Pods-IceCream.debug.xcconfig"; sourceTree = "<group>"; };
+		5651AACDCC7DDD6E57F23A6C /* Pods-IceCream-watchOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IceCream-watchOS.release.xcconfig"; path = "Target Support Files/Pods-IceCream-watchOS/Pods-IceCream-watchOS.release.xcconfig"; sourceTree = "<group>"; };
 		673B1E6B2273EECE00EB4FEE /* DatabaseManagerProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseManagerProtocol.swift; sourceTree = "<group>"; };
 		673B1E6C2273EECF00EB4FEE /* PrivateDatabaseManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateDatabaseManager.swift; sourceTree = "<group>"; };
 		673B1E6D2273EECF00EB4FEE /* PublicDatabaseManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicDatabaseManager.swift; sourceTree = "<group>"; };
@@ -100,9 +144,16 @@
 		6773DF0220BD2CE10019FF3A /* Syncable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Syncable.swift; sourceTree = "<group>"; };
 		67FE320E202B505000125432 /* Realm.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Realm.framework; path = Carthage/Build/iOS/Realm.framework; sourceTree = "<group>"; };
 		67FE3210202B505600125432 /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealmSwift.framework; path = Carthage/Build/iOS/RealmSwift.framework; sourceTree = "<group>"; };
+		87F0020D4F21E383B1FF06C3 /* Pods-IceCream-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IceCream-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-IceCream-tvOS/Pods-IceCream-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
+		A5179FBAA60BDFCC46F69C77 /* Pods_IceCream_tvOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IceCream_tvOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A6A1B41F928E1EDD91FAE156 /* Pods-IceCream-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IceCream-tvOS.release.xcconfig"; path = "Target Support Files/Pods-IceCream-tvOS/Pods-IceCream-tvOS.release.xcconfig"; sourceTree = "<group>"; };
+		AD4918F156BAC82C58ED530F /* Pods_IceCream_watchOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IceCream_watchOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C99A30727D8BF938769270FA /* Pods-IceCream-watchOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IceCream-watchOS.debug.xcconfig"; path = "Target Support Files/Pods-IceCream-watchOS/Pods-IceCream-watchOS.debug.xcconfig"; sourceTree = "<group>"; };
 		D826ADB1212189DF002B5C0F /* IceCream.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IceCream.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D826ADD221218A1C002B5C0F /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealmSwift.framework; path = Carthage/Build/Mac/RealmSwift.framework; sourceTree = "<group>"; };
 		D826ADD321218A1C002B5C0F /* Realm.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Realm.framework; path = Carthage/Build/Mac/Realm.framework; sourceTree = "<group>"; };
+		DA5044E9C9B3FDA7A98C4AC0 /* Pods-IceCream-macOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IceCream-macOS.debug.xcconfig"; path = "Target Support Files/Pods-IceCream-macOS/Pods-IceCream-macOS.debug.xcconfig"; sourceTree = "<group>"; };
+		F89D59ADB839B383602C2C8D /* Pods-IceCream-macOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IceCream-macOS.release.xcconfig"; path = "Target Support Files/Pods-IceCream-macOS/Pods-IceCream-macOS.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,8 +161,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				67FE320F202B505000125432 /* Realm.framework in Frameworks */,
-				67FE3211202B505600125432 /* RealmSwift.framework in Frameworks */,
+				6122BC0EBD2087CD0B1FDC1B /* Pods_IceCream.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,8 +169,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				67478163213BEE0D005C132B /* RealmSwift.framework in Frameworks */,
-				67478164213BEE0D005C132B /* Realm.framework in Frameworks */,
+				5BD43BF5A5205EE48D013F4B /* Pods_IceCream_watchOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -128,8 +177,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				67478173213BEF2A005C132B /* Realm.framework in Frameworks */,
-				67478174213BEF2A005C132B /* RealmSwift.framework in Frameworks */,
+				36FC39571852BD267BA23599 /* Pods_IceCream_tvOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -137,20 +185,36 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D826ADD421218A1C002B5C0F /* RealmSwift.framework in Frameworks */,
-				D826ADD521218A1C002B5C0F /* Realm.framework in Frameworks */,
+				642A0BB8DBB04BC6A80CCA93 /* Pods_IceCream_macOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		078B49A653C2AE2C9EF24189 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				4AAD4DA8A37FDE390A25887A /* Pods-IceCream.debug.xcconfig */,
+				1319AAF7FBC31F1A4EE644FF /* Pods-IceCream.release.xcconfig */,
+				DA5044E9C9B3FDA7A98C4AC0 /* Pods-IceCream-macOS.debug.xcconfig */,
+				F89D59ADB839B383602C2C8D /* Pods-IceCream-macOS.release.xcconfig */,
+				87F0020D4F21E383B1FF06C3 /* Pods-IceCream-tvOS.debug.xcconfig */,
+				A6A1B41F928E1EDD91FAE156 /* Pods-IceCream-tvOS.release.xcconfig */,
+				C99A30727D8BF938769270FA /* Pods-IceCream-watchOS.debug.xcconfig */,
+				5651AACDCC7DDD6E57F23A6C /* Pods-IceCream-watchOS.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		6743F708202B0F0F00912163 = {
 			isa = PBXGroup;
 			children = (
 				6743F714202B0F0F00912163 /* IceCream */,
 				6743F713202B0F0F00912163 /* Products */,
 				67FE320D202B505000125432 /* Frameworks */,
+				078B49A653C2AE2C9EF24189 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -207,6 +271,10 @@
 				D826ADD221218A1C002B5C0F /* RealmSwift.framework */,
 				67FE3210202B505600125432 /* RealmSwift.framework */,
 				67FE320E202B505000125432 /* Realm.framework */,
+				30A2B25BBE236ACAC0FB185A /* Pods_IceCream.framework */,
+				427FA3C91F0D418228AFD8FB /* Pods_IceCream_macOS.framework */,
+				A5179FBAA60BDFCC46F69C77 /* Pods_IceCream_tvOS.framework */,
+				AD4918F156BAC82C58ED530F /* Pods_IceCream_watchOS.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -253,10 +321,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6743F71A202B0F0F00912163 /* Build configuration list for PBXNativeTarget "IceCream" */;
 			buildPhases = (
+				ECA246ADBFC15AC8C75716AB /* [CP] Check Pods Manifest.lock */,
 				6743F70D202B0F0F00912163 /* Sources */,
 				6743F70E202B0F0F00912163 /* Frameworks */,
 				6743F70F202B0F0F00912163 /* Headers */,
 				6743F710202B0F0F00912163 /* Resources */,
+				DCCB9306251C2F1100BE89F3 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -271,10 +341,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 67478149213BCE46005C132B /* Build configuration list for PBXNativeTarget "IceCream-watchOS" */;
 			buildPhases = (
+				D40B742AAA5734DA256D1AE3 /* [CP] Check Pods Manifest.lock */,
 				6747813D213BCE46005C132B /* Sources */,
 				6747813E213BCE46005C132B /* Frameworks */,
 				6747813F213BCE46005C132B /* Headers */,
 				67478140213BCE46005C132B /* Resources */,
+				DCCB9310251C2F9B00BE89F3 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -289,10 +361,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 67478154213BE66C005C132B /* Build configuration list for PBXNativeTarget "IceCream-tvOS" */;
 			buildPhases = (
+				34DA3C8179073C39765CF5FB /* [CP] Check Pods Manifest.lock */,
 				6747814A213BE66C005C132B /* Sources */,
 				6747814B213BE66C005C132B /* Frameworks */,
 				6747814C213BE66C005C132B /* Headers */,
 				6747814D213BE66C005C132B /* Resources */,
+				DCCB9315251C2FB600BE89F3 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -307,10 +381,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D826ADC6212189E2002B5C0F /* Build configuration list for PBXNativeTarget "IceCream-macOS" */;
 			buildPhases = (
+				A4DECBB1AE7A584D354AE137 /* [CP] Check Pods Manifest.lock */,
 				D826ADAC212189DF002B5C0F /* Sources */,
 				D826ADAD212189DF002B5C0F /* Frameworks */,
 				D826ADAE212189DF002B5C0F /* Headers */,
 				D826ADAF212189DF002B5C0F /* Resources */,
+				DCCB930B251C2F7400BE89F3 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -402,6 +478,97 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		34DA3C8179073C39765CF5FB /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-IceCream-tvOS-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A4DECBB1AE7A584D354AE137 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-IceCream-macOS-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D40B742AAA5734DA256D1AE3 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-IceCream-watchOS-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		ECA246ADBFC15AC8C75716AB /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-IceCream-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		6743F70D202B0F0F00912163 /* Sources */ = {
@@ -608,6 +775,7 @@
 		};
 		6743F71B202B0F0F00912163 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4AAD4DA8A37FDE390A25887A /* Pods-IceCream.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
@@ -618,6 +786,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
+					"$(PROJECT_DIR)/IceCream",
 				);
 				INFOPLIST_FILE = IceCream/Info.plist;
 				INFOPLIST_OUTPUT_FORMAT = binary;
@@ -633,6 +802,7 @@
 		};
 		6743F71C202B0F0F00912163 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1319AAF7FBC31F1A4EE644FF /* Pods-IceCream.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
@@ -643,6 +813,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
+					"$(PROJECT_DIR)/IceCream",
 				);
 				INFOPLIST_FILE = IceCream/Info.plist;
 				INFOPLIST_OUTPUT_FORMAT = binary;
@@ -658,13 +829,14 @@
 		};
 		67478147213BCE46005C132B /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C99A30727D8BF938769270FA /* Pods-IceCream-watchOS.debug.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = RCMHACTPLY;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -687,13 +859,14 @@
 		};
 		67478148213BCE46005C132B /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5651AACDCC7DDD6E57F23A6C /* Pods-IceCream-watchOS.release.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = RCMHACTPLY;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -716,12 +889,13 @@
 		};
 		67478155213BE66C005C132B /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 87F0020D4F21E383B1FF06C3 /* Pods-IceCream-tvOS.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = RCMHACTPLY;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -744,12 +918,13 @@
 		};
 		67478156213BE66C005C132B /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A6A1B41F928E1EDD91FAE156 /* Pods-IceCream-tvOS.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = RCMHACTPLY;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -772,6 +947,7 @@
 		};
 		D826ADC2212189E0002B5C0F /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DA5044E9C9B3FDA7A98C4AC0 /* Pods-IceCream-macOS.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
@@ -780,7 +956,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = PKB64GWHPG;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -803,6 +979,7 @@
 		};
 		D826ADC3212189E0002B5C0F /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F89D59ADB839B383602C2C8D /* Pods-IceCream-macOS.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
@@ -811,7 +988,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = PKB64GWHPG;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
