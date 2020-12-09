@@ -204,7 +204,6 @@
 				C99A30727D8BF938769270FA /* Pods-IceCream-watchOS.debug.xcconfig */,
 				5651AACDCC7DDD6E57F23A6C /* Pods-IceCream-watchOS.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
