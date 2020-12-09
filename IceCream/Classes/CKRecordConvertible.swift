@@ -152,6 +152,10 @@ extension CKRecordConvertible where Self: Object {
                     r[prop.name] = nil
                 }
                 // To-many relationship is not supported yet.
+            case .decimal128:
+                r[prop.name] = (item as? Decimal128)?.stringValue as CKRecordValue?
+            case .objectId:
+                r[prop.name] = (item as? ObjectId)?.stringValue as CKRecordValue?
             default:
                 break
             }
