@@ -66,7 +66,6 @@ class DogsViewController: UIViewController {
     @objc func add() {
         let dog = Dog()
         dog.name = "Dog Number " + "\(dogs.count)"
-        dog.age = dogs.count + 1
         dog.owner = jim
         
         let data = UIImage(named: dog.age % 2 == 1 ? "smile_dog" : "tongue_dog")!.jpegData(compressionQuality: 1.0)
@@ -133,7 +132,8 @@ extension DogsViewController: UITableViewDataSource {
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell")
-        cell?.textLabel?.text = dogs[indexPath.row].name + " Age: \(dogs[indexPath.row].age)" + " Owner: " + (dogs[indexPath.row].owner?.name ?? "homeless")
+        let price = String(format: "%.2f", dogs[indexPath.row].price.doubleValue)
+        cell?.textLabel?.text = dogs[indexPath.row].name + " Age: \(dogs[indexPath.row].age)" + " Price: \(price)" + " Owner: " + (dogs[indexPath.row].owner?.name ?? "homeless")
         if let data = dogs[indexPath.row].avatar?.storedData() {
             cell?.imageView?.image = UIImage(data: data)
         } else {

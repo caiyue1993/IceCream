@@ -65,7 +65,6 @@ class CatsViewController: UIViewController {
     @objc func add() {
         let cat = Cat()
         cat.name = "Cat Number " + "\(cats.count)"
-        cat.age = cats.count + 1
         
         let data = UIImage(named: cat.age % 2 == 1 ? "heart_cat" : "dull_cat")!.jpegData(compressionQuality: 1.0)
         cat.avatar = CreamAsset.create(object: cat, propName: Cat.AVATAR_KEY, data: data!)
@@ -133,7 +132,8 @@ extension CatsViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell")
-        cell?.textLabel?.text = cats[indexPath.row].name + " Age: \(cats[indexPath.row].age)"
+        let price = String(format: "%.2f", cats[indexPath.row].price.doubleValue)
+        cell?.textLabel?.text = cats[indexPath.row].name + " Age: \(cats[indexPath.row].age)" + " Price: \(price)"
         if let data = cats[indexPath.row].avatar?.storedData() {
             cell?.imageView?.image = UIImage(data: data)
         } else {

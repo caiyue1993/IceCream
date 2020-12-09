@@ -11,7 +11,7 @@ import CloudKit
 import IceCream
 
 class Person: Object {
-    @objc dynamic var id = NSUUID().uuidString
+    @objc dynamic var id = ObjectId.generate()
     @objc dynamic var name = "Jim"
     @objc dynamic var isDeleted = false
     
