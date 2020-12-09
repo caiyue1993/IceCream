@@ -1,26 +1,35 @@
 PODS:
   - IceCream (1.13.2):
     - RealmSwift
-  - Realm (4.4.1):
-    - Realm/Headers (= 4.4.1)
-  - Realm/Headers (4.4.1)
-  - RealmSwift (4.4.1):
-    - Realm (= 4.4.1)
-  - RxRealm (2.0.0):
-    - RealmSwift (~> 4.0)
-    - RxSwift (~> 5.0)
+  - Realm (10.3.0):
+    - Realm/Headers (= 10.3.0)
+  - Realm/Headers (10.3.0)
+  - RealmSwift (10.3.0):
+    - Realm (= 10.3.0)
+  - RxCocoa (5.1.1):
+    - RxRelay (~> 5)
+    - RxSwift (~> 5)
+  - RxRealm (4.0.2):
+    - Realm (~> 10.2)
+    - RealmSwift (~> 10.2)
+    - RxCocoa (~> 5.1)
+    - RxSwift (~> 5.1)
+  - RxRelay (5.1.1):
+    - RxSwift (~> 5)
   - RxSwift (5.1.1)
 
 DEPENDENCIES:
   - IceCream (from `https://github.com/owenzhao/IceCream.git`)
-  - RealmSwift (< 5.0)
-  - RxRealm (< 3.0)
+  - RealmSwift
+  - RxRealm
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
     - Realm
     - RealmSwift
+    - RxCocoa
     - RxRealm
+    - RxRelay
     - RxSwift
 
 EXTERNAL SOURCES:
@@ -29,16 +38,18 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   IceCream:
-    :commit: 00c465ad301d697639c8742e30ad7647c927bc4a
+    :commit: 58a3c4735ccde1cea068623696a58d35cf19628a
     :git: https://github.com/owenzhao/IceCream.git
 
 SPEC CHECKSUMS:
   IceCream: 9335dfa136e260ff4ba1b969a49061f5661441d3
-  Realm: 4eb04d7487bd43c0581256f40b424eafb711deff
-  RealmSwift: 3eb8924ff7100df5928c7602f71d0fec51e7c9c5
-  RxRealm: 900f5c7e6f0a2d6527b56eaf7283f3035ec1e8ba
+  Realm: 7957567daedece88d04866cdea419a5975f78e1b
+  RealmSwift: 8cc707e87a4ed4f36e76312ae4f53cc1265d9bad
+  RxCocoa: 32065309a38d29b5b0db858819b5bf9ef038b601
+  RxRealm: cc14831d5527f10fbfe547d0922cae129a07ba9d
+  RxRelay: d77f7d771495f43c556cbc43eebd1bb54d01e8e9
   RxSwift: 81470a2074fa8780320ea5fe4102807cb7118178
 
-PODFILE CHECKSUM: 2c73610f82d3135ce5012678e829f5967d84ea22
+PODFILE CHECKSUM: b4a4f645b7fe8c214f7ac4c0ebf09bab30a26e5c
 
 COCOAPODS: 1.10.0
