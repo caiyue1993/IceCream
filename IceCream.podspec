@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'IceCream'
-  s.version          = '10.0.0'
+  s.version          = '10.1.0'
   s.summary          = 'Sync Realm with CloudKit'
   s.description      = <<-DESC
   Sync Realm Database with CloudKit, written in Swift. It works just like magic.
