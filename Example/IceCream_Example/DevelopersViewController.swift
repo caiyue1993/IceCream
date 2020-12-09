@@ -8,14 +8,10 @@
 
 import UIKit
 import RealmSwift
-import RxRealm
-import RxSwift
 
 class DevelopersViewController: UIViewController {
-
-    var developers: [Person] = []
-    let bag = DisposeBag()
-    
+    var notificationToken: NotificationToken? = nil
+    var developers:Results<Person>!
     let realm = try! Realm()
     
     lazy var addBarItem: UIBarButtonItem = {
@@ -51,23 +47,42 @@ class DevelopersViewController: UIViewController {
         
         /// Results instances are live, auto-updating views into the underlying data, which means results never have to be re-fetched.
         /// https://realm.io/docs/swift/latest/#objects-with-primary-keys
-        let developers = realm.objects(Person.self)
+        developers = realm.objects(Person.self)
+            .filter("isDeleted = false")
+            .sorted(byKeyPath: "id")
         
-        Observable.array(from: developers).subscribe(onNext: { (developers) in
-            /// When developers data changes in Realm, the following code will be executed
-            /// It works like magic.
-            self.developers = developers.filter { !$0.isDeleted }
-            self.tableView.reloadData()
-        }).disposed(by: bag)
+        notificationToken = developers.observe({ [weak self] (changes) in
+            guard let tableView = self?.tableView else { return }
+            
+            switch changes {
+            case .initial(_):
+                tableView.reloadData()
+            case .update(_, deletions: let deletions, insertions: let insertions, modifications: let modifications):
+                tableView.beginUpdates()
+                tableView.deleteRows(at: deletions.map({ IndexPath(row: $0, section: 0)}),
+                                     with: .automatic)
+                tableView.insertRows(at: insertions.map({ IndexPath(row: $0, section: 0) }),
+                                     with: .automatic)
+                tableView.reloadRows(at: modifications.map({ IndexPath(row: $0, section: 0) }),
+                                     with: .automatic)
+                tableView.endUpdates()
+            case .error(let error):
+                fatalError("\(error)")
+            }
+        })
     }
     
     @objc func add() {
         let user = Person()
-        user.name = "Yue Cai"
+        user.name = String(format: "Smith %0d", developers.count + 1)
         
         try! realm.write {
             realm.add(user)
         }
+    }
+    
+    deinit {
+        notificationToken?.invalidate()
     }
 }
 

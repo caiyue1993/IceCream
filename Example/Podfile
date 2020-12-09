@@ -8,8 +8,8 @@ target 'IceCream_Example' do
   use_frameworks!
 
   # Pods for IceCream_Example
-  pod 'RealmSwift'
-  pod 'RxRealm'
+#  pod 'RealmSwift'
+#  pod 'RxRealm'
   pod 'IceCream', :git => 'https://github.com/owenzhao/IceCream.git'
 
 end

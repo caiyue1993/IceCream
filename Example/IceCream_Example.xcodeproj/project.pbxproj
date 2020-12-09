@@ -19,6 +19,7 @@
 		67AA236120B84C9700953F09 /* Cat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67AA235F20B84C9700953F09 /* Cat.swift */; };
 		67AA236320B84CB600953F09 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67AA236220B84CB600953F09 /* TabBarViewController.swift */; };
 		DCD5D3B82580BF0B00E22B49 /* Pods_IceCream_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCD5D3B72580BF0B00E22B49 /* Pods_IceCream_Example.framework */; };
+		DCD5D4172580F76E00E22B49 /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCD5D4162580F76E00E22B49 /* NetworkExtension.framework */; };
 		EDF28E968C4FD606509808A9 /* Pods_IceCream_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D04995398F63B9DF9887267 /* Pods_IceCream_Example.framework */; };
 /* End PBXBuildFile section */
 
@@ -40,6 +41,7 @@
 		67AA236220B84CB600953F09 /* TabBarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		7522B4B64381F9129D09ACA5 /* Pods-IceCream_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IceCream_Example.debug.xcconfig"; path = "Target Support Files/Pods-IceCream_Example/Pods-IceCream_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		DCD5D3B72580BF0B00E22B49 /* Pods_IceCream_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pods_IceCream_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DCD5D4162580F76E00E22B49 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
 		E2A377CFE800E1DB155BCECB /* Pods-IceCream_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IceCream_Example.release.xcconfig"; path = "Target Support Files/Pods-IceCream_Example/Pods-IceCream_Example.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -49,6 +51,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DCD5D3B82580BF0B00E22B49 /* Pods_IceCream_Example.framework in Frameworks */,
+				DCD5D4172580F76E00E22B49 /* NetworkExtension.framework in Frameworks */,
 				6743F707202B0D4500912163 /* CloudKit.framework in Frameworks */,
 				EDF28E968C4FD606509808A9 /* Pods_IceCream_Example.framework in Frameworks */,
 			);
@@ -97,6 +100,7 @@
 		6743F705202B0D4500912163 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DCD5D4162580F76E00E22B49 /* NetworkExtension.framework */,
 				DCD5D3B72580BF0B00E22B49 /* Pods_IceCream_Example.framework */,
 				6743F706202B0D4500912163 /* CloudKit.framework */,
 				3D04995398F63B9DF9887267 /* Pods_IceCream_Example.framework */,
@@ -200,19 +204,11 @@
 				"${PODS_ROOT}/Target Support Files/Pods-IceCream_Example/Pods-IceCream_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
-				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
-				"${BUILT_PRODUCTS_DIR}/RxRealm/RxRealm.framework",
-				"${BUILT_PRODUCTS_DIR}/RxRelay/RxRelay.framework",
-				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxRealm.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxRelay.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

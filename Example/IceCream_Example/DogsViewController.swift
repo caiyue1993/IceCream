@@ -9,14 +9,12 @@
 import UIKit
 import RealmSwift
 import IceCream
-import RxRealm
-import RxSwift
 
 class DogsViewController: UIViewController {
+    var notificationToken: NotificationToken? = nil
     
     let jim = Person()
-    var dogs: [Dog] = []
-    let bag = DisposeBag()
+    var dogs:Results<Dog>!
     
     let realm = try! Realm()
     
@@ -53,26 +51,45 @@ class DogsViewController: UIViewController {
         
         /// Results instances are live, auto-updating views into the underlying data, which means results never have to be re-fetched.
         /// https://realm.io/docs/swift/latest/#objects-with-primary-keys
-        let dogs = realm.objects(Dog.self)
+        dogs = realm.objects(Dog.self)
+            .filter("isDeleted = false")
+            .sorted(byKeyPath: "id")
         
-        Observable.array(from: dogs).subscribe(onNext: { (dogs) in
-            /// When dogs data changes in Realm, the following code will be executed
-            /// It works like magic.
-            self.dogs = dogs.filter{ !$0.isDeleted }
-            self.tableView.reloadData()
-        }).disposed(by: bag)
+        notificationToken = dogs.observe({ [weak self] (changes) in
+            guard let tableView = self?.tableView else { return }
+            
+            switch changes {
+            case .initial(_):
+                tableView.reloadData()
+            case .update(_, deletions: let deletions, insertions: let insertions, modifications: let modifications):
+                tableView.beginUpdates()
+                tableView.deleteRows(at: deletions.map({ IndexPath(row: $0, section: 0)}),
+                                     with: .automatic)
+                tableView.insertRows(at: insertions.map({ IndexPath(row: $0, section: 0) }),
+                                     with: .automatic)
+                tableView.reloadRows(at: modifications.map({ IndexPath(row: $0, section: 0) }),
+                                     with: .automatic)
+                tableView.endUpdates()
+            case .error(let error):
+                fatalError("\(error)")
+            }
+        })
     }
     
     @objc func add() {
         let dog = Dog()
-        dog.name = "Dog Number " + "\(dogs.count)"
+        dog.name = String(format: "Dog %0d", dogs.count + 1)
         dog.owner = jim
         
-        let data = UIImage(named: dog.age % 2 == 1 ? "smile_dog" : "tongue_dog")!.jpegData(compressionQuality: 1.0)
+        let data = UIImage(named: dog.age % 2 == 1 ? "smile_dog" : "tongue_dog")!.pngData()
         dog.avatar = CreamAsset.create(object: dog, propName: Dog.AVATAR_KEY, data: data!)
         try! realm.write {
             realm.add(dog)
         }
+    }
+    
+    deinit {
+        notificationToken?.invalidate()
     }
 }
 
@@ -133,7 +150,7 @@ extension DogsViewController: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell")
         let price = String(format: "%.2f", dogs[indexPath.row].price.doubleValue)
-        cell?.textLabel?.text = dogs[indexPath.row].name + " Age: \(dogs[indexPath.row].age)" + " Price: \(price)" + " Owner: " + (dogs[indexPath.row].owner?.name ?? "homeless")
+        cell?.textLabel?.text = dogs[indexPath.row].name + " Age: \(dogs[indexPath.row].age)" + " Price: \(price)" + " id: \(dogs[indexPath.row].id.stringValue)"
         if let data = dogs[indexPath.row].avatar?.storedData() {
             cell?.imageView?.image = UIImage(data: data)
         } else {
