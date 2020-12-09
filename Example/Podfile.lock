@@ -38,7 +38,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   IceCream:
-    :commit: 58a3c4735ccde1cea068623696a58d35cf19628a
+    :commit: 9e7c876d99ea7400c6f8a9a8ad1f0f54cd2e50ac
     :git: https://github.com/owenzhao/IceCream.git
 
 SPEC CHECKSUMS:
