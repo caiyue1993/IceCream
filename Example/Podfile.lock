@@ -1,5 +1,5 @@
 PODS:
-  - IceCream (1.13.2):
+  - IceCream (10.0.0):
     - RealmSwift
   - Realm (10.3.0):
     - Realm/Headers (= 10.3.0)
@@ -38,11 +38,11 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   IceCream:
-    :commit: 9e7c876d99ea7400c6f8a9a8ad1f0f54cd2e50ac
+    :commit: 7a3a839ef05eeeaaa4963e169c0cef1471b4b9bb
     :git: https://github.com/owenzhao/IceCream.git
 
 SPEC CHECKSUMS:
-  IceCream: 9335dfa136e260ff4ba1b969a49061f5661441d3
+  IceCream: cf3ed6b03b4e5e1e4f0afb5d936ac64b8254666c
   Realm: 7957567daedece88d04866cdea419a5975f78e1b
   RealmSwift: 8cc707e87a4ed4f36e76312ae4f53cc1265d9bad
   RxCocoa: 32065309a38d29b5b0db858819b5bf9ef038b601

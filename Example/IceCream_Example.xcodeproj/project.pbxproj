@@ -19,23 +19,8 @@
 		67AA236120B84C9700953F09 /* Cat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67AA235F20B84C9700953F09 /* Cat.swift */; };
 		67AA236320B84CB600953F09 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67AA236220B84CB600953F09 /* TabBarViewController.swift */; };
 		DCD5D3B82580BF0B00E22B49 /* Pods_IceCream_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCD5D3B72580BF0B00E22B49 /* Pods_IceCream_Example.framework */; };
-		DCD5D3B92580BF0B00E22B49 /* Pods_IceCream_Example.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DCD5D3B72580BF0B00E22B49 /* Pods_IceCream_Example.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EDF28E968C4FD606509808A9 /* Pods_IceCream_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D04995398F63B9DF9887267 /* Pods_IceCream_Example.framework */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		DCD5D3BA2580BF0B00E22B49 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				DCD5D3B92580BF0B00E22B49 /* Pods_IceCream_Example.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0DFDEF7F22622B47002C7CC9 /* DevelopersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevelopersViewController.swift; sourceTree = "<group>"; };
@@ -56,7 +41,6 @@
 		7522B4B64381F9129D09ACA5 /* Pods-IceCream_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IceCream_Example.debug.xcconfig"; path = "Target Support Files/Pods-IceCream_Example/Pods-IceCream_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		DCD5D3B72580BF0B00E22B49 /* Pods_IceCream_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pods_IceCream_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2A377CFE800E1DB155BCECB /* Pods-IceCream_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IceCream_Example.release.xcconfig"; path = "Target Support Files/Pods-IceCream_Example/Pods-IceCream_Example.release.xcconfig"; sourceTree = "<group>"; };
-		E5C87F3424AB7315005E1680 /* IceCream */ = {isa = PBXFileReference; lastKnownFileType = folder; name = IceCream; path = ..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,7 +63,6 @@
 				6743F6EA202B0CB600912163 /* IceCream_Example */,
 				6743F6E9202B0CB600912163 /* Products */,
 				6743F705202B0D4500912163 /* Frameworks */,
-				E5C87F3424AB7315005E1680 /* IceCream */,
 				DEE367B4989BD78832A87D74 /* Pods */,
 			);
 			sourceTree = "<group>";
@@ -142,7 +125,6 @@
 				6743F6E5202B0CB600912163 /* Frameworks */,
 				6743F6E6202B0CB600912163 /* Resources */,
 				6CDAC6294F298669F8CB250C /* [CP] Embed Pods Frameworks */,
-				DCD5D3BA2580BF0B00E22B49 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
