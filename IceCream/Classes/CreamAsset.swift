@@ -26,6 +26,7 @@ public class CreamAsset: Object {
     private convenience init(objectID: String, propName: String) {
         self.init()
         self.uniqueFileName = "\(objectID)_\(propName)"
+        self.filePath = CreamAsset.creamAssetDefaultURL().appendingPathComponent(uniqueFileName)
     }
     
     /// Use this method to fetch the underlying data of the CreamAsset
@@ -34,7 +35,7 @@ public class CreamAsset: Object {
     }
 
     /// Where the asset locates in the file system
-    lazy public var filePath = CreamAsset.creamAssetDefaultURL().appendingPathComponent(uniqueFileName)
+    public var filePath:URL! // = CreamAsset.creamAssetDefaultURL().appendingPathComponent(uniqueFileName)
 
     /// Save the given data to local file system
     /// - Parameters:
