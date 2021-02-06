@@ -121,15 +121,15 @@ extension CKRecordConvertible where Self: Object {
                     var referenceArray = [CKRecord.Reference]()
                     let wrappedArray = list._rlmArray
                     for index in 0..<wrappedArray.count {
-                        guard let object = wrappedArray[index] as? Object , let primaryKey = object.objectSchema.primaryKeyProperty?.name else { continue }
+                        guard let object = wrappedArray[index] as? Object, let primaryKey = object.objectSchema.primaryKeyProperty?.name else { continue }
                         switch object.objectSchema.primaryKeyProperty?.type {
                         case .string:
-                            if let primaryValueString = object[primaryKey] as? String {
+                            if let primaryValueString = object[primaryKey] as? String, let obj = object as? CKRecordConvertible, !obj.isDeleted {
                                 let referenceZoneID = CKRecordZone.ID(zoneName: "\(object.objectSchema.className)sZone", ownerName: CKCurrentUserDefaultName)
                                 referenceArray.append(CKRecord.Reference(recordID: CKRecord.ID(recordName: primaryValueString, zoneID: referenceZoneID), action: .none))
                             }
                         case .int:
-                            if let primaryValueInt = object[primaryKey] as? Int {
+                            if let primaryValueInt = object[primaryKey] as? Int, let obj = object as? CKRecordConvertible, !obj.isDeleted {
                                 let referenceZoneID = CKRecordZone.ID(zoneName: "\(object.objectSchema.className)sZone", ownerName: CKCurrentUserDefaultName)
                                 referenceArray.append(CKRecord.Reference(recordID: CKRecord.ID(recordName: "\(primaryValueInt)", zoneID: referenceZoneID), action: .none))
                             }
