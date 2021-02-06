@@ -76,19 +76,26 @@ extension OwnersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard indexPath.row < owners.count else { return }
         let owner = owners[indexPath.row]
-        let viewController = OwnerDetailViewController(cats: Array(owner.cats))
+        let viewController = OwnerDetailViewController(cats: Array(owner.cats).filter { !$0.isDeleted })
         navigationController?.pushViewController(viewController, animated: true)
     }
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        let addAction = UITableViewRowAction(style: .default, title: "Add cat") { (_, ip) in
+        let addCatAction = UITableViewRowAction(style: .default, title: "Add cat") { (_, ip) in
             guard ip.row < self.owners.count else { return }
             let owner = self.owners[ip.row]
             let newCat = Cat()
-            newCat.name = "Cat No.\(owner.cats.count)"
+            newCat.name = "\(owner.name)'s No.\(owner.cats.count + 1) cat"
             newCat.age = ip.row
             try! self.realm.write {
                 owner.cats.append(newCat)
+            }
+        }
+        let deleteCatAction = UITableViewRowAction(style: .default, title: "Delete cat") { (_, ip) in
+            guard ip.row < self.owners.count else { return }
+            let owner = self.owners[ip.row]
+            try! self.realm.write {
+                owner.cats.last?.isDeleted = true
             }
         }
         let deleteAction = UITableViewRowAction(style: .destructive, title: "Delete") { (_, ip) in
@@ -105,7 +112,7 @@ extension OwnersViewController: UITableViewDelegate {
             alert.addAction(deleteAction)
             self.present(alert, animated: true, completion: nil)
         }
-        return [addAction, deleteAction]
+        return [addCatAction, deleteCatAction, deleteAction]
     }
 }
 

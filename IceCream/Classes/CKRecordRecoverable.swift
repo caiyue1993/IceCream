@@ -76,8 +76,10 @@ extension CKRecordRecoverable where Self: Object {
                                 if let existObject = realm.object(ofType: uListType, forPrimaryKey: primaryKeyValue) {
                                     uList.append(existObject)
                                 } else {
-                                    let object = realm.create(uListType)
-                                    uList.append(object)
+                                    try! realm.write {
+                                        let object = realm.create(uListType)
+                                        uList.append(object)
+                                    }
                                 }
                             }
                             
@@ -85,8 +87,10 @@ extension CKRecordRecoverable where Self: Object {
                                 if let existObject = realm.object(ofType: vListType, forPrimaryKey: primaryKeyValue) {
                                     vList.append(existObject)
                                 } else {
-                                    let object = realm.create(vListType)
-                                    vList.append(object)
+                                    try! realm.write {
+                                        let object = realm.create(vListType)
+                                        vList.append(object)
+                                    }
                                 }
                             }
                             
@@ -94,8 +98,10 @@ extension CKRecordRecoverable where Self: Object {
                                 if let existObject = realm.object(ofType: wListType, forPrimaryKey: primaryKeyValue) {
                                     wList.append(existObject)
                                 } else {
-                                    let object = realm.create(wListType)
-                                    wList.append(object)
+                                    try! realm.write {
+                                        let object = realm.create(wListType)
+                                        wList.append(object)                                        
+                                    }
                                 }
                             }
                             
