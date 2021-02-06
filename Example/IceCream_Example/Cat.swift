@@ -12,9 +12,10 @@ import IceCream
 import CloudKit
 
 class Cat: Object {
-    @objc dynamic var id = NSUUID().uuidString
+    @objc dynamic var id = ObjectId.generate()
     @objc dynamic var name = ""
-    @objc dynamic var age = 0
+    @objc dynamic var age = Int.random(in: 0...20)
+    @objc dynamic var price = Decimal128(floatLiteral: Double.random(in: 200.0...5000.0))
     @objc dynamic var isDeleted = false
     
     static let AVATAR_KEY = "avatar"

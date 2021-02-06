@@ -26,6 +26,7 @@ public class CreamAsset: Object {
     private convenience init(objectID: String, propName: String) {
         self.init()
         self.uniqueFileName = "\(objectID)_\(propName)"
+        self.filePath = CreamAsset.creamAssetDefaultURL().appendingPathComponent(uniqueFileName)
     }
     
     /// Use this method to fetch the underlying data of the CreamAsset
@@ -34,9 +35,7 @@ public class CreamAsset: Object {
     }
 
     /// Where the asset locates in the file system
-    public var filePath: URL {
-        return CreamAsset.creamAssetDefaultURL().appendingPathComponent(uniqueFileName)
-    }
+    public var filePath:URL! // = CreamAsset.creamAssetDefaultURL().appendingPathComponent(uniqueFileName)
 
     /// Save the given data to local file system
     /// - Parameters:
@@ -135,6 +134,7 @@ public class CreamAsset: Object {
     /// - Returns: The CreamAsset if creates successful
     public static func create(objectID: String, propName: String, url: URL, shouldOverwrite: Bool = true) -> CreamAsset? {
         let creamAsset = CreamAsset(objectID: objectID, propName: propName)
+        creamAsset.filePath = url
         if shouldOverwrite {
             do {
                 try FileManager.default.removeItem(at: creamAsset.filePath)

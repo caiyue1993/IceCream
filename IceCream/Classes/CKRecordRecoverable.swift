@@ -55,6 +55,16 @@ extension CKRecordRecoverable where Self: Object {
                     let list = List<Date>()
                     list.append(objectsIn: value)
                     recordValue = list
+                case .decimal128:
+                    guard let values = record.value(forKey: prop.name) as? [String] else { break }
+                    let list = List<Decimal128>()
+                    list.append(objectsIn: values.map { Decimal128(stringLiteral: $0) })
+                    recordValue = list
+                case .objectId:
+                    guard let values = record.value(forKey: prop.name) as? [String] else { break }
+                    let list = List<ObjectId>()
+                    list.append(objectsIn: values.compactMap { try? ObjectId(string: $0) })
+                    recordValue = list
                 default:
                     break
                 }
@@ -89,6 +99,14 @@ extension CKRecordRecoverable where Self: Object {
                     }
                     // Because we use the primaryKey as recordName when object converting to CKRecord
                 }
+            case .decimal128:
+                if let stringValue = record.value(forKey: prop.name) as? String {
+                    recordValue = Decimal128(stringLiteral: stringValue)
+                }
+            case .objectId:
+                if let stringValue = record.value(forKey: prop.name) as? String {
+                    recordValue = try? ObjectId(string: stringValue)
+                }
             default:
                 print("Other types will be supported in the future.")
             }
@@ -112,6 +130,8 @@ extension CKRecordRecoverable where Self: Object {
             return recordID.recordName
         case .int:
             return Int(recordID.recordName)
+        case .objectId:
+            return try! ObjectId(string: recordID.recordName)
         default:
             fatalError("The type of object primaryKey should be String or Int")
         }

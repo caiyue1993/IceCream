@@ -12,9 +12,10 @@ import IceCream
 import CloudKit
 
 class Dog: Object {
-    @objc dynamic var id = NSUUID().uuidString
+    @objc dynamic var id = ObjectId.generate()
     @objc dynamic var name = ""
-    @objc dynamic var age = 0
+    @objc dynamic var age = Int.random(in: 0...15)
+    @objc dynamic var price = Decimal128(floatLiteral: Double.random(in: 500.0...8000.0))
     @objc dynamic var isDeleted = false
 
     static let AVATAR_KEY = "avatar"

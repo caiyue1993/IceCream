@@ -9,14 +9,10 @@
 import UIKit
 import RealmSwift
 import IceCream
-import RxRealm
-import RxSwift
 
 class CatsViewController: UIViewController {
-    
-    var cats: [Cat] = []
-    let bag = DisposeBag()
-    
+    var notificationToken: NotificationToken? = nil
+    var cats:Results<Cat>!
     let realm = try! Realm()
     
     lazy var addBarItem: UIBarButtonItem = {
@@ -52,22 +48,36 @@ class CatsViewController: UIViewController {
         
         /// Results instances are live, auto-updating views into the underlying data, which means results never have to be re-fetched.
         /// https://realm.io/docs/swift/latest/#objects-with-primary-keys
-        let cats = realm.objects(Cat.self)
+        cats = realm.objects(Cat.self)
+            .filter("isDeleted = false")
+            .sorted(byKeyPath: "id")
         
-        Observable.array(from: cats).subscribe(onNext: { (cats) in
-            /// When cats data changes in Realm, the following code will be executed
-            /// It works like magic.
-            self.cats = cats.filter{ !$0.isDeleted }
-            self.tableView.reloadData()
-        }).disposed(by: bag)
+        notificationToken = cats.observe({ [weak self] (changes) in
+            guard let tableView = self?.tableView else { return }
+            
+            switch changes {
+            case .initial(_):
+                tableView.reloadData()
+            case .update(_, deletions: let deletions, insertions: let insertions, modifications: let modifications):
+                tableView.beginUpdates()
+                tableView.deleteRows(at: deletions.map({ IndexPath(row: $0, section: 0)}),
+                                     with: .automatic)
+                tableView.insertRows(at: insertions.map({ IndexPath(row: $0, section: 0) }),
+                                     with: .automatic)
+                tableView.reloadRows(at: modifications.map({ IndexPath(row: $0, section: 0) }),
+                                     with: .automatic)
+                tableView.endUpdates()
+            case .error(let error):
+                fatalError("\(error)")
+            }
+        })
     }
     
     @objc func add() {
         let cat = Cat()
-        cat.name = "Cat Number " + "\(cats.count)"
-        cat.age = cats.count + 1
+        cat.name = String(format: "Cat %0d", cats.count + 1)
         
-        let data = UIImage(named: cat.age % 2 == 1 ? "heart_cat" : "dull_cat")!.jpegData(compressionQuality: 1.0)
+        let data = UIImage(named: cat.age % 2 == 1 ? "heart_cat" : "dull_cat")!.pngData()
         cat.avatar = CreamAsset.create(object: cat, propName: Cat.AVATAR_KEY, data: data!)
         
         try! realm.write {
@@ -75,6 +85,9 @@ class CatsViewController: UIViewController {
         }
     }
     
+    deinit {
+        notificationToken?.invalidate()
+    }
 }
 
 extension CatsViewController: UITableViewDelegate {
@@ -133,7 +146,8 @@ extension CatsViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell")
-        cell?.textLabel?.text = cats[indexPath.row].name + " Age: \(cats[indexPath.row].age)"
+        let price = String(format: "%.2f", cats[indexPath.row].price.doubleValue)
+        cell?.textLabel?.text = cats[indexPath.row].name + " Age: \(cats[indexPath.row].age)" + " Price: \(price)"
         if let data = cats[indexPath.row].avatar?.storedData() {
             cell?.imageView?.image = UIImage(data: data)
         } else {

@@ -8,15 +8,15 @@
 
 Pod::Spec.new do |s|
   s.name             = 'IceCream'
-  s.version          = '1.13.2'
+  s.version          = '10.1.1'
   s.summary          = 'Sync Realm with CloudKit'
   s.description      = <<-DESC
   Sync Realm Database with CloudKit, written in Swift. It works just like magic.
                        DESC
-  s.homepage         = 'https://github.com/caiyue1993/IceCream'
+  s.homepage         = 'https://github.com/owenzhao/IceCream'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'caiyue1993' => 'yuecai.nju@gmail.com' }
-  s.source           = { :git => 'https://github.com/caiyue1993/IceCream.git', :tag => s.version.to_s }
+  s.author           = { 'caiyue1993' => 'yuecai.nju@gmail.com', 'owenzhao' => 'owenzx@gmail.com' }
+  s.source           = { :git => 'https://github.com/owenzhao/IceCream.git', :tag => s.version.to_s }
 
   s.social_media_url = 'https://twitter.com/caiyue5'
 
