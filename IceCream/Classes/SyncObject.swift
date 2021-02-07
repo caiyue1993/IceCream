@@ -22,9 +22,12 @@ public final class SyncObject<T, U, V, W> where T: Object & CKRecordConvertible 
     private var notificationToken: NotificationToken?
     
     public var pipeToEngine: ((_ recordsToStore: [CKRecord], _ recordIDsToDelete: [CKRecord.ID]) -> ())?
-//    let listNameTypePairStore = ListNameTypePairStore(className: T.className())
     
     public let realmConfiguration: Realm.Configuration
+    
+    private let pendingUTypeRelationshipsWorker = PendingRelationshipsWorker(listElementType: U.self)
+    private let pendingVTypeRelationshipsWorker = PendingRelationshipsWorker(listElementType: V.self)
+    private let pendingWTypeRelationshipsWorker = PendingRelationshipsWorker(listElementType: W.self)
     
     public init(
         realmConfiguration: Realm.Configuration = .defaultConfiguration,
@@ -80,10 +83,26 @@ extension SyncObject: Syncable {
     public func add(record: CKRecord) {
         BackgroundWorker.shared.start {
             let realm = try! Realm(configuration: self.realmConfiguration)
-            guard let object = T.parseFromRecord(record: record, realm: realm, notificationToken: self.notificationToken, uListType: U.self, vListType: V.self, wListType: W.self) else {
+            guard let object = T.parseFromRecord(
+                record: record,
+                realm: realm,
+                notificationToken: self.notificationToken,
+                pendingUTypeRelationshipsWorker: self.pendingUTypeRelationshipsWorker,
+                pendingVTypeRelationshipsWorker: self.pendingVTypeRelationshipsWorker,
+                pendingWTypeRelationshipsWorker: self.pendingWTypeRelationshipsWorker
+            ) else {
                 print("There is something wrong with the converson from cloud record to local object")
                 return
             }
+            
+            self.pendingUTypeRelationshipsWorker.owner = object
+            self.pendingUTypeRelationshipsWorker.realm = realm
+            
+            self.pendingVTypeRelationshipsWorker.owner = object
+            self.pendingVTypeRelationshipsWorker.realm = realm
+            
+            self.pendingWTypeRelationshipsWorker.owner = object
+            self.pendingWTypeRelationshipsWorker.realm = realm
             
             /// If your model class includes a primary key, you can have Realm intelligently update or add objects based off of their primary key values using Realm().add(_:update:).
             /// https://realm.io/docs/swift/latest/#objects-with-primary-keys
@@ -136,6 +155,12 @@ extension SyncObject: Syncable {
                 }
             })
         }
+    }
+    
+    public func resolvePendingRelationships() {
+        pendingUTypeRelationshipsWorker.resolvePendingListElements()
+        pendingVTypeRelationshipsWorker.resolvePendingListElements()
+        pendingWTypeRelationshipsWorker.resolvePendingListElements()
     }
     
     public func cleanUp() {

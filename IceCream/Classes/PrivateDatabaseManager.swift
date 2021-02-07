@@ -183,7 +183,11 @@ final class PrivateDatabaseManager: DatabaseManager {
             }
         }
         
-        changesOp.fetchRecordZoneChangesCompletionBlock = { error in
+        changesOp.fetchRecordZoneChangesCompletionBlock = { [weak self] error in
+            guard let self = self else { return }
+            self.syncObjects.forEach {
+                $0.resolvePendingRelationships()
+            }
             callback?(error)
         }
         
