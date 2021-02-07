@@ -13,7 +13,14 @@ public protocol CKRecordRecoverable {
 }
 
 extension CKRecordRecoverable where Self: Object {
-    static func parseFromRecord<U: Object, V: Object, W: Object>(record: CKRecord, realm: Realm, notificationToken: NotificationToken?, uListType: U.Type, vListType: V.Type, wListType: W.Type) -> Self? {
+    static func parseFromRecord<U: Object, V: Object, W: Object>(
+        record: CKRecord,
+        realm: Realm,
+        notificationToken: NotificationToken?,
+        pendingUTypeRelationshipsWorker: PendingRelationshipsWorker<U>,
+        pendingVTypeRelationshipsWorker: PendingRelationshipsWorker<V>,
+        pendingWTypeRelationshipsWorker: PendingRelationshipsWorker<W>
+    ) -> Self? {
         let o = Self()
         for prop in o.objectSchema.properties {
             var recordValue: Any?
@@ -57,66 +64,51 @@ extension CKRecordRecoverable where Self: Object {
                     recordValue = list
                 case .object:
                     guard let value = record.value(forKey: prop.name) as? [CKRecord.Reference] else { break }
-                    // 这里应该根据 List 去创建一个 unmanaged 版本的 List，而不是使用 dynamicList 获取 managed 版本的 list
-                    // 另外需要考虑的就是类型问题
+                    
                     let uList = List<U>()
                     let vList = List<V>()
                     let wList = List<W>()
                     
-//                    guard let list = o.value(forKey: prop.name) as? List<Object> else { break }
-//                    let list = o.dynamicList(prop.name)
                     for reference in value {
                         if let objectClassName = prop.objectClassName,
                            let schema = realm.schema.objectSchema.first(where: { $0.className == objectClassName }),
                            let primaryKeyValue = primaryKeyForRecordID(recordID: reference.recordID, schema: schema) {
-                            
-                            // 其实在这里一个数组里所有的 className 都只会是一种
-                            
-                            if schema.className == uListType.className() {
-                                if let existObject = realm.object(ofType: uListType, forPrimaryKey: primaryKeyValue) {
+                            if schema.className == U.className() {
+                                if let existObject = realm.object(ofType: U.self, forPrimaryKey: primaryKeyValue) {
                                     uList.append(existObject)
                                 } else {
-                                    try! realm.write {
-                                        let object = realm.create(uListType)
-                                        uList.append(object)
-                                    }
+                                    pendingUTypeRelationshipsWorker.addToPendingListElement(propertyName: prop.name, primaryKeyValue: primaryKeyValue)
                                 }
                             }
                             
-                            if schema.className == vListType.className() {
-                                if let existObject = realm.object(ofType: vListType, forPrimaryKey: primaryKeyValue) {
+                            if schema.className == V.className() {
+                                if let existObject = realm.object(ofType: V.self, forPrimaryKey: primaryKeyValue) {
                                     vList.append(existObject)
                                 } else {
-                                    try! realm.write {
-                                        let object = realm.create(vListType)
-                                        vList.append(object)
-                                    }
+                                    pendingVTypeRelationshipsWorker.addToPendingListElement(propertyName: prop.name, primaryKeyValue: primaryKeyValue)
                                 }
                             }
                             
-                            if schema.className == wListType.className() {
-                                if let existObject = realm.object(ofType: wListType, forPrimaryKey: primaryKeyValue) {
+                            if schema.className == W.className() {
+                                if let existObject = realm.object(ofType: W.self, forPrimaryKey: primaryKeyValue) {
                                     wList.append(existObject)
                                 } else {
-                                    try! realm.write {
-                                        let object = realm.create(wListType)
-                                        wList.append(object)                                        
-                                    }
+                                    pendingWTypeRelationshipsWorker.addToPendingListElement(propertyName: prop.name, primaryKeyValue: primaryKeyValue)
                                 }
                             }
                             
                         }
                     }
                     
-                    if prop.objectClassName == uListType.className() {
+                    if prop.objectClassName == U.className() {
                         recordValue = uList
                     }
                     
-                    if prop.objectClassName == vListType.className() {
+                    if prop.objectClassName == V.className() {
                         recordValue = vList
                     }
                     
-                    if prop.objectClassName == wListType.className() {
+                    if prop.objectClassName == W.className() {
                         recordValue = wList
                     }
                     

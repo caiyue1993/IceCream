@@ -27,6 +27,8 @@ public protocol Syncable: class {
     func add(record: CKRecord)
     func delete(recordID: CKRecord.ID)
     
+    func resolvePendingRelationships()
+    
     /// CloudKit related
     func pushLocalObjectsToCloudKit()
     
