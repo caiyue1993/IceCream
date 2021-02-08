@@ -26,7 +26,7 @@ public final class SyncEngine {
             let publicDatabaseManager = PublicDatabaseManager(objects: objects, container: container)
             self.init(databaseManager: publicDatabaseManager)
         default:
-            fatalError("Not supported yet")
+            fatalError("Shared database scope is not supported yet")
         }
     }
     

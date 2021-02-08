@@ -37,7 +37,6 @@ final class CatsViewController: UIViewController {
         
         view.addSubview(tableView)
         navigationItem.rightBarButtonItem = addBarItem
-        title = "Cats"
         
         bind()
     }

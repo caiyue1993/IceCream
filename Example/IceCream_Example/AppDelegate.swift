@@ -24,7 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             SyncObject(type: Cat.self),
             SyncObject(type: Person.self, uObjectClassType: Cat.self)
             ])
-      
+        
         /// If you wanna test public Database, comment the above syncEngine code and uncomment the following one
         /// Besides, uncomment Line 26 to 28 in Person.swift file
 //        syncEngine = SyncEngine(objects: [SyncObject<Person>()], databaseScope: .public)

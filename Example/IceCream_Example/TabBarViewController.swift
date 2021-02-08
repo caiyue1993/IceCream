@@ -12,10 +12,18 @@ final class TabBarViewController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-         viewControllers = [
-            UINavigationController(rootViewController: DogsViewController()),
-            UINavigationController(rootViewController: CatsViewController()),
-            UINavigationController(rootViewController: OwnersViewController())
+        
+        let dogsViewController = DogsViewController()
+        dogsViewController.title = "Dogs"
+        let catsViewController = CatsViewController()
+        catsViewController.title = "Cats"
+        let ownersViewController = OwnersViewController()
+        ownersViewController.title = "Owners"
+        
+        viewControllers = [
+            UINavigationController(rootViewController: dogsViewController),
+            UINavigationController(rootViewController: catsViewController),
+            UINavigationController(rootViewController: ownersViewController)
         ]
     }
 

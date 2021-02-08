@@ -25,9 +25,9 @@ public final class SyncObject<T, U, V, W> where T: Object & CKRecordConvertible 
     
     public let realmConfiguration: Realm.Configuration
     
-    private let pendingUTypeRelationshipsWorker = PendingRelationshipsWorker(listElementType: U.self)
-    private let pendingVTypeRelationshipsWorker = PendingRelationshipsWorker(listElementType: V.self)
-    private let pendingWTypeRelationshipsWorker = PendingRelationshipsWorker(listElementType: W.self)
+    private let pendingUTypeRelationshipsWorker = PendingRelationshipsWorker<U>()
+    private let pendingVTypeRelationshipsWorker = PendingRelationshipsWorker<V>()
+    private let pendingWTypeRelationshipsWorker = PendingRelationshipsWorker<W>()
     
     public init(
         realmConfiguration: Realm.Configuration = .defaultConfiguration,
