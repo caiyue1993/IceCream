@@ -241,40 +241,23 @@ My app [Sprint](https://itunes.apple.com/cn/app/%E5%B0%8F%E7%9B%AE%E6%A0%87-%E9%
 - [CloudKit Best Practices](https://developer.apple.com/videos/play/wwdc2016/231/)
 - [Mastering Realm Notifications](https://academy.realm.io/posts/meetup-jp-simard-mastering-realm-notifications/)
 
-## Backers
-
-By now, IceCream is mainly maintained by myself. I'd be appreciated if you could be a backer to support the maintenance of IceCream. Thank you to all our backers! [Become a backer](https://opencollective.com/icecream#backer)
-
-<a href="https://opencollective.com/icecream#backers" target="_blank"><img src="https://opencollective.com/icecream/backers.svg?width=890"></a>
-
-## Sponsors
-
-Support this project by becoming a sponsor. Your logo will show up here with a link to your designated website. [Become a sponsor](https://opencollective.com/icecream#sponsor)
-
-<a href="https://opencollective.com/icecream/sponsor/0/website" target="_blank"><img src="https://opencollective.com/icecream/sponsor/0/avatar.svg"></a>
-<a href="https://opencollective.com/icecream/sponsor/1/website" target="_blank"><img src="https://opencollective.com/icecream/sponsor/1/avatar.svg"></a>
-<a href="https://opencollective.com/icecream/sponsor/2/website" target="_blank"><img src="https://opencollective.com/icecream/sponsor/2/avatar.svg"></a>
-<a href="https://opencollective.com/icecream/sponsor/3/website" target="_blank"><img src="https://opencollective.com/icecream/sponsor/3/avatar.svg"></a>
-<a href="https://opencollective.com/icecream/sponsor/4/website" target="_blank"><img src="https://opencollective.com/icecream/sponsor/4/avatar.svg"></a>
-<a href="https://opencollective.com/icecream/sponsor/5/website" target="_blank"><img src="https://opencollective.com/icecream/sponsor/5/avatar.svg"></a>
-<a href="https://opencollective.com/icecream/sponsor/6/website" target="_blank"><img src="https://opencollective.com/icecream/sponsor/6/avatar.svg"></a>
-<a href="https://opencollective.com/icecream/sponsor/7/website" target="_blank"><img src="https://opencollective.com/icecream/sponsor/7/avatar.svg"></a>
-<a href="https://opencollective.com/icecream/sponsor/8/website" target="_blank"><img src="https://opencollective.com/icecream/sponsor/8/avatar.svg"></a>
-<a href="https://opencollective.com/icecream/sponsor/9/website" target="_blank"><img src="https://opencollective.com/icecream/sponsor/9/avatar.svg"></a>
-
 ## Contributors
 
-This project exists thanks to all the people who contribute. [Contribute](docs/CONTRIBUTING.md).
+This project exists thanks to all the people who contribute:
 
 <a href="graphs/contributors"><img src="https://opencollective.com/IceCream/contributors.svg?width=890&button=false" /></a>
 
-## Donations
+## Sponsorship
 
-Now IceCream has been adopted by hundreds of developers and successfully used in their apps. We're greatly humbled by your enthusiam around the projects, and want to continue to move this project forward. Your financial support will encourge me to spend more time and provide better services.
+Open source is great, but it takes time and efforts to maintain. I'd be greatly appreciated and motivated if you could to support the maintenance of IceCream financially. You could sponsor this project through the below ways:
 
-[![paypal](https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-medium.png)](https://paypal.me/yuecai)
+- Become my [GitHub Sponsors](https://github.com/sponsors/caiyue1993), recommended
+- Back me on [Open Collective](https://opencollective.com/icecream)
+- Transfer your donations directly via [PayPal](https://paypal.me/yuecai)
 
-Any amount you can donate today to help us reach our goal would be greatly appreciated.
+And thanks to all our backers on open collective:
+
+<a href="https://opencollective.com/icecream#backers" target="_blank"><img src="https://opencollective.com/icecream/backers.svg?width=890"></a>
 
 ## License
 
