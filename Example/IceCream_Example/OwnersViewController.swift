@@ -36,7 +36,6 @@ final class OwnersViewController: UIViewController {
         
         view.addSubview(tableView)
         navigationItem.rightBarButtonItem = addBarItem
-        title = "Owners"
         
         bind()
     }
