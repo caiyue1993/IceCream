@@ -36,7 +36,7 @@ IceCream helps you sync Realm Database with CloudKit.
 - [x] Public/Private Database support
 - [x] Large Data Syncing
 - [x] Manually Synchronization is also supported
-- [x] Many-to-one relationship support
+- [x] Relationship(To-One/To-Many) support
 - [x] Available on every Apple platform(iOS/macOS/tvOS/watchOS)
 - [x] Support Realm Lists of Natural Types
 - [ ] Complete Documentation 
@@ -74,16 +74,8 @@ class Dog: Object {
 2. Do stuff like this:
 
 ```swift
-extension Dog: CKRecordConvertible {
-    // Leave it blank if you are using private database
-    // For public database users, uncomment the following code:
-    // static var databaseScope: CKDatabase.Scope {
-    //     return .public
-    // } 
-}
-
-extension Dog: CKRecordRecoverable {
-    // Leave it blank
+extension Dog: CKRecordConvertible & CKRecordRecoverable {
+    // Leave it blank is all
 }
 ```
 
@@ -96,10 +88,10 @@ var syncEngine: SyncEngine?
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
     ...
     syncEngine = SyncEngine(objects: [
-            SyncObject<Person>(),
-            SyncObject<Dog>(),
-            SyncObject<Cat>()
-        ], databaseScope: .private)
+            SyncObject(type: Dog.self),
+            SyncObject(type: Cat.self),
+            SyncObject(type: Person.self)
+        ])
     application.registerForRemoteNotifications()
     ...
 }
@@ -131,9 +123,16 @@ An example project is provided to see the detailed usage.
 
 ### Relationships 
 
-Thanks to the [CKReference](https://developer.apple.com/documentation/cloudkit/ckrecord/reference) in the CloudKit, IceCream has supported many-to-one relationship nicely. As the `Dog` example shows, a dog may have an owner. And we'll wrap the owner up as CKReference and push them to the CloudKit. 
+IceCream has officially supported Realm relationship(both one-to-one and one-to-many) since version 2.0.
 
-Inversely, the `Person` object has a `dogs` property which is the type of `LinkingObjects`. So we've successfully supported to-many relationship with a nice workaround. All make sense.
+Especially, for the support of to-many relationship, you have to pass the element type of the List to the SyncObject init method parameters. For example:
+```swift
+syncEngine = SyncEngine(objects: [
+            SyncObject(type: Dog.self),
+            SyncObject(type: Cat.self),
+            SyncObject(type: Person.self, uListElementType: Cat.self) // if Person model has a List<Cat> property
+        ])
+```
 
 ## Requirements
 
