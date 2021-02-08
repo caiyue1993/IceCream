@@ -32,9 +32,9 @@ public final class SyncObject<T, U, V, W> where T: Object & CKRecordConvertible 
     public init(
         realmConfiguration: Realm.Configuration = .defaultConfiguration,
         type: T.Type,
-        uObjectClassType: U.Type? = nil,
-        vObjectClassType: V.Type? = nil,
-        wObjectClassType: W.Type? = nil
+        uListElementType: U.Type? = nil,
+        vListElementType: V.Type? = nil,
+        wListElementType: W.Type? = nil
     ) {
         self.realmConfiguration = realmConfiguration
     }

@@ -22,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         syncEngine = SyncEngine(objects: [
             SyncObject(type: Dog.self),
             SyncObject(type: Cat.self),
-            SyncObject(type: Person.self, uObjectClassType: Cat.self)
+            SyncObject(type: Person.self, uListElementType: Cat.self)
             ])
         
         /// If you wanna test public Database, comment the above syncEngine code and uncomment the following one
