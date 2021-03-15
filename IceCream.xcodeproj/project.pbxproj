@@ -72,6 +72,10 @@
 		D826ADD1212189F2002B5C0F /* SyncObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6767988E20BCEEB0008F98AD /* SyncObject.swift */; };
 		D826ADD421218A1C002B5C0F /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D826ADD221218A1C002B5C0F /* RealmSwift.framework */; };
 		D826ADD521218A1C002B5C0F /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D826ADD321218A1C002B5C0F /* Realm.framework */; };
+		FA5A43CE25FEED210002A1CC /* PendingRelationshipsWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5A43CD25FEED210002A1CC /* PendingRelationshipsWorker.swift */; };
+		FA5A43CF25FEED210002A1CC /* PendingRelationshipsWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5A43CD25FEED210002A1CC /* PendingRelationshipsWorker.swift */; };
+		FA5A43D025FEED210002A1CC /* PendingRelationshipsWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5A43CD25FEED210002A1CC /* PendingRelationshipsWorker.swift */; };
+		FA5A43D125FEED210002A1CC /* PendingRelationshipsWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5A43CD25FEED210002A1CC /* PendingRelationshipsWorker.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -103,6 +107,7 @@
 		D826ADB1212189DF002B5C0F /* IceCream.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IceCream.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D826ADD221218A1C002B5C0F /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealmSwift.framework; path = Carthage/Build/Mac/RealmSwift.framework; sourceTree = "<group>"; };
 		D826ADD321218A1C002B5C0F /* Realm.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Realm.framework; path = Carthage/Build/Mac/Realm.framework; sourceTree = "<group>"; };
+		FA5A43CD25FEED210002A1CC /* PendingRelationshipsWorker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PendingRelationshipsWorker.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -178,6 +183,7 @@
 		6743F71D202B0F9400912163 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				FA5A43CD25FEED210002A1CC /* PendingRelationshipsWorker.swift */,
 				474FF0E22284B6F700921CF6 /* BackgroundWorker.swift */,
 				6743F71E202B0F9400912163 /* .gitkeep */,
 				6773DF0220BD2CE10019FF3A /* Syncable.swift */,
@@ -328,7 +334,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0940;
-				LastUpgradeCheck = 0940;
+				LastUpgradeCheck = 1240;
 				ORGANIZATIONNAME = "蔡越";
 				TargetAttributes = {
 					6743F711202B0F0F00912163 = {
@@ -420,6 +426,7 @@
 				6743F72D202B0F9400912163 /* Notification+Name.swift in Sources */,
 				6743F728202B0F9400912163 /* ErrorHandler.swift in Sources */,
 				673B1E6F2273EECF00EB4FEE /* PrivateDatabaseManager.swift in Sources */,
+				FA5A43CE25FEED210002A1CC /* PendingRelationshipsWorker.swift in Sources */,
 				6767988F20BCEEB0008F98AD /* SyncObject.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -440,6 +447,7 @@
 				6747815F213BEDD6005C132B /* SyncEngine.swift in Sources */,
 				0DF861D622D0563400B20AEA /* PrivateDatabaseManager.swift in Sources */,
 				67478160213BEDD6005C132B /* SyncObject.swift in Sources */,
+				FA5A43D025FEED210002A1CC /* PendingRelationshipsWorker.swift in Sources */,
 				474FF0E52284B72400921CF6 /* BackgroundWorker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -460,6 +468,7 @@
 				6747816E213BEF0E005C132B /* SyncEngine.swift in Sources */,
 				0DF861D722D0563500B20AEA /* PrivateDatabaseManager.swift in Sources */,
 				6747816F213BEF0E005C132B /* SyncObject.swift in Sources */,
+				FA5A43D125FEED210002A1CC /* PendingRelationshipsWorker.swift in Sources */,
 				474FF0E62284B72500921CF6 /* BackgroundWorker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -480,6 +489,7 @@
 				D826ADC8212189F2002B5C0F /* Syncable.swift in Sources */,
 				0DF861D522D0563300B20AEA /* PrivateDatabaseManager.swift in Sources */,
 				D826ADD0212189F2002B5C0F /* SyncEngine.swift in Sources */,
+				FA5A43CF25FEED210002A1CC /* PendingRelationshipsWorker.swift in Sources */,
 				474FF0E42284B72400921CF6 /* BackgroundWorker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -512,6 +522,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -538,7 +549,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -575,6 +586,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -595,7 +607,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -738,7 +750,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 10.0;
+				TVOS_DEPLOYMENT_TARGET = 12.0;
 			};
 			name = Debug;
 		};
@@ -766,7 +778,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 10.0;
+				TVOS_DEPLOYMENT_TARGET = 12.0;
 			};
 			name = Release;
 		};
