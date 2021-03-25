@@ -25,7 +25,6 @@
 		673B1E6F2273EECF00EB4FEE /* PrivateDatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673B1E6C2273EECF00EB4FEE /* PrivateDatabaseManager.swift */; };
 		673B1E702273EECF00EB4FEE /* PublicDatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673B1E6D2273EECF00EB4FEE /* PublicDatabaseManager.swift */; };
 		6743F717202B0F0F00912163 /* IceCream.h in Headers */ = {isa = PBXBuildFile; fileRef = 6743F715202B0F0F00912163 /* IceCream.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		6743F726202B0F9400912163 /* .gitkeep in Resources */ = {isa = PBXBuildFile; fileRef = 6743F71E202B0F9400912163 /* .gitkeep */; };
 		6743F728202B0F9400912163 /* ErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F720202B0F9400912163 /* ErrorHandler.swift */; };
 		6743F72A202B0F9400912163 /* Manifest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F722202B0F9400912163 /* Manifest.swift */; };
 		6743F72B202B0F9400912163 /* CreamAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F723202B0F9400912163 /* CreamAsset.swift */; };
@@ -370,7 +369,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6743F726202B0F9400912163 /* .gitkeep in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -651,6 +649,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build",
