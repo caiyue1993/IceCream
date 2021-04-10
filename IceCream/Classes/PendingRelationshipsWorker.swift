@@ -13,10 +13,10 @@ final class PendingRelationshipsWorker<Element: Object> {
     var realm: Realm?
     var owner: Object?
     
-    private var pendingListElementPrimaryKeyValue: [String: Any] = [:]
+    var pendingListElementPrimaryKeyValue: [AnyHashable: String] = [:]
     
-    func addToPendingListElement(propertyName: String, primaryKeyValue: Any) {
-        pendingListElementPrimaryKeyValue[propertyName] = primaryKeyValue
+    func addToPendingListElement(propertyName: String, primaryKeyValue: AnyHashable) {
+        pendingListElementPrimaryKeyValue[primaryKeyValue] = propertyName
     }
     
     func resolvePendingListElements() {
@@ -25,13 +25,15 @@ final class PendingRelationshipsWorker<Element: Object> {
             return
         }
         BackgroundWorker.shared.start {
-            for (propName, primaryKeyValue) in self.pendingListElementPrimaryKeyValue {
+            for (primaryKeyValue, propName) in self.pendingListElementPrimaryKeyValue {
                 guard let list = owner.value(forKey: propName) as? List<Element> else { return }
                 if let existListElementObject = realm.object(ofType: Element.self, forPrimaryKey: primaryKeyValue) {
                     try! realm.write {
                         list.append(existListElementObject)
                     }
-                    self.pendingListElementPrimaryKeyValue[propName] = nil
+                    self.pendingListElementPrimaryKeyValue[primaryKeyValue] = nil
+                } else {
+                    print("Cannot find existing resolving record in Realm")
                 }
             }
         }
