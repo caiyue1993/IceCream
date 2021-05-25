@@ -168,7 +168,7 @@ Using Swift Package Manager, Carthage or CocoaPods.
 From Xcode 11, you can use [Swift Package Manager](https://swift.org/package-manager/) to add IceCream and its dependencies to your project.
 
 Select File > Swift Packages > Add Package Dependency. Enter https://github.com/caiyue1993/IceCream.git in the "Choose Package Repository" dialog.
-In the next page, specify the version resolving rule as "Up to Next Major" with "1.13.1" as its earliest version.
+In the next page, specify the version resolving rule as "Up to Next Major" with "2.0.2" as its earliest version.
 After Xcode checking out the source and resolving the version, you can choose the "IceCream" library and add it to your app target.
 
 If you encounter any problem or have a question on adding the package to an Xcode project, I suggest reading the [Adding Package Dependencies to Your App](https://developer.apple.com/documentation/xcode/adding_package_dependencies_to_your_app) guide article from Apple.
