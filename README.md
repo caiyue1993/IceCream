@@ -121,6 +121,27 @@ So taking the consideration of the above two, we recommend you to use `CreamAsse
 
 An example project is provided to see the detailed usage.
 
+### App Groups
+In order to share data between multiple apps or an app and its extensions, you can use
+[App Groups](https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_application-groups). When using App Groups, you need to store your Realm
+file in the app group directory. In order to change the directory that CreamAssets are stored
+to, you can modify the `creamAssetURL` property of CreamAsset. You should do this right after
+you setup the SyncEngine.
+
+```
+// setup SyncEngine
+syncEngine = SyncEngine(objects: [
+        SyncObject<Person>(),
+        SyncObject<Dog>(),
+        SyncObject<Cat>()
+    ], databaseScope: .private)
+// Specify the directory to use.
+// Replace "group.com.example.app" with your app group id
+CreamAsset.creamAssetURL = FileManager.default
+    .containerURL(forSecurityApplicationGroupIdentifier: "group.com.example.app")!
+      .appendingPathComponent(CreamAsset.className())
+```
+
 ### Relationships 
 
 IceCream has officially supported Realm relationship(both one-to-one and one-to-many) since version 2.0.

@@ -54,8 +54,16 @@ extension CKRecordConvertible where Self: Object {
         
         switch primaryKeyProperty.type {
         case .string:
-            if let primaryValueString = self[primaryKeyProperty.name] as? String {
+            if var primaryValueString = self[primaryKeyProperty.name] as? String {
                 // For more: https://developer.apple.com/documentation/cloudkit/ckrecord/id/1500975-init
+                
+                // Remove any emojis if they exist as a key by accident
+                // this isn't ideal, but it's better than crashing if an
+                // emoji is accidentally added
+                if (!primaryValueString.allSatisfy({ $0.isASCII })) {
+                    primaryValueString = primaryValueString.stringByRemovingEmoji()
+                }
+                
                 assert(primaryValueString.allSatisfy({ $0.isASCII }), "Primary value for CKRecord name must contain only ASCII characters")
                 assert(primaryValueString.count <= 255, "Primary value for CKRecord name must not exceed 255 characters")
                 assert(!primaryValueString.starts(with: "_"), "Primary value for CKRecord name must not start with an underscore")
@@ -170,4 +178,17 @@ extension CKRecordConvertible where Self: Object {
         return r
     }
     
+}
+
+extension String {
+  func stringByRemovingEmoji() -> String {
+    return String(self.filter { !$0.isEmoji() })
+  }
+}
+
+extension Character {
+  fileprivate func isEmoji() -> Bool {
+    return Character(UnicodeScalar(UInt32(0x1d000))!) <= self && self <= Character(UnicodeScalar(UInt32(0x1f77f))!)
+      || Character(UnicodeScalar(UInt32(0x2100))!) <= self && self <= Character(UnicodeScalar(UInt32(0x26ff))!)
+  }
 }

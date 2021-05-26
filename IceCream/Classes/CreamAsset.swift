@@ -19,6 +19,8 @@ import CloudKit
 /// So this is the deal.
 public class CreamAsset: Object {
     @objc dynamic private var uniqueFileName = ""
+    public static var creamAssetURL: URL? = nil
+
     override public static func ignoredProperties() -> [String] {
         return ["filePath"]
     }
@@ -158,16 +160,22 @@ extension CreamAsset {
     /// The default path for the storing of CreamAsset. That is:
     /// xxx/Document/CreamAsset/
     public static func creamAssetDefaultURL() -> URL {
-        let documentDir = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
-        let commonAssetPath = documentDir.appendingPathComponent(className())
-        if !FileManager.default.fileExists(atPath: commonAssetPath.path) {
+        // use creamAssetURL if specified by the user
+        var commonAssetPath = creamAssetURL
+        
+        if commonAssetPath == nil {
+            let documentDir = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+            commonAssetPath = documentDir.appendingPathComponent(className())
+        }
+
+        if !FileManager.default.fileExists(atPath: commonAssetPath!.path) {
             do {
-                try FileManager.default.createDirectory(atPath: commonAssetPath.path, withIntermediateDirectories: false, attributes: nil)
+                try FileManager.default.createDirectory(atPath: commonAssetPath!.path, withIntermediateDirectories: false, attributes: nil)
             } catch {
                 /// Log: create directory failed
             }
         }
-        return commonAssetPath
+        return commonAssetPath!
     }
 
     /// Fetch all CreamAsset files' path
