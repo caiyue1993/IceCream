@@ -28,10 +28,18 @@ extension CKRecordRecoverable where Self: Object {
             if prop.isArray {
                 switch prop.type {
                 case .int:
-                    guard let value = record.value(forKey: prop.name) as? [Int] else { break }
-                    let list = List<Int>()
-                    list.append(objectsIn: value)
-                    recordValue = list
+                    let value = record.value(forKey: prop.name)
+                    if value is [Int] {
+                        guard let value = value as? [Int] else { break }
+                        let list = List<Int>()
+                        list.append(objectsIn: value)
+                        recordValue = list
+                    } else if value is [Int64] {
+                        guard let value = value as? [Int64] else { break }
+                        let list = List<Int64>()
+                        list.append(objectsIn: value)
+                        recordValue = list
+                    } else { break }
                 case .string:
                     guard let value = record.value(forKey: prop.name) as? [String] else { break }
                     let list = List<String>()
