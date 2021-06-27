@@ -94,14 +94,8 @@ extension SyncObject: Syncable {
                 print("There is something wrong with the converson from cloud record to local object")
                 return
             }
-            
-            self.pendingUTypeRelationshipsWorker.owner = object
             self.pendingUTypeRelationshipsWorker.realm = realm
-            
-            self.pendingVTypeRelationshipsWorker.owner = object
             self.pendingVTypeRelationshipsWorker.realm = realm
-            
-            self.pendingWTypeRelationshipsWorker.owner = object
             self.pendingWTypeRelationshipsWorker.realm = realm
             
             /// If your model class includes a primary key, you can have Realm intelligently update or add objects based off of their primary key values using Realm().add(_:update:).
