@@ -8,24 +8,24 @@
 import Foundation
 import RealmSwift
 
+/// PendingRelationshipsWorker is responsible for temporarily storing relationships when objects recovering from CKRecord
 final class PendingRelationshipsWorker<Element: Object> {
     
     var realm: Realm?
-    var owner: Object?
     
-    var pendingListElementPrimaryKeyValue: [AnyHashable: String] = [:]
+    var pendingListElementPrimaryKeyValue: [AnyHashable: (String, Object)] = [:]
     
-    func addToPendingListElement(propertyName: String, primaryKeyValue: AnyHashable) {
-        pendingListElementPrimaryKeyValue[primaryKeyValue] = propertyName
+    func addToPendingList(elementPrimaryKeyValue: AnyHashable, propertyName: String, owner: Object) {
+        pendingListElementPrimaryKeyValue[elementPrimaryKeyValue] = (propertyName, owner)
     }
     
     func resolvePendingListElements() {
-        guard let owner = owner, let realm = realm, pendingListElementPrimaryKeyValue.count > 0 else {
+        guard let realm = realm, pendingListElementPrimaryKeyValue.count > 0 else {
             // Maybe we could add one log here
             return
         }
         BackgroundWorker.shared.start {
-            for (primaryKeyValue, propName) in self.pendingListElementPrimaryKeyValue {
+            for (primaryKeyValue, (propName, owner)) in self.pendingListElementPrimaryKeyValue {
                 guard let list = owner.value(forKey: propName) as? List<Element> else { return }
                 if let existListElementObject = realm.object(ofType: Element.self, forPrimaryKey: primaryKeyValue) {
                     try! realm.write {
