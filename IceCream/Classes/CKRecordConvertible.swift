@@ -54,8 +54,16 @@ extension CKRecordConvertible where Self: Object {
         
         switch primaryKeyProperty.type {
         case .string:
-            if let primaryValueString = self[primaryKeyProperty.name] as? String {
+            if var primaryValueString = self[primaryKeyProperty.name] as? String {
                 // For more: https://developer.apple.com/documentation/cloudkit/ckrecord/id/1500975-init
+                
+                // Remove any emojis if they exist as a key by accident
+                // this isn't ideal, but it's better than crashing if an
+                // emoji is accidentally added
+                if (!primaryValueString.allSatisfy({ $0.isASCII })) {
+                    primaryValueString = primaryValueString.stringByRemovingEmoji()
+                }
+                
                 assert(primaryValueString.allSatisfy({ $0.isASCII }), "Primary value for CKRecord name must contain only ASCII characters")
                 assert(primaryValueString.count <= 255, "Primary value for CKRecord name must not exceed 255 characters")
                 assert(!primaryValueString.starts(with: "_"), "Primary value for CKRecord name must not start with an underscore")
@@ -114,14 +122,9 @@ extension CKRecordConvertible where Self: Object {
                     let array = Array(list)
                     r[prop.name] = array as CKRecordValue
                 case .object:
-                    /// We may get List<Cat> here
-                    /// The item cannot be casted as List<Object>
-                    /// It can be casted at a low-level type `ListBase`
-                    guard let list = item as? ListBase, list.count > 0 else { break }
                     var referenceArray = [CKRecord.Reference]()
-                    let wrappedArray = list._rlmArray
-                    for index in 0..<wrappedArray.count {
-                        guard let object = wrappedArray[index] as? Object, let primaryKey = object.objectSchema.primaryKeyProperty?.name else { continue }
+                    for object in self.dynamicList(prop.name) {
+                        guard let primaryKey = object.objectSchema.primaryKeyProperty?.name else { continue }
                         switch object.objectSchema.primaryKeyProperty?.type {
                         case .string:
                             if let primaryValueString = object[primaryKey] as? String, let obj = object as? CKRecordConvertible, !obj.isDeleted {
@@ -170,4 +173,17 @@ extension CKRecordConvertible where Self: Object {
         return r
     }
     
+}
+
+extension String {
+  func stringByRemovingEmoji() -> String {
+    return String(self.filter { !$0.isEmoji() })
+  }
+}
+
+extension Character {
+  fileprivate func isEmoji() -> Bool {
+    return Character(UnicodeScalar(UInt32(0x1d000))!) <= self && self <= Character(UnicodeScalar(UInt32(0x1f77f))!)
+      || Character(UnicodeScalar(UInt32(0x2100))!) <= self && self <= Character(UnicodeScalar(UInt32(0x26ff))!)
+  }
 }
