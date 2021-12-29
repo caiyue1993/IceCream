@@ -16,7 +16,7 @@ let package = Package(
     .package(
         name: "Realm",
         url: "https://github.com/realm/realm-cocoa",
-        .upToNextMajor(from: "10.12.0")
+        .upToNextMajor(from: "10.20.0")
     )
     ],
     targets: [
