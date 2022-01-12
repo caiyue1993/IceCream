@@ -135,7 +135,9 @@ extension CKRecordRecoverable where Self: Object {
             case .data:
                 recordValue = record.value(forKey: prop.name) as? Data
             case .object:
-                if let asset = record.value(forKey: prop.name) as? CKAsset {
+                if let location = record.value(forKey: prop.name) as? CLLocation {
+                    recordValue = CreamLocation.make(location: location)
+                } else if let asset = record.value(forKey: prop.name) as? CKAsset {
                     recordValue = CreamAsset.parse(from: prop.name, record: record, asset: asset)
                 } else if let owner = record.value(forKey: prop.name) as? CKRecord.Reference,
                     let ownerType = prop.objectClassName,

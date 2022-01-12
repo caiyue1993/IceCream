@@ -150,8 +150,10 @@ extension CKRecordConvertible where Self: Object {
                 r[prop.name] = item as? CKRecordValue
             case .object:
                 guard let objectName = prop.objectClassName else { break }
-                // If object is CreamAsset, set record with its wrapped CKAsset value
-                if objectName == CreamAsset.className(), let creamAsset = item as? CreamAsset {
+                if objectName == CreamLocation.className(), let creamLocation = item as? CreamLocation {
+                    r[prop.name] = creamLocation.location
+                } else if objectName == CreamAsset.className(), let creamAsset = item as? CreamAsset {
+                    // If object is CreamAsset, set record with its wrapped CKAsset value
                     r[prop.name] = creamAsset.asset
                 } else if let owner = item as? CKRecordConvertible {
                     // Handle to-one relationship: https://realm.io/docs/swift/latest/#many-to-one
