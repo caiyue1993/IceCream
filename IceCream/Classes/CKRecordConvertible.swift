@@ -7,6 +7,7 @@
 
 import Foundation
 import CloudKit
+import Realm
 import RealmSwift
 
 public protocol CKRecordConvertible {
@@ -116,10 +117,10 @@ extension CKRecordConvertible where Self: Object {
                 case .object:
                     /// We may get List<Cat> here
                     /// The item cannot be casted as List<Object>
-                    /// It can be casted at a low-level type `ListBase`
-                    guard let list = item as? ListBase, list.count > 0 else { break }
+                    /// It can be casted at a low-level type `RLMSwiftCollectionBase`
+                    guard let list = item as? RLMSwiftCollectionBase, list._rlmCollection.count > 0 else { break }
                     var referenceArray = [CKRecord.Reference]()
-                    let wrappedArray = list._rlmArray
+                    let wrappedArray = list._rlmCollection
                     for index in 0..<wrappedArray.count {
                         guard let object = wrappedArray[index] as? Object, let primaryKey = object.objectSchema.primaryKeyProperty?.name else { continue }
                         switch object.objectSchema.primaryKeyProperty?.type {

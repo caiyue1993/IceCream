@@ -401,7 +401,7 @@
 			repositoryURL = "https://github.com/realm/realm-cocoa.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 4.0.0;
+				minimumVersion = 10.21.1;
 			};
 		};
 		E54B955E24A8C7A500A6D55A /* XCRemoteSwiftPackageReference "RxRealm" */ = {
@@ -409,7 +409,7 @@
 			repositoryURL = "https://github.com/RxSwiftCommunity/RxRealm.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.0;
+				minimumVersion = 5.0.4;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
