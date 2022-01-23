@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0D661B77279D48F50028CBEE /* CreamLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D661B76279D48F50028CBEE /* CreamLocation.swift */; };
+		0D661B78279D48F50028CBEE /* CreamLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D661B76279D48F50028CBEE /* CreamLocation.swift */; };
+		0D661B79279D48F50028CBEE /* CreamLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D661B76279D48F50028CBEE /* CreamLocation.swift */; };
+		0D661B7A279D48F50028CBEE /* CreamLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D661B76279D48F50028CBEE /* CreamLocation.swift */; };
 		0D69505A260CF0DA0039A9A8 /* PendingRelationshipsWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D695059260CF0DA0039A9A8 /* PendingRelationshipsWorker.swift */; };
 		0D69505B260CF0DA0039A9A8 /* PendingRelationshipsWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D695059260CF0DA0039A9A8 /* PendingRelationshipsWorker.swift */; };
 		0D69505C260CF0DA0039A9A8 /* PendingRelationshipsWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D695059260CF0DA0039A9A8 /* PendingRelationshipsWorker.swift */; };
@@ -79,6 +83,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0D661B76279D48F50028CBEE /* CreamLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreamLocation.swift; sourceTree = "<group>"; };
 		0D695059260CF0DA0039A9A8 /* PendingRelationshipsWorker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PendingRelationshipsWorker.swift; sourceTree = "<group>"; };
 		41767BFC209863BA00178513 /* SyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngine.swift; sourceTree = "<group>"; };
 		474FF0E22284B6F700921CF6 /* BackgroundWorker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundWorker.swift; sourceTree = "<group>"; };
@@ -195,6 +200,7 @@
 				6743F720202B0F9400912163 /* ErrorHandler.swift */,
 				6743F722202B0F9400912163 /* Manifest.swift */,
 				6743F723202B0F9400912163 /* CreamAsset.swift */,
+				0D661B76279D48F50028CBEE /* CreamLocation.swift */,
 				6743F725202B0F9400912163 /* Notification+Name.swift */,
 				41767BFC209863BA00178513 /* SyncEngine.swift */,
 				6767988E20BCEEB0008F98AD /* SyncObject.swift */,
@@ -424,6 +430,7 @@
 				6773DF0320BD2CE20019FF3A /* Syncable.swift in Sources */,
 				6773DF0020BD2CBD0019FF3A /* CKRecordRecoverable.swift in Sources */,
 				6743F72D202B0F9400912163 /* Notification+Name.swift in Sources */,
+				0D661B77279D48F50028CBEE /* CreamLocation.swift in Sources */,
 				6743F728202B0F9400912163 /* ErrorHandler.swift in Sources */,
 				673B1E6F2273EECF00EB4FEE /* PrivateDatabaseManager.swift in Sources */,
 				0D69505A260CF0DA0039A9A8 /* PendingRelationshipsWorker.swift in Sources */,
@@ -445,6 +452,7 @@
 				6747815D213BEDD6005C132B /* CreamAsset.swift in Sources */,
 				6747815E213BEDD6005C132B /* Notification+Name.swift in Sources */,
 				6747815F213BEDD6005C132B /* SyncEngine.swift in Sources */,
+				0D661B79279D48F50028CBEE /* CreamLocation.swift in Sources */,
 				0DF861D622D0563400B20AEA /* PrivateDatabaseManager.swift in Sources */,
 				67478160213BEDD6005C132B /* SyncObject.swift in Sources */,
 				0D69505C260CF0DA0039A9A8 /* PendingRelationshipsWorker.swift in Sources */,
@@ -466,6 +474,7 @@
 				6747816C213BEF0E005C132B /* CreamAsset.swift in Sources */,
 				6747816D213BEF0E005C132B /* Notification+Name.swift in Sources */,
 				6747816E213BEF0E005C132B /* SyncEngine.swift in Sources */,
+				0D661B7A279D48F50028CBEE /* CreamLocation.swift in Sources */,
 				0DF861D722D0563500B20AEA /* PrivateDatabaseManager.swift in Sources */,
 				6747816F213BEF0E005C132B /* SyncObject.swift in Sources */,
 				0D69505D260CF0DA0039A9A8 /* PendingRelationshipsWorker.swift in Sources */,
@@ -487,6 +496,7 @@
 				D826ADCF212189F2002B5C0F /* Notification+Name.swift in Sources */,
 				D826ADCE212189F2002B5C0F /* CreamAsset.swift in Sources */,
 				D826ADC8212189F2002B5C0F /* Syncable.swift in Sources */,
+				0D661B78279D48F50028CBEE /* CreamLocation.swift in Sources */,
 				0DF861D522D0563300B20AEA /* PrivateDatabaseManager.swift in Sources */,
 				D826ADD0212189F2002B5C0F /* SyncEngine.swift in Sources */,
 				0D69505B260CF0DA0039A9A8 /* PendingRelationshipsWorker.swift in Sources */,
