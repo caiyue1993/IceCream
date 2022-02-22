@@ -245,7 +245,7 @@ My app [Sprint](https://itunes.apple.com/cn/app/%E5%B0%8F%E7%9B%AE%E6%A0%87-%E9%
 
 This project exists thanks to all the people who contribute:
 
-<a href="graphs/contributors"><img src="https://opencollective.com/IceCream/contributors.svg?width=890&button=false" /></a>
+<a href="https://github.com/caiyue1993/IceCream/graphs/contributors"><img src="https://opencollective.com/IceCream/contributors.svg?width=890&button=false" /></a>
 
 ## Sponsorship
 
