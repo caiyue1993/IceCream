@@ -11,8 +11,8 @@ import RealmSwift
 import CoreLocation
 
 public class CreamLocation: Object {
-    @objc dynamic public var latitude: CLLocationDegrees = 0
-    @objc dynamic public var longitude: CLLocationDegrees = 0
+    @Persisted public var latitude: CLLocationDegrees = 0
+    @Persisted public var longitude: CLLocationDegrees = 0
     
     convenience public init(latitude: CLLocationDegrees, longitude: CLLocationDegrees) {
         self.init()
