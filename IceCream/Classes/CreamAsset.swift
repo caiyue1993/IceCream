@@ -18,7 +18,7 @@ import CloudKit
 /// We choose the latter, that's storing it directly on the file system, storing paths to these files in the Realm.
 /// So this is the deal.
 public class CreamAsset: Object {
-    @objc dynamic private var uniqueFileName = ""
+    @Persisted private var uniqueFileName = ""
     override public static func ignoredProperties() -> [String] {
         return ["filePath"]
     }
