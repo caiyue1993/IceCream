@@ -40,7 +40,7 @@ final class PublicDatabaseManager: DatabaseManager {
     }
     
     func createDatabaseSubscriptionIfHaveNot() {
-        syncObjects.forEach { createSubscriptionInPublicDatabase(on: $0) }
+//        syncObjects.forEach { createSubscriptionInPublicDatabase(on: $0) }
     }
     
     func startObservingTermination() {
@@ -94,22 +94,22 @@ final class PublicDatabaseManager: DatabaseManager {
     }
     
     private func createSubscriptionInPublicDatabase(on syncObject: Syncable) {
-        #if os(iOS) || os(tvOS) || os(macOS)
-        let predict = NSPredicate(value: true)
-        let subscription = CKQuerySubscription(recordType: syncObject.recordType, predicate: predict, subscriptionID: IceCreamSubscription.cloudKitPublicDatabaseSubscriptionID.id, options: [CKQuerySubscription.Options.firesOnRecordCreation, CKQuerySubscription.Options.firesOnRecordUpdate, CKQuerySubscription.Options.firesOnRecordDeletion])
-        
-        let notificationInfo = CKSubscription.NotificationInfo()
-        notificationInfo.shouldSendContentAvailable = true // Silent Push
-        
-        subscription.notificationInfo = notificationInfo
-        
-        let createOp = CKModifySubscriptionsOperation(subscriptionsToSave: [subscription], subscriptionIDsToDelete: [])
-        createOp.modifySubscriptionsCompletionBlock = { _, _, _ in
-            
-        }
-        createOp.qualityOfService = .utility
-        database.add(createOp)
-        #endif
+//        #if os(iOS) || os(tvOS) || os(macOS)
+//        let predict = NSPredicate(value: true)
+//        let subscription = CKQuerySubscription(recordType: syncObject.recordType, predicate: predict, subscriptionID: IceCreamSubscription.cloudKitPublicDatabaseSubscriptionID.id, options: [CKQuerySubscription.Options.firesOnRecordCreation, CKQuerySubscription.Options.firesOnRecordUpdate, CKQuerySubscription.Options.firesOnRecordDeletion])
+//
+//        let notificationInfo = CKSubscription.NotificationInfo()
+//        notificationInfo.shouldSendContentAvailable = true // Silent Push
+//
+//        subscription.notificationInfo = notificationInfo
+//
+//        let createOp = CKModifySubscriptionsOperation(subscriptionsToSave: [subscription], subscriptionIDsToDelete: [])
+//        createOp.modifySubscriptionsCompletionBlock = { _, _, _ in
+//
+//        }
+//        createOp.qualityOfService = .utility
+//        database.add(createOp)
+//        #endif
     }
     
     @objc func cleanUp() {
