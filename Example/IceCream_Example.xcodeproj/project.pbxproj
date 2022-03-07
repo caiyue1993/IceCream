@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0D4EF51B24B228570036FD90 /* OwnersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D4EF51A24B228570036FD90 /* OwnersViewController.swift */; };
 		0DE487FB2509302400396A59 /* OwnerDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE487FA2509302400396A59 /* OwnerDetailViewController.swift */; };
+		3F8EE8B327D59F2E002FFCCC /* IceCream_Example.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 3F8EE8B227D59F2E002FFCCC /* IceCream_Example.xcconfig */; };
 		6743F6EC202B0CB600912163 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F6EB202B0CB600912163 /* AppDelegate.swift */; };
 		6743F6EE202B0CB600912163 /* DogsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743F6ED202B0CB600912163 /* DogsViewController.swift */; };
 		6743F6FE202B0D1400912163 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6743F6FD202B0D1400912163 /* Images.xcassets */; };
@@ -28,6 +29,7 @@
 /* Begin PBXFileReference section */
 		0D4EF51A24B228570036FD90 /* OwnersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OwnersViewController.swift; sourceTree = "<group>"; };
 		0DE487FA2509302400396A59 /* OwnerDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OwnerDetailViewController.swift; sourceTree = "<group>"; };
+		3F8EE8B227D59F2E002FFCCC /* IceCream_Example.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = IceCream_Example.xcconfig; sourceTree = "<group>"; };
 		6743F6E8202B0CB600912163 /* IceCream_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IceCream_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6743F6EB202B0CB600912163 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6743F6ED202B0CB600912163 /* DogsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DogsViewController.swift; sourceTree = "<group>"; };
@@ -94,6 +96,7 @@
 				6743F6EB202B0CB600912163 /* AppDelegate.swift */,
 				6743F6F7202B0CB600912163 /* Info.plist */,
 				0DE487FA2509302400396A59 /* OwnerDetailViewController.swift */,
+				3F8EE8B227D59F2E002FFCCC /* IceCream_Example.xcconfig */,
 			);
 			path = IceCream_Example;
 			sourceTree = "<group>";
@@ -184,6 +187,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3F8EE8B327D59F2E002FFCCC /* IceCream_Example.xcconfig in Resources */,
 				6743F701202B0D1C00912163 /* LaunchScreen.xib in Resources */,
 				6743F6FE202B0D1400912163 /* Images.xcassets in Resources */,
 			);
@@ -336,17 +340,16 @@
 		};
 		6743F6FB202B0CB600912163 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3F8EE8B227D59F2E002FFCCC /* IceCream_Example.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = IceCream_Example/IceCream_Example.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = RCMHACTPLY;
 				INFOPLIST_FILE = IceCream_Example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "me.soledad.http.IceCream-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -355,17 +358,16 @@
 		};
 		6743F6FC202B0CB600912163 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3F8EE8B227D59F2E002FFCCC /* IceCream_Example.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = IceCream_Example/IceCream_Example.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = RCMHACTPLY;
 				INFOPLIST_FILE = IceCream_Example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "me.soledad.http.IceCream-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
