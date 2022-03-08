@@ -167,7 +167,7 @@
 			);
 			mainGroup = 6743F6DF202B0CB600912163;
 			packageReferences = (
-				E50A78FD24A8E08F00E44E79 /* XCRemoteSwiftPackageReference "realm-cocoa" */,
+				E50A78FD24A8E08F00E44E79 /* XCRemoteSwiftPackageReference "realm-swift" */,
 			);
 			productRefGroup = 6743F6E9202B0CB600912163 /* Products */;
 			projectDirPath = "";
@@ -394,9 +394,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		E50A78FD24A8E08F00E44E79 /* XCRemoteSwiftPackageReference "realm-cocoa" */ = {
+		E50A78FD24A8E08F00E44E79 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/realm/realm-cocoa.git";
+			repositoryURL = "https://github.com/realm/realm-swift.git";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 10.24.0;
@@ -407,12 +407,12 @@
 /* Begin XCSwiftPackageProductDependency section */
 		E50A78FE24A8E08F00E44E79 /* Realm */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = E50A78FD24A8E08F00E44E79 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
+			package = E50A78FD24A8E08F00E44E79 /* XCRemoteSwiftPackageReference "realm-swift" */;
 			productName = Realm;
 		};
 		E50A790024A8E08F00E44E79 /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = E50A78FD24A8E08F00E44E79 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
+			package = E50A78FD24A8E08F00E44E79 /* XCRemoteSwiftPackageReference "realm-swift" */;
 			productName = RealmSwift;
 		};
 		E5C87F3524AB7391005E1680 /* IceCream */ = {
