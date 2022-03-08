@@ -22,7 +22,6 @@
 		67AA236320B84CB600953F09 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67AA236220B84CB600953F09 /* TabBarViewController.swift */; };
 		E50A78FF24A8E08F00E44E79 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = E50A78FE24A8E08F00E44E79 /* Realm */; };
 		E50A790124A8E08F00E44E79 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E50A790024A8E08F00E44E79 /* RealmSwift */; };
-		E54B956024A8C7A500A6D55A /* RxRealm in Frameworks */ = {isa = PBXBuildFile; productRef = E54B955F24A8C7A500A6D55A /* RxRealm */; };
 		E5C87F3624AB7391005E1680 /* IceCream in Frameworks */ = {isa = PBXBuildFile; productRef = E5C87F3524AB7391005E1680 /* IceCream */; };
 /* End PBXBuildFile section */
 
@@ -51,7 +50,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E54B956024A8C7A500A6D55A /* RxRealm in Frameworks */,
 				E50A78FF24A8E08F00E44E79 /* Realm in Frameworks */,
 				E5C87F3624AB7391005E1680 /* IceCream in Frameworks */,
 				E50A790124A8E08F00E44E79 /* RealmSwift in Frameworks */,
@@ -126,7 +124,6 @@
 			);
 			name = IceCream_Example;
 			packageProductDependencies = (
-				E54B955F24A8C7A500A6D55A /* RxRealm */,
 				E50A78FE24A8E08F00E44E79 /* Realm */,
 				E50A790024A8E08F00E44E79 /* RealmSwift */,
 				E5C87F3524AB7391005E1680 /* IceCream */,
@@ -170,7 +167,6 @@
 			);
 			mainGroup = 6743F6DF202B0CB600912163;
 			packageReferences = (
-				E54B955E24A8C7A500A6D55A /* XCRemoteSwiftPackageReference "RxRealm" */,
 				E50A78FD24A8E08F00E44E79 /* XCRemoteSwiftPackageReference "realm-cocoa" */,
 			);
 			productRefGroup = 6743F6E9202B0CB600912163 /* Products */;
@@ -406,14 +402,6 @@
 				minimumVersion = 10.24.0;
 			};
 		};
-		E54B955E24A8C7A500A6D55A /* XCRemoteSwiftPackageReference "RxRealm" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/RxSwiftCommunity/RxRealm.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.0.4;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -426,11 +414,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E50A78FD24A8E08F00E44E79 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
 			productName = RealmSwift;
-		};
-		E54B955F24A8C7A500A6D55A /* RxRealm */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E54B955E24A8C7A500A6D55A /* XCRemoteSwiftPackageReference "RxRealm" */;
-			productName = RxRealm;
 		};
 		E5C87F3524AB7391005E1680 /* IceCream */ = {
 			isa = XCSwiftPackageProductDependency;
