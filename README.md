@@ -229,9 +229,9 @@ See the [CONTRIBUTING](docs/CONTRIBUTING.md) file for contributing guidelines.
 
 ## Live Demo
 
-My app [Sprint](https://itunes.apple.com/cn/app/%E5%B0%8F%E7%9B%AE%E6%A0%87-%E9%87%8F%E5%8C%96%E4%BD%A0%E7%9A%84%E8%BF%9B%E6%AD%A5/id1215312957?mt=8&at=1000lvyQ) (A lightweight task management app) is using IceCream. You can download it and try it on your multiple devices to see this magic.
+My app [Music Mate](https://apps.apple.com/app/music-mate-for-apple-music/id1605379758) (The missing mate for Apple Music) is using IceCream to its fullest. You can download it and try it on your multiple devices to see this magic.
 
-<a href="https://itunes.apple.com/cn/app/%E5%B0%8F%E7%9B%AE%E6%A0%87-%E9%87%8F%E5%8C%96%E4%BD%A0%E7%9A%84%E8%BF%9B%E6%AD%A5/id1215312957?mt=8&at=1000lvyQ">
+<a href="https://apps.apple.com/app/music-mate-for-apple-music/id1605379758">
   <img src="https://github.com/caiyue1993/Tiptoes/blob/master/images/appstore.png">
 </a>
 
