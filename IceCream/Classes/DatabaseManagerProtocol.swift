@@ -7,7 +7,7 @@
 
 import CloudKit
 
-protocol DatabaseManager: class {
+protocol DatabaseManager: AnyObject {
     
     /// A conduit for accessing and performing operations on the data of an app container.
     var database: CKDatabase { get }
