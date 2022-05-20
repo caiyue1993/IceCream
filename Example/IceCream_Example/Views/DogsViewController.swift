@@ -133,7 +133,7 @@ extension DogsViewController: UITableViewDataSource {
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell")
-        cell?.textLabel?.text = dogs[indexPath.row].name + "\(dogs[indexPath.row].age)" + "owner: \(dogs[indexPath.row].owner?.name)"
+        cell?.textLabel?.text = dogs[indexPath.row].name + "\(dogs[indexPath.row].age)" + " owner: " + (dogs[indexPath.row].owner?.name ?? "No owner")
         if let data = dogs[indexPath.row].avatar?.storedData() {
             cell?.imageView?.image = UIImage(data: data)
         } else {
@@ -141,6 +141,4 @@ extension DogsViewController: UITableViewDataSource {
         }
         return cell ?? UITableViewCell()
     }
-
 }
-
