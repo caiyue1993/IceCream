@@ -86,9 +86,15 @@ extension CKRecordConvertible where Self: Object {
             if prop.isArray {
                 switch prop.type {
                 case .int:
-                    guard let list = item as? List<Int>, !list.isEmpty else { break }
-                    let array = Array(list)
-                    r[prop.name] = array as CKRecordValue
+                    if item is List<Int> {
+                        guard let list = item as? List<Int>, !list.isEmpty else { break }
+                        let array = Array(list)
+                        r[prop.name] = array as CKRecordValue
+                    } else if item is List<Int64> {
+                        guard let list = item as? List<Int64>, !list.isEmpty else { break }
+                        let array = Array(list)
+                        r[prop.name] = array as CKRecordValue
+                    } else { break }
                 case .string:
                     guard let list = item as? List<String>, !list.isEmpty else { break }
                     let array = Array(list)
