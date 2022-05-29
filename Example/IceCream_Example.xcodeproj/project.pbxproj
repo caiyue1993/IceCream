@@ -20,8 +20,6 @@
 		67AA236020B84C9700953F09 /* CatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67AA235E20B84C9700953F09 /* CatsViewController.swift */; };
 		67AA236120B84C9700953F09 /* Cat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67AA235F20B84C9700953F09 /* Cat.swift */; };
 		67AA236320B84CB600953F09 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67AA236220B84CB600953F09 /* TabBarViewController.swift */; };
-		E50A78FF24A8E08F00E44E79 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = E50A78FE24A8E08F00E44E79 /* Realm */; };
-		E50A790124A8E08F00E44E79 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E50A790024A8E08F00E44E79 /* RealmSwift */; };
 		E5C87F3624AB7391005E1680 /* IceCream in Frameworks */ = {isa = PBXBuildFile; productRef = E5C87F3524AB7391005E1680 /* IceCream */; };
 /* End PBXBuildFile section */
 
@@ -42,7 +40,7 @@
 		67AA235E20B84C9700953F09 /* CatsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CatsViewController.swift; sourceTree = "<group>"; };
 		67AA235F20B84C9700953F09 /* Cat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cat.swift; sourceTree = "<group>"; };
 		67AA236220B84CB600953F09 /* TabBarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
-		E5C87F3424AB7315005E1680 /* IceCream */ = {isa = PBXFileReference; lastKnownFileType = folder; name = IceCream; path = ..; sourceTree = "<group>"; };
+		7D8830CC2843B48000DAA318 /* IceCream */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = IceCream; path = ..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -50,9 +48,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E50A78FF24A8E08F00E44E79 /* Realm in Frameworks */,
 				E5C87F3624AB7391005E1680 /* IceCream in Frameworks */,
-				E50A790124A8E08F00E44E79 /* RealmSwift in Frameworks */,
 				6743F707202B0D4500912163 /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -63,10 +59,10 @@
 		6743F6DF202B0CB600912163 = {
 			isa = PBXGroup;
 			children = (
+				7D8830CB2843B48000DAA318 /* Packages */,
 				6743F6EA202B0CB600912163 /* IceCream_Example */,
 				6743F6E9202B0CB600912163 /* Products */,
 				6743F705202B0D4500912163 /* Frameworks */,
-				E5C87F3424AB7315005E1680 /* IceCream */,
 			);
 			sourceTree = "<group>";
 		};
@@ -123,6 +119,14 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		7D8830CB2843B48000DAA318 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				7D8830CC2843B48000DAA318 /* IceCream */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -140,8 +144,6 @@
 			);
 			name = IceCream_Example;
 			packageProductDependencies = (
-				E50A78FE24A8E08F00E44E79 /* Realm */,
-				E50A790024A8E08F00E44E79 /* RealmSwift */,
 				E5C87F3524AB7391005E1680 /* IceCream */,
 			);
 			productName = IceCream_Example;
@@ -183,7 +185,6 @@
 			);
 			mainGroup = 6743F6DF202B0CB600912163;
 			packageReferences = (
-				E50A78FD24A8E08F00E44E79 /* XCRemoteSwiftPackageReference "realm-swift" */,
 			);
 			productRefGroup = 6743F6E9202B0CB600912163 /* Products */;
 			projectDirPath = "";
@@ -409,28 +410,7 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		E50A78FD24A8E08F00E44E79 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/realm/realm-swift.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 10.27.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
 /* Begin XCSwiftPackageProductDependency section */
-		E50A78FE24A8E08F00E44E79 /* Realm */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E50A78FD24A8E08F00E44E79 /* XCRemoteSwiftPackageReference "realm-swift" */;
-			productName = Realm;
-		};
-		E50A790024A8E08F00E44E79 /* RealmSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E50A78FD24A8E08F00E44E79 /* XCRemoteSwiftPackageReference "realm-swift" */;
-			productName = RealmSwift;
-		};
 		E5C87F3524AB7391005E1680 /* IceCream */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = IceCream;
