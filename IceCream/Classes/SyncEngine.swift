@@ -6,6 +6,7 @@
 //
 
 import CloudKit
+import os.log
 
 /// SyncEngine talks to CloudKit directly.
 /// Logically,
@@ -37,6 +38,7 @@ public final class SyncEngine {
     
     private func setup() {
         databaseManager.prepare()
+        os_log("start checking container %{private}@ account status", log: LogConfiguration.Category.general, type: .info, databaseManager.container)
         databaseManager.container.accountStatus { [weak self] (status, error) in
             guard let self = self else { return }
             switch status {
