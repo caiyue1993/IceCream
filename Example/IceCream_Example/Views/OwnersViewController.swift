@@ -77,7 +77,7 @@ extension OwnersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard indexPath.row < owners.count else { return }
         let owner = owners[indexPath.row]
-        let viewController = OwnerDetailViewController(cats: Array(owner.cats).filter { !$0.isDeleted })
+        let viewController = OwnerDetailViewController(owner: owner)
         navigationController?.pushViewController(viewController, animated: true)
     }
     

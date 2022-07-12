@@ -118,7 +118,7 @@ extension CKRecordConvertible where Self: Object {
                     /// We may get List<Cat> here
                     /// The item cannot be casted as List<Object>
                     /// It can be casted at a low-level type `RLMSwiftCollectionBase`
-                    guard let list = item as? RLMSwiftCollectionBase, list._rlmCollection.count > 0 else { break }
+                    guard let list = item as? RLMSwiftCollectionBase else { break }
                     var referenceArray = [CKRecord.Reference]()
                     let wrappedArray = list._rlmCollection
                     for index in 0..<wrappedArray.count {

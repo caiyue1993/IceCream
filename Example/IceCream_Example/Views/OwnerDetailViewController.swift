@@ -7,20 +7,25 @@
 //
 
 import UIKit
+import RealmSwift
 
 final class OwnerDetailViewController: UIViewController {
-
-    private let cats: [Cat]
     
+    private var owner: Person? = nil
+
+    private var notificationToken: NotificationToken?
+    private let realm = try! Realm()
+
     private lazy var tableView: UITableView = {
         let tv = UITableView()
         tv.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tv.delegate = self
         tv.dataSource = self
         return tv
     }()
     
-    init(cats: [Cat]) {
-        self.cats = cats
+    init(owner: Person) {
+        self.owner = owner
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -32,26 +37,38 @@ final class OwnerDetailViewController: UIViewController {
         super.viewDidLoad()
         
         view.addSubview(tableView)
-        title = "OwnerDetailViewController"
+        title = "Owner Details"
+        
+        bind()
     }
 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         tableView.frame = view.bounds
     }
-    
+
+    private func bind() {
+        self.notificationToken = owner!.observe { change in
+            switch change {
+            case .change, .deleted:
+                self.tableView.reloadData()
+            case .error(let error):
+                fatalError("\(error)")
+            }
+        }
+    }
 }
 
 extension OwnerDetailViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return cats.count
+        return owner!.cats.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = cats[indexPath.row].name
-        if let data = cats[indexPath.row].avatar?.storedData() {
+        cell.textLabel?.text = owner!.cats[indexPath.row].name
+        if let data = owner!.cats[indexPath.row].avatar?.storedData() {
             cell.imageView?.image = UIImage(data: data)
         } else {
             cell.imageView?.image = UIImage(named: "cat_placeholder")
@@ -59,4 +76,20 @@ extension OwnerDetailViewController: UITableViewDataSource {
         return cell
     }
     
+}
+
+extension OwnerDetailViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        
+        let archiveAction = UITableViewRowAction(style: .normal, title: "Remove") { [weak self](_, ip) in
+            guard let `self` = self else { return }
+            guard ip.row < `self`.owner!.cats.count else { return }
+            let owner = `self`.owner!
+            try! `self`.realm.write {
+                owner.cats.remove(at: ip.row)
+            }
+        }
+        
+        return [archiveAction]
+    }
 }
