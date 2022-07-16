@@ -119,26 +119,31 @@ extension CKRecordConvertible where Self: Object {
                     /// The item cannot be casted as List<Object>
                     /// It can be casted at a low-level type `RLMSwiftCollectionBase`
                     guard let list = item as? RLMSwiftCollectionBase else { break }
-                    var referenceArray = [CKRecord.Reference]()
-                    let wrappedArray = list._rlmCollection
-                    for index in 0..<wrappedArray.count {
-                        guard let object = wrappedArray[index] as? Object, let primaryKey = object.objectSchema.primaryKeyProperty?.name else { continue }
-                        switch object.objectSchema.primaryKeyProperty?.type {
-                        case .string:
-                            if let primaryValueString = object[primaryKey] as? String, let obj = object as? CKRecordConvertible, !obj.isDeleted {
-                                let referenceZoneID = CKRecordZone.ID(zoneName: "\(object.objectSchema.className)sZone", ownerName: CKCurrentUserDefaultName)
-                                referenceArray.append(CKRecord.Reference(recordID: CKRecord.ID(recordName: primaryValueString, zoneID: referenceZoneID), action: .none))
+                    if (list._rlmCollection.count > 0) {
+                        var referenceArray = [CKRecord.Reference]()
+                        let wrappedArray = list._rlmCollection
+                        for index in 0..<wrappedArray.count {
+                            guard let object = wrappedArray[index] as? Object, let primaryKey = object.objectSchema.primaryKeyProperty?.name else { continue }
+                            switch object.objectSchema.primaryKeyProperty?.type {
+                            case .string:
+                                if let primaryValueString = object[primaryKey] as? String, let obj = object as? CKRecordConvertible, !obj.isDeleted {
+                                    let referenceZoneID = CKRecordZone.ID(zoneName: "\(object.objectSchema.className)sZone", ownerName: CKCurrentUserDefaultName)
+                                    referenceArray.append(CKRecord.Reference(recordID: CKRecord.ID(recordName: primaryValueString, zoneID: referenceZoneID), action: .none))
+                                }
+                            case .int:
+                                if let primaryValueInt = object[primaryKey] as? Int, let obj = object as? CKRecordConvertible, !obj.isDeleted {
+                                    let referenceZoneID = CKRecordZone.ID(zoneName: "\(object.objectSchema.className)sZone", ownerName: CKCurrentUserDefaultName)
+                                    referenceArray.append(CKRecord.Reference(recordID: CKRecord.ID(recordName: "\(primaryValueInt)", zoneID: referenceZoneID), action: .none))
+                                }
+                            default:
+                                break
                             }
-                        case .int:
-                            if let primaryValueInt = object[primaryKey] as? Int, let obj = object as? CKRecordConvertible, !obj.isDeleted {
-                                let referenceZoneID = CKRecordZone.ID(zoneName: "\(object.objectSchema.className)sZone", ownerName: CKCurrentUserDefaultName)
-                                referenceArray.append(CKRecord.Reference(recordID: CKRecord.ID(recordName: "\(primaryValueInt)", zoneID: referenceZoneID), action: .none))
-                            }
-                        default:
-                            break
                         }
+                        r[prop.name] = referenceArray as CKRecordValue
                     }
-                    r[prop.name] = referenceArray as CKRecordValue
+                    else {
+                        r[prop.name] = nil
+                    }
                 default:
                     break
                     /// Other inner types of List is not supported yet
