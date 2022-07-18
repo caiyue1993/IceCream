@@ -125,11 +125,25 @@ extension DatabaseManager {
                     self.syncRecordsToCloudKit(recordsToStore: recordsToStore, recordIDsToDelete: recordIDsToDelete, completion: completion)
                 }
             case .chunk:
-                /// CloudKit says maximum number of items in a single request is 400.
-                /// So I think 300 should be fine by them.
-                let chunkedRecords = recordsToStore.chunkItUp(by: 300)
-                for chunk in chunkedRecords {
-                    self.syncRecordsToCloudKit(recordsToStore: chunk, recordIDsToDelete: recordIDsToDelete, completion: completion)
+                let chunkedToStoreRecords = recordsToStore.chunkItUp(by: ErrorHandler.Constant.chunkSize)
+                let chunkedToDeleteRecordIDs = recordIDsToDelete.chunkItUp(by: ErrorHandler.Constant.chunkSize)
+                
+                if chunkedToStoreRecords.count >= chunkedToDeleteRecordIDs.count {
+                    for (index, chunk) in chunkedToStoreRecords.enumerated() {
+                        if index < chunkedToDeleteRecordIDs.count {
+                            self.syncRecordsToCloudKit(recordsToStore: chunk, recordIDsToDelete: chunkedToDeleteRecordIDs[index], completion: completion)
+                        } else {
+                            self.syncRecordsToCloudKit(recordsToStore: chunk, recordIDsToDelete: [], completion: completion)
+                        }
+                    }
+                } else {
+                    for (index, chunk) in chunkedToDeleteRecordIDs.enumerated() {
+                        if index < chunkedToStoreRecords.count {
+                            self.syncRecordsToCloudKit(recordsToStore: chunkedToStoreRecords[index], recordIDsToDelete: chunk, completion: completion)
+                        } else {
+                            self.syncRecordsToCloudKit(recordsToStore: [], recordIDsToDelete: chunk, completion: completion)
+                        }
+                    }
                 }
             default:
                 return
