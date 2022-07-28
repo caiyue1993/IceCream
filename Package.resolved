@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/realm/realm-swift",
         "state": {
           "branch": null,
-          "revision": "fd279e0a94b46c5bd65b17e36817a4365c7a5482",
-          "version": "10.28.2"
+          "revision": "2d5d121f6cf08aa84eeb076b653131a23f1edd6b",
+          "version": "10.28.3"
         }
       }
     ]
