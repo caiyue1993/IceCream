@@ -86,31 +86,31 @@ extension CKRecordConvertible where Self: Object {
             if prop.isArray {
                 switch prop.type {
                 case .int:
-                    guard let list = item as? List<Int>, !list.isEmpty else { break }
+                    guard let list = item as? List<Int> else { break }
                     let array = Array(list)
                     r[prop.name] = array as CKRecordValue
                 case .string:
-                    guard let list = item as? List<String>, !list.isEmpty else { break }
+                    guard let list = item as? List<String> else { break }
                     let array = Array(list)
                     r[prop.name] = array as CKRecordValue
                 case .bool:
-                    guard let list = item as? List<Bool>, !list.isEmpty else { break }
+                    guard let list = item as? List<Bool> else { break }
                     let array = Array(list)
                     r[prop.name] = array as CKRecordValue
                 case .float:
-                    guard let list = item as? List<Float>, !list.isEmpty else { break }
+                    guard let list = item as? List<Float> else { break }
                     let array = Array(list)
                     r[prop.name] = array as CKRecordValue
                 case .double:
-                    guard let list = item as? List<Double>, !list.isEmpty else { break }
+                    guard let list = item as? List<Double> else { break }
                     let array = Array(list)
                     r[prop.name] = array as CKRecordValue
                 case .data:
-                    guard let list = item as? List<Data>, !list.isEmpty else { break }
+                    guard let list = item as? List<Data> else { break }
                     let array = Array(list)
                     r[prop.name] = array as CKRecordValue
                 case .date:
-                    guard let list = item as? List<Date>, !list.isEmpty else { break }
+                    guard let list = item as? List<Date> else { break }
                     let array = Array(list)
                     r[prop.name] = array as CKRecordValue
                 case .object:
