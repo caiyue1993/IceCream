@@ -3,7 +3,7 @@
     "pins": [
       {
         "package": "RealmDatabase",
-        "repositoryURL": "https://github.com/realm/realm-core",
+        "repositoryURL": "https://github.com/realm/realm-core.git",
         "state": {
           "branch": null,
           "revision": "b9467f3ecfead791cc87ab70b4f1c3c290be6ffd",
@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/realm/realm-swift",
         "state": {
           "branch": null,
-          "revision": "2ad431604aebedcb7313e1281c62aee4a98fb99e",
-          "version": "10.35.0"
+          "revision": "41fc81b00678f34a2d24781ada35e3937d2eeb25",
+          "version": "10.35.1"
         }
       }
     ]
