@@ -29,5 +29,5 @@ Pod::Spec.new do |s|
   s.static_framework = true
   s.swift_version = '5.0'
 
-  s.dependency 'RealmSwift', '~> 10.39'
+  s.dependency 'RealmSwift', '~> 10.40'
 end
