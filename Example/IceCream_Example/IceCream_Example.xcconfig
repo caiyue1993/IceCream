@@ -1,0 +1,16 @@
+//
+//  IceCream_Example.xcconfig
+//  IceCream_Example
+//
+//  Created by Leonid Zolotarev on 3/6/22.
+//  Copyright © 2022 蔡越. All rights reserved.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+//
+DEVELOPMENT_TEAM = RCMHACTPLY
+
+//
+PRODUCT_BUNDLE_IDENTIFIER = me.soledad.http.IceCream-Example

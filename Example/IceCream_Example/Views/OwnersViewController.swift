@@ -8,15 +8,14 @@
 
 import UIKit
 import RealmSwift
-import RxRealm
-import RxSwift
+import IceCream
 
 final class OwnersViewController: UIViewController {
 
     var owners: [Person] = []
-    let bag = DisposeBag()
     
-    let realm = try! Realm()
+    private var notificationToken: NotificationToken?
+    private let realm = try! Realm()
     
     private lazy var addBarItem: UIBarButtonItem = {
         let b = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: self, action: #selector(add))
@@ -52,12 +51,15 @@ final class OwnersViewController: UIViewController {
         /// https://realm.io/docs/swift/latest/#objects-with-primary-keys
         let owners = realm.objects(Person.self)
         
-        Observable.array(from: owners).subscribe(onNext: { (owners) in
-            /// When developers data changes in Realm, the following code will be executed
-            /// It works like magic.
-            self.owners = owners.filter { !$0.isDeleted }
-            self.tableView.reloadData()
-        }).disposed(by: bag)
+        self.notificationToken = owners.observe { (changes: RealmCollectionChange) in
+            switch changes {
+            case .initial, .update:
+                self.owners = owners.filter { !$0.isDeleted }
+                self.tableView.reloadData()
+            case .error(let err):
+                fatalError("\(err)")
+            }
+        }
     }
     
     @objc private func add() {
@@ -75,7 +77,7 @@ extension OwnersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard indexPath.row < owners.count else { return }
         let owner = owners[indexPath.row]
-        let viewController = OwnerDetailViewController(cats: Array(owner.cats).filter { !$0.isDeleted })
+        let viewController = OwnerDetailViewController(owner: owner)
         navigationController?.pushViewController(viewController, animated: true)
     }
     
