@@ -9,15 +9,13 @@
 import UIKit
 import RealmSwift
 import IceCream
-import RxRealm
-import RxSwift
 
 final class DogsViewController: UIViewController {
     
     private let jim = Person()
     private var dogs: [Dog] = []
-    private let bag = DisposeBag()
     
+    private var notificationToken: NotificationToken?
     private let realm = try! Realm()
     
     private lazy var addBarItem: UIBarButtonItem = {
@@ -54,12 +52,15 @@ final class DogsViewController: UIViewController {
         /// https://realm.io/docs/swift/latest/#objects-with-primary-keys
         let dogs = realm.objects(Dog.self)
         
-        Observable.array(from: dogs).subscribe(onNext: { (dogs) in
-            /// When dogs data changes in Realm, the following code will be executed
-            /// It works like magic.
-            self.dogs = dogs.filter{ !$0.isDeleted }
-            self.tableView.reloadData()
-        }).disposed(by: bag)
+        self.notificationToken = dogs.observe { (changes: RealmCollectionChange) in
+            switch changes {
+            case .initial, .update:
+                self.dogs = dogs.filter{ !$0.isDeleted }
+                self.tableView.reloadData()
+            case .error(let err):
+                fatalError("\(err)")
+            }
+        }
     }
     
     @objc private func add() {
@@ -132,7 +133,7 @@ extension DogsViewController: UITableViewDataSource {
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell")
-        cell?.textLabel?.text = dogs[indexPath.row].name + "\(dogs[indexPath.row].age)" + "owner: \(dogs[indexPath.row].owner?.name)"
+        cell?.textLabel?.text = dogs[indexPath.row].name + "\(dogs[indexPath.row].age)" + " owner: " + (dogs[indexPath.row].owner?.name ?? "No owner")
         if let data = dogs[indexPath.row].avatar?.storedData() {
             cell?.imageView?.image = UIImage(data: data)
         } else {
@@ -140,6 +141,4 @@ extension DogsViewController: UITableViewDataSource {
         }
         return cell ?? UITableViewCell()
     }
-
 }
-

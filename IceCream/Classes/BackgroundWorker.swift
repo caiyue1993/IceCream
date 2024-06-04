@@ -12,22 +12,22 @@ import RealmSwift
 // Tweaked a little by Yue Cai
 
 class BackgroundWorker: NSObject {
-    
+
     static let shared = BackgroundWorker()
-    
+
     private var thread: Thread?
     private var block: (() -> Void)?
-    
+
     func start(_ block: @escaping () -> Void) {
         self.block = block
-        
+
         if thread == nil {
             thread = Thread { [weak self] in
-                guard let self = self, let th = self.thread else {
+                guard let self = self, let thread = self.thread else {
                     Thread.exit()
                     return
                 }
-                while (!th.isCancelled) {
+                while !thread.isCancelled {
                     RunLoop.current.run(
                         mode: .default,
                         before: Date.distantFuture)
@@ -37,7 +37,7 @@ class BackgroundWorker: NSObject {
             thread?.name = "\(String(describing: self))-\(UUID().uuidString)"
             thread?.start()
         }
-        
+
         if let thread = thread {
             perform(#selector(runBlock),
                     on: thread,
@@ -46,11 +46,11 @@ class BackgroundWorker: NSObject {
                     modes: [RunLoop.Mode.default.rawValue])
         }
     }
-    
+
     func stop() {
         thread?.cancel()
     }
-    
+
     @objc private func runBlock() {
         block?()
     }

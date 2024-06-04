@@ -9,14 +9,12 @@
 import UIKit
 import RealmSwift
 import IceCream
-import RxRealm
-import RxSwift
 
 final class CatsViewController: UIViewController {
     
     private var cats: [Cat] = []
-    private let bag = DisposeBag()
     
+    private var notificationToken: NotificationToken?
     private let realm = try! Realm()
     
     private lazy var addBarItem: UIBarButtonItem = {
@@ -53,12 +51,15 @@ final class CatsViewController: UIViewController {
         /// https://realm.io/docs/swift/latest/#objects-with-primary-keys
         let cats = realm.objects(Cat.self)
         
-        Observable.array(from: cats).subscribe(onNext: { (cats) in
-            /// When cats data changes in Realm, the following code will be executed
-            /// It works like magic.
-            self.cats = cats.filter{ !$0.isDeleted }
-            self.tableView.reloadData()
-        }).disposed(by: bag)
+        self.notificationToken = cats.observe { (changes: RealmCollectionChange) in
+            switch changes {
+            case .initial, .update:
+                self.cats = cats.filter{ !$0.isDeleted }
+                self.tableView.reloadData()
+            case .error(let err):
+                fatalError("\(err)")
+            }
+        }
     }
     
     @objc private func add() {

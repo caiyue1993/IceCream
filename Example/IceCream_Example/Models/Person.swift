@@ -11,15 +11,11 @@ import CloudKit
 import IceCream
 
 class Person: Object {
-    @objc dynamic var id = NSUUID().uuidString
-    @objc dynamic var name = "Jim"
-    @objc dynamic var isDeleted = false
-    
-    let cats = List<Cat>()
-    
-    override class func primaryKey() -> String? {
-        return "id"
-    }
+    @Persisted(primaryKey: true) var id = NSUUID().uuidString
+    @Persisted var name = "Jim"
+    @Persisted var isDeleted = false
+
+    @Persisted var cats = List<Cat>()
 }
 
 extension Person: CKRecordConvertible {

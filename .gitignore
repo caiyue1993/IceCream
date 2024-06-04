@@ -20,6 +20,7 @@ profile
 DerivedData
 *.hmap
 *.ipa
+.build
 
 # Bundler
 .bundle

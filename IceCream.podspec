@@ -20,14 +20,14 @@ Pod::Spec.new do |s|
 
   s.social_media_url = 'https://twitter.com/caiyue5'
 
-  s.ios.deployment_target = '10.0'
+  s.ios.deployment_target = '11.0'
   s.osx.deployment_target = '10.12'
   s.tvos.deployment_target = '10.0'
-  s.watchos.deployment_target = '3.0'
+  s.watchos.deployment_target = '4.0'
   s.source_files = ["IceCream/Classes/**/*","IceCream/IceCream.h"]
   s.public_header_files = ["IceCream/IceCream.h"]
   s.static_framework = true
   s.swift_version = '5.0'
 
-  s.dependency 'RealmSwift', '< 10.0.0'
+  s.dependency 'RealmSwift', '~> 10.42'
 end

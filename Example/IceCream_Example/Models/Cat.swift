@@ -12,17 +12,13 @@ import IceCream
 import CloudKit
 
 class Cat: Object {
-    @objc dynamic var id = NSUUID().uuidString
-    @objc dynamic var name = ""
-    @objc dynamic var age = 0
-    @objc dynamic var isDeleted = false
-    
+    @Persisted(primaryKey: true) var id = NSUUID().uuidString
+    @Persisted var name = ""
+    @Persisted var age = 0
+    @Persisted var isDeleted = false
+
     static let AVATAR_KEY = "avatar"
-    @objc dynamic var avatar: CreamAsset?
-    
-    override class func primaryKey() -> String? {
-        return "id"
-    }
+    @Persisted var avatar: CreamAsset?
 }
 
 extension Cat: CKRecordRecoverable {
